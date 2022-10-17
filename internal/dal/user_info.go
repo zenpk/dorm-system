@@ -3,15 +3,16 @@ package dal
 import "github.com/google/uuid"
 
 type UserInfo struct {
-	Id        int64  `gorm:"primaryKey" json:"id"`
-	UserId    int64  `gorm:"unique; not null; index" json:"-"`
+	Id        uint64 `gorm:"primaryKey" json:"id"`
+	UserId    uint64 `gorm:"unique; not null; index" json:"-"`
 	Username  string `gorm:"unique; not null; index" json:"username"`
-	StudentId int64  `gorm:"unique; not null; index" json:"studentId"`
+	StudentId uint64 `gorm:"unique; not null; index" json:"studentId"`
+	Gender    string `gorm:"not null"`
 	Name      string `gorm:"not null; index;" json:"name"`
 	UUID      string `gorm:"unique; not null;" json:"uuid"`
 }
 
-func (u *UserInfo) FindById(userId int64) (UserInfo, error) {
+func (u *UserInfo) FindById(userId uint64) (UserInfo, error) {
 	var userInfo UserInfo
 	return userInfo, DB.First(&userInfo, userId).Error
 }
@@ -21,12 +22,12 @@ func (u *UserInfo) FindAll() ([]UserInfo, error) {
 	return userInfos, DB.Find(&userInfos).Error
 }
 
-func (u *UserInfo) FindByUserId(userId int64) (UserInfo, error) {
+func (u *UserInfo) FindByUserId(userId uint64) (UserInfo, error) {
 	var userInfo UserInfo
 	return userInfo, DB.Where("user_id = ?", userId).First(&userInfo).Error
 }
 
-func (u *UserInfo) FindByStudentId(studentId int64) (UserInfo, error) {
+func (u *UserInfo) FindByStudentId(studentId uint64) (UserInfo, error) {
 	var userInfo UserInfo
 	return userInfo, DB.Where("student_id = ?", studentId).First(&userInfo).Error
 }

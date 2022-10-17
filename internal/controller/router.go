@@ -12,18 +12,21 @@ func InitRouter(router *gin.Engine) {
 	// no other middleware URL
 	router.POST("/login", handler.userCredential.Login)
 	router.POST("/register", handler.userCredential.Register)
+	router.GET("/available-buildings", handler.building.GetAvailableBuildings)
+	router.GET("/all-available-count", handler.building.GetAvailableCount)
 
 	// not login required but can extract information from token
 	routerNoAuth := router.Group("/")
 	routerNoAuth.Use(middleware.CheckAuthInfo())
 	{
-
 	}
 
 	// login required URL
 	routerAuth := router.Group("/")
 	routerAuth.Use(middleware.RequireLogin())
 	{
+		router.GET("/my-info", handler.userInfo.GetMyInfo)
+		router.PATCH("/change-password", handler.userCredential.UpdatePassword)
 		router.GET("/logout", handler.userCredential.Logout)
 	}
 }

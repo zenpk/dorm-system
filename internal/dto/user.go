@@ -7,8 +7,7 @@ type RegisterLoginReq struct {
 	Password string `json:"password"`
 }
 
-type RegisterLoginResp struct {
-	Code     int64        `json:"code"`
-	Msg      string       `json:"msg"`
-	UserInfo dal.UserInfo `json:"userInfo; omitempty"`
+type GetUserInfoResp struct {
+	CommonResp
+	UserInfo dal.UserInfo `json:"userInfo,omitempty"`
 }

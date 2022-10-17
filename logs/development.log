@@ -21,3 +21,7 @@ runtime.main
 2022-10-09T22:03:34.866+0800	WARN	util/log.go:11	record not found
 2022-10-09T22:09:41.953+0800	WARN	util/log.go:11	user not exists
 2022-10-09T22:11:20.751+0800	WARN	util/log.go:11	wrong password
+2022-10-17T17:12:56.611+0800	WARN	service/user_credential.go:87	record not found
+2022-10-17T17:13:19.937+0800	WARN	service/user_credential.go:102	crypto/bcrypt: hashedPassword is not the hash of the given password
+2022-10-17T17:28:16.195+0800	WARN	eh/building.go:15	record not found
+2022-10-17T17:29:33.602+0800	WARN	eh/building.go:15	building unavailable

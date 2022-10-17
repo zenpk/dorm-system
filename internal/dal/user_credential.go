@@ -1,12 +1,12 @@
 package dal
 
 type UserCredential struct {
-	Id       int64  `gorm:"primaryKey"`
+	Id       uint64 `gorm:"primaryKey"`
 	Username string `gorm:"unique; not null; index"`
 	Password string `gorm:"not null;"`
 }
 
-func (u *UserCredential) FindById(id int64) (UserCredential, error) {
+func (u *UserCredential) FindById(id uint64) (UserCredential, error) {
 	var userCredential UserCredential
 	return userCredential, DB.First(&userCredential, id).Error
 }
@@ -16,13 +16,8 @@ func (u *UserCredential) FindByUsername(username string) (UserCredential, error)
 	return userCredential, DB.Where("username = ?", username).First(&userCredential).Error
 }
 
-func (u *UserCredential) UpdatePassword(id int64, password string) error {
-	var userCredential UserCredential
-	if err := DB.First(&userCredential, id).Error; err != nil {
-		return err
-	}
-	userCredential.Password = password
-	return DB.Save(&userCredential).Error
+func (u *UserCredential) Update(credential *UserCredential) error {
+	return DB.Save(&credential).Error
 }
 
 // RegisterNewUser register a new UserCredential along with a linked UserInfo

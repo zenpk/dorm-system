@@ -34,5 +34,11 @@ func InitDB() error {
 	if err = DB.AutoMigrate(&UserInfo{}); err != nil {
 		return err
 	}
+	if err = DB.AutoMigrate(&Building{}); err != nil {
+		return err
+	}
+	if err = DB.AutoMigrate(&Dorm{}); err != nil {
+		return err
+	}
 	return nil
 }

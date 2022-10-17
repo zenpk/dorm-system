@@ -8,9 +8,9 @@ import (
 )
 
 // GenToken generate JWT from user infos with secret
-func GenToken(userId int64, username string) (string, error) {
+func GenToken(userId uint64, username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId":   strconv.FormatInt(userId, 10),
+		"userId":   strconv.FormatUint(userId, 10),
 		"username": username,
 	})
 	signedToken, err := token.SignedString([]byte(viper.GetString("jwt.secret")))
