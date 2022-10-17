@@ -1,0 +1,23 @@
+{"level":"info","ts":"2022-10-07T15:08:21.800+0800","caller":"zap@v0.1.0/zap.go:90","msg":"/index","status":200,"method":"GET","path":"/index","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34","latency":0,"time":"2022-10-07T07:08:21Z"}
+{"level":"info","ts":"2022-10-07T15:08:23.042+0800","caller":"zap@v0.1.0/zap.go:90","msg":"/index","status":200,"method":"GET","path":"/index","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34","latency":0,"time":"2022-10-07T07:08:23Z"}
+{"level":"info","ts":"2022-10-07T15:08:58.408+0800","caller":"zap@v0.1.0/zap.go:90","msg":"/index","status":200,"method":"GET","path":"/index","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34","latency":0,"time":"2022-10-07T07:08:58Z"}
+{"level":"warn","ts":"2022-10-07T22:19:42.198+0800","caller":"cmd/main.go:24","msg":"thisisawarn"}
+{"level":"error","ts":"2022-10-07T22:19:42.207+0800","caller":"cmd/main.go:25","msg":"thisisaerror","stacktrace":"main.main\n\tD:/OneDrive/coding/git/backend-demo/cmd/main.go:25\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:250"}
+{"level":"info","ts":"2022-10-07T22:19:42.208+0800","caller":"cmd/main.go:26","msg":"thisisainfo"}
+2022-10-07T22:21:37.012+0800	warn	cmd/main.go:24	thisisawarn
+2022-10-07T22:21:37.019+0800	error	cmd/main.go:25	thisisaerror
+main.main
+	D:/OneDrive/coding/git/backend-demo/cmd/main.go:25
+runtime.main
+	C:/Program Files/Go/src/runtime/proc.go:250
+2022-10-07T22:21:37.019+0800	info	cmd/main.go:26	thisisainfo
+2022-10-07T22:24:55.277+0800	WARN	cmd/main.go:24	thisisawarn
+2022-10-07T22:24:55.285+0800	ERROR	cmd/main.go:25	thisisaerror
+main.main
+	D:/OneDrive/coding/git/backend-demo/cmd/main.go:25
+runtime.main
+	C:/Program Files/Go/src/runtime/proc.go:250
+2022-10-07T22:24:55.285+0800	INFO	cmd/main.go:26	thisisainfo
+2022-10-09T22:03:34.866+0800	WARN	util/log.go:11	record not found
+2022-10-09T22:09:41.953+0800	WARN	util/log.go:11	user not exists
+2022-10-09T22:11:20.751+0800	WARN	util/log.go:11	wrong password
