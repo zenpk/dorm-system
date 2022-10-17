@@ -12,11 +12,11 @@ cors:
     - "localhost"
     - "127.0.0.1"
 mysql:
-  host: "192.168.31.24"
+  host: "localhost"
   port: 3306
-  username: "prod"
-  password: "prod"
-  database: "production"
+  username: "admin"
+  password: "admin"
+  database: "dorm"
 redis:
   host: "localhost"
   port: 6379
@@ -29,4 +29,4 @@ cookie:
 time:
   format: "2006-01-02 15:04:05"
 auth:
-  password_length: 6 # 最短密码长度
+  password_length: 5 # minimal password length

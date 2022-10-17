@@ -1,28 +1,38 @@
 package dal
 
-// UserInfo 用户详细信息表
+import "github.com/google/uuid"
+
 type UserInfo struct {
-	Id          int64  `gorm:"primaryKey" json:"id"`
-	UserId      int64  `gorm:"unique; index; not null;"`
-	Username    string `gorm:"index; not null;" json:"username"`
-	Email       string `gorm:"unique; index; not null;" json:"email"`
-	IsAuthority int64  `gorm:"not null" json:"isauthority"`
+	Id        int64  `gorm:"primaryKey" json:"id"`
+	UserId    int64  `gorm:"unique; not null; index" json:"-"`
+	Username  string `gorm:"unique; not null; index" json:"username"`
+	StudentId int64  `gorm:"unique; not null; index" json:"studentId"`
+	Name      string `gorm:"not null; index;" json:"name"`
+	UUID      string `gorm:"unique; not null;" json:"uuid"`
 }
 
-// FindById 根据 id 查找用户信息
 func (u *UserInfo) FindById(userId int64) (UserInfo, error) {
 	var userInfo UserInfo
 	return userInfo, DB.First(&userInfo, userId).Error
 }
 
-// FindAll 获取全部用户信息
 func (u *UserInfo) FindAll() ([]UserInfo, error) {
 	var userInfos []UserInfo
 	return userInfos, DB.Find(&userInfos).Error
 }
 
-// FindByUserId 根据 userId 查找用户信息
 func (u *UserInfo) FindByUserId(userId int64) (UserInfo, error) {
 	var userInfo UserInfo
 	return userInfo, DB.Where("user_id = ?", userId).First(&userInfo).Error
+}
+
+func (u *UserInfo) FindByStudentId(studentId int64) (UserInfo, error) {
+	var userInfo UserInfo
+	return userInfo, DB.Where("student_id = ?", studentId).First(&userInfo).Error
+}
+
+// Create a new record with randomly generated UUID
+func (u *UserInfo) Create(info *UserInfo) error {
+	info.UUID = uuid.New().String()
+	return DB.Create(info).Error
 }

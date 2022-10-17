@@ -1,34 +1,45 @@
 package dal
 
-// UserCredential 用户登录信息表
 type UserCredential struct {
 	Id       int64  `gorm:"primaryKey"`
-	Email    string `gorm:"unique; index; not null"`
+	Username string `gorm:"unique; not null; index"`
 	Password string `gorm:"not null;"`
 }
 
-// FindByEmail 根据邮箱查找单一记录
-func (u *UserCredential) FindByEmail(email string) (UserCredential, error) {
+func (u *UserCredential) FindById(id int64) (UserCredential, error) {
 	var userCredential UserCredential
-	return userCredential, DB.Where("email = ?", email).First(&userCredential).Error
+	return userCredential, DB.First(&userCredential, id).Error
 }
 
-// RegisterNewUser 新用户注册的数据库操作
-func (u *UserCredential) RegisterNewUser(email, username, passwordHash string) (UserCredential, UserInfo, error) {
+func (u *UserCredential) FindByUsername(username string) (UserCredential, error) {
+	var userCredential UserCredential
+	return userCredential, DB.Where("username = ?", username).First(&userCredential).Error
+}
+
+func (u *UserCredential) UpdatePassword(id int64, password string) error {
+	var userCredential UserCredential
+	if err := DB.First(&userCredential, id).Error; err != nil {
+		return err
+	}
+	userCredential.Password = password
+	return DB.Save(&userCredential).Error
+}
+
+// RegisterNewUser register a new UserCredential along with a linked UserInfo
+func (u *UserCredential) RegisterNewUser(username, passwordHash string) (UserCredential, UserInfo, error) {
 	newUserCredential := UserCredential{
-		Email:    email,
+		Username: username,
 		Password: passwordHash,
 	}
 	if err := DB.Create(&newUserCredential).Error; err != nil {
 		return UserCredential{}, UserInfo{}, err
 	}
-	// 同步注册新的 UserInfo
+	// linked UserInfo
 	newUserInfo := UserInfo{
 		UserId:   newUserCredential.Id,
-		Email:    email,
 		Username: username,
 	}
-	if err := DB.Create(&newUserInfo).Error; err != nil {
+	if err := newUserInfo.Create(&newUserInfo); err != nil {
 		return UserCredential{}, UserInfo{}, err
 	}
 	return newUserCredential, newUserInfo, nil

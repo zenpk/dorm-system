@@ -4,32 +4,32 @@ import (
 	"flag"
 	"github.com/zenpk/dorm-system/internal/controller"
 	"github.com/zenpk/dorm-system/internal/dal"
-	"github.com/zenpk/dorm-system/internal/middleware"
-	"github.com/zenpk/dorm-system/internal/util"
+	"github.com/zenpk/dorm-system/pkg/viper"
+	"github.com/zenpk/dorm-system/pkg/zap"
 )
 
 func main() {
-	// 从命令行中读取运行模式，默认为 development
+	// read mode from commandline, default as development
 	mode := flag.String("mode", "development", "define program mode")
 	flag.Parse()
-	// 加载 Viper
-	if err := util.InitConfig(*mode, "./configs"); err != nil {
+	// Viper
+	if err := viper.InitConfig(*mode, "./configs"); err != nil {
 		panic(err)
 	}
-	// 加载 zap
-	if err := middleware.InitLogger(); err != nil {
+	// zap
+	if err := zap.InitLogger(); err != nil {
 		panic(err)
 	}
-	defer middleware.Logger.Sync()
-	// 加载 Gorm，连接 MySQL
+	defer zap.Logger.Sync()
+	// GORM
 	if err := dal.InitDB(); err != nil {
 		panic(err)
 	}
-	// 连接 Redis，暂不使用
+	// Redis
 	//if err := cache.InitRedis(); err != nil {
 	//	panic(err)
 	//}
-	// 加载 Gin 并开始监听
+	// Gin
 	if err := controller.InitGin(); err != nil {
 		panic(err)
 	}

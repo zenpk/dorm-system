@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// CORSFilter CORS 管理
+// CORSFilter cross-origin resource sharing
 func CORSFilter() gin.HandlerFunc {
 	return cors.New(cors.Config{
 		//AllowOrigins:     []string{"https://localhost:5173", "http://localhost:5173"}, // ignored because of AllowOriginFunc
@@ -17,11 +17,11 @@ func CORSFilter() gin.HandlerFunc {
 		ExposeHeaders:    []string{},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			// 服务器的请求
+			// requests from the same server
 			if strings.Contains(origin, viper.GetString("server.domain")) {
 				return true
 			}
-			// 白名单的请求
+			// requests from whitelist
 			whitelist := viper.GetStringSlice("cors.whitelist")
 			for _, allow := range whitelist {
 				if strings.Contains(origin, allow) {

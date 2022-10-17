@@ -1,4 +1,4 @@
-package middleware
+package zap
 
 import (
 	"github.com/spf13/viper"

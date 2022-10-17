@@ -3,20 +3,27 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/cookie"
+	"github.com/zenpk/dorm-system/internal/dto"
+	"github.com/zenpk/dorm-system/internal/eh"
+	"github.com/zenpk/dorm-system/pkg/zap"
 	"net/http"
 )
 
-// CheckAuthInfo 根据用户 Cookie 中的 token 信息提取 userId 和 username
+// CheckAuthInfo extract user infos from the JWT token in Cookie
 func CheckAuthInfo() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := cookie.GetToken(c)
-		if err != nil || token == "" { // no cookie
+		if err != nil || token == "" { // no Cookie
 			c.Next()
 			return
 		}
 		userId, username, err := ParseToken(token)
 		if err != nil || userId == "0" {
-			Logger.Warn("ParseToken failed")
+			zap.Logger.Warn("ParseToken failed")
+			c.JSON(http.StatusUnauthorized, dto.CommonResp{
+				Code: eh.CodeMiddlewareError,
+				Msg:  "ParseToken failed",
+			})
 			return
 		}
 		cookie.SetUserId(c, userId)
@@ -25,18 +32,25 @@ func CheckAuthInfo() gin.HandlerFunc {
 	}
 }
 
-// RequireLogin 需要登录的中间件，与上面的区别是如果未登录则直接 Abort
+// RequireLogin if not login then abort
 func RequireLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := cookie.GetToken(c)
-		if err != nil || token == "" { // no cookie
-			c.String(http.StatusUnauthorized, "you need to login")
+		if err != nil || token == "" { // no Cookie
+			c.JSON(http.StatusUnauthorized, dto.CommonResp{
+				Code: eh.CodeMiddlewareError,
+				Msg:  "login required",
+			})
 			c.Abort()
 			return
 		}
 		userId, username, err := ParseToken(token)
 		if err != nil || userId == "0" {
-			Logger.Warn("ParseToken failed")
+			zap.Logger.Warn("ParseToken failed")
+			c.JSON(http.StatusUnauthorized, dto.CommonResp{
+				Code: eh.CodeMiddlewareError,
+				Msg:  "ParseToken failed",
+			})
 			return
 		}
 		cookie.SetUserId(c, userId)

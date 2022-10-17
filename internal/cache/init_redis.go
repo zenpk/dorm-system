@@ -18,7 +18,7 @@ func InitRedis() error {
 	if _, err := Redis.Ping(CTX).Result(); err != nil {
 		return err
 	}
-	if err := Redis.FlushAll(CTX).Err(); err != nil { // 初始化，方便测试，实际应用中可删除此行
+	if err := Redis.FlushAll(CTX).Err(); err != nil { // flush all caches, comment this line in production
 		return err
 	}
 	return nil

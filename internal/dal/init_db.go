@@ -10,7 +10,6 @@ import (
 var DB *gorm.DB
 
 func InitDB() error {
-	// dsn 是数据库的地址
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		viper.GetString("mysql.username"),
 		viper.GetString("mysql.password"),
@@ -18,7 +17,7 @@ func InitDB() error {
 		viper.GetString("mysql.port"),
 		viper.GetString("mysql.database"),
 	)
-	// GORM 连接数据库
+	// GORM connect to DB
 	var err error
 	DB, err = gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dsn,   // data source name
@@ -28,14 +27,11 @@ func InitDB() error {
 	if err != nil {
 		return err
 	}
-	// 创建表
+	// CREATE TABLE
 	if err = DB.AutoMigrate(&UserCredential{}); err != nil {
 		return err
 	}
 	if err = DB.AutoMigrate(&UserInfo{}); err != nil {
-		return err
-	}
-	if err = DB.AutoMigrate(&StudentInfo{}); err != nil {
 		return err
 	}
 	return nil

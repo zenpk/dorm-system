@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// GenToken 根据 userId 和 username 生成 token
+// GenToken generate JWT from user infos with secret
 func GenToken(userId int64, username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId":   strconv.FormatInt(userId, 10),
@@ -20,7 +20,7 @@ func GenToken(userId int64, username string) (string, error) {
 	return signedToken, nil
 }
 
-// ParseToken 解析 JWT，返回 userId 和 username
+// ParseToken extract infos from token
 func ParseToken(tokenString string) (string, string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
