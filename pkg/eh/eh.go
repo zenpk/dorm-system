@@ -1,3 +1,17 @@
+// Copyright 2022 zenpk
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package eh
 
 import (
@@ -14,7 +28,7 @@ type JSONHandler struct {
 }
 
 // Handle return the given interface with tagged values and error messages
-func (h *JSONHandler) Handle(err error) {
+func (h *JSONHandler) Handle(err error, httpCode ...int) {
 	ref := reflect.ValueOf(&h.V).Elem()
 	refCopy := reflect.New(ref.Elem().Type()).Elem()
 	for i := 0; i < ref.Elem().NumField(); i++ {
@@ -26,8 +40,8 @@ func (h *JSONHandler) Handle(err error) {
 			refCopy.Field(i).SetString(err.Error())
 			continue
 		}
-		if len(tag) > 5 && tag[0:5] == "pre: " {
-			field := tag[5:]
+		if len(tag) > 4 && tag[0:4] == "pre:" {
+			field := tag[4:]
 			presetVal := reflect.ValueOf(Preset).FieldByName(field)
 			refCopy.Field(i).Set(presetVal)
 			continue
@@ -53,5 +67,9 @@ func (h *JSONHandler) Handle(err error) {
 	}
 	zap.Logger.Warn(err.Error())
 	ref.Set(refCopy)
+	if len(httpCode) > 0 {
+		h.C.JSON(httpCode[0], h.V)
+		return
+	}
 	h.C.JSON(http.StatusOK, h.V)
 }

@@ -13,7 +13,7 @@ type Dorm struct {
 }
 
 func (d *Dorm) SumAvailableByBuildingId(id uint32) (int64, error) {
-	var building Building
+	building := new(Building)
 	building, err := building.FindById(id)
 	if err != nil {
 		return 0, err
@@ -25,7 +25,7 @@ func (d *Dorm) SumAvailableByBuildingId(id uint32) (int64, error) {
 	return sum, DB.Model(&Dorm{}).Select("SUM(available)").Row().Scan(&sum)
 }
 
-func (d *Dorm) SumBedNumByBuildingId(id uint32) (int64, error) {
-	var sum int64
-	return sum, DB.Model(&Dorm{}).Select("SUM(bed_num)").Row().Scan(&sum)
-}
+//func (d *Dorm) SumBedNumByBuildingId(id uint32) (int64, error) {
+//	var sum int64
+//	return sum, DB.Model(&Dorm{}).Select("SUM(bed_num)").Row().Scan(&sum)
+//}

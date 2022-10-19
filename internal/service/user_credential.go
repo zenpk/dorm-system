@@ -35,8 +35,8 @@ func (u *UserCredential) Register(c *gin.Context) {
 		return
 	}
 	// username duplication check
-	var dalUserCredential dal.UserCredential
-	_, err := dalUserCredential.FindByUsername(req.Username)
+	var table *dal.UserCredential
+	_, err := table.FindByUsername(req.Username)
 	if err == nil { // record found
 		zap.Logger.Warn("user already exists")
 		c.JSON(http.StatusOK, dto.CommonResp{
@@ -54,7 +54,7 @@ func (u *UserCredential) Register(c *gin.Context) {
 		errHandler.Handle(err)
 		return
 	}
-	newUserCredential, _, err := dalUserCredential.RegisterNewUser(req.Username, passwordHash)
+	newUserCredential, _, err := table.RegisterNewUser(req.Username, passwordHash)
 	if err != nil {
 		errHandler.Handle(err)
 		return
@@ -81,8 +81,9 @@ func (u *UserCredential) Login(c *gin.Context) {
 		errHandler.Handle(err)
 		return
 	}
-	var dalUserCredential dal.UserCredential
-	userCredential, err := dalUserCredential.FindByUsername(req.Username)
+	var userCredential *dal.UserCredential
+	var err error
+	userCredential, err = userCredential.FindByUsername(req.Username)
 	if errors.Is(err, gorm.ErrRecordNotFound) { // no record
 		zap.Logger.Warn(err.Error())
 		c.JSON(http.StatusOK, dto.CommonResp{
@@ -106,7 +107,7 @@ func (u *UserCredential) Login(c *gin.Context) {
 		})
 		return
 	}
-	var userInfo dal.UserInfo
+	var userInfo *dal.UserInfo
 	userInfo, err = userInfo.FindByUserId(userCredential.Id)
 	if err != nil {
 		zap.Logger.Warn(err.Error())
@@ -168,7 +169,7 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 		return
 	}
 	userId := util.ParseU64(userIdStr)
-	var userInfo dal.UserInfo
+	var userInfo *dal.UserInfo
 	userInfo, err = userInfo.FindByUserId(userId)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.CommonResp{
@@ -177,8 +178,8 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 		})
 		return
 	}
-	var dalUserCredential dal.UserCredential
-	userCredential, err := dalUserCredential.FindById(userInfo.UserId)
+	var userCredential *dal.UserCredential
+	userCredential, err = userCredential.FindById(userInfo.UserId)
 	if err != nil {
 		errHandler.Handle(err)
 		return
@@ -192,7 +193,7 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 	}
 	// update password
 	userCredential.Password = req.Password
-	if err := dalUserCredential.Update(&userCredential); err != nil {
+	if err := userCredential.Update(userCredential); err != nil {
 		errHandler.Handle(err)
 		return
 	}

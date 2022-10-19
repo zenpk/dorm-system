@@ -12,28 +12,28 @@ type UserInfo struct {
 	UUID      string `gorm:"unique; not null;" json:"uuid"`
 }
 
-func (u *UserInfo) FindById(userId uint64) (UserInfo, error) {
-	var userInfo UserInfo
+func (u *UserInfo) FindById(userId uint64) (*UserInfo, error) {
+	userInfo := new(UserInfo)
 	return userInfo, DB.First(&userInfo, userId).Error
 }
 
-func (u *UserInfo) FindAll() ([]UserInfo, error) {
-	var userInfos []UserInfo
+func (u *UserInfo) FindAll() ([]*UserInfo, error) {
+	var userInfos []*UserInfo
 	return userInfos, DB.Find(&userInfos).Error
 }
 
-func (u *UserInfo) FindByUserId(userId uint64) (UserInfo, error) {
-	var userInfo UserInfo
+func (u *UserInfo) FindByUserId(userId uint64) (*UserInfo, error) {
+	userInfo := new(UserInfo)
 	return userInfo, DB.Where("user_id = ?", userId).First(&userInfo).Error
 }
 
-func (u *UserInfo) FindByStudentId(studentId uint64) (UserInfo, error) {
-	var userInfo UserInfo
+func (u *UserInfo) FindByStudentId(studentId uint64) (*UserInfo, error) {
+	userInfo := new(UserInfo)
 	return userInfo, DB.Where("student_id = ?", studentId).First(&userInfo).Error
 }
 
 // Create a new record with randomly generated UUID
 func (u *UserInfo) Create(info *UserInfo) error {
 	info.UUID = uuid.New().String()
-	return DB.Create(info).Error
+	return DB.Create(&info).Error
 }

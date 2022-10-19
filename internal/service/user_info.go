@@ -21,12 +21,11 @@ func (*UserInfo) GetMyInfo(c *gin.Context) {
 				Code: eh.Preset.CodeTokenError,
 				Msg:  "you're not logged in",
 			},
-			UserInfo: &dal.UserInfo{},
 		})
 		return
 	}
 	id := util.ParseU64(idStr)
-	var userInfo dal.UserInfo
+	var userInfo *dal.UserInfo
 	userInfo, err = userInfo.FindById(id)
 	errHandler := eh.JSONHandler{C: c, V: dto.GetUserInfoResp{}}
 	if err != nil {
@@ -38,6 +37,6 @@ func (*UserInfo) GetMyInfo(c *gin.Context) {
 			Code: eh.Preset.CodeOK,
 			Msg:  "success",
 		},
-		UserInfo: &userInfo,
+		UserInfo: userInfo,
 	})
 }

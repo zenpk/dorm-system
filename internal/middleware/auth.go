@@ -19,11 +19,12 @@ func CheckAuthInfo() gin.HandlerFunc {
 		}
 		userId, username, err := ParseToken(token)
 		if err != nil || userId == "0" {
-			zap.Logger.Warn("ParseToken failed")
+			zap.Logger.Error("ParseToken failed")
 			c.JSON(http.StatusUnauthorized, dto.CommonResp{
 				Code: eh.Preset.CodeMiddlewareError,
 				Msg:  "ParseToken failed",
 			})
+			c.Abort()
 			return
 		}
 		cookie.SetUserId(c, userId)
@@ -46,11 +47,12 @@ func RequireLogin() gin.HandlerFunc {
 		}
 		userId, username, err := ParseToken(token)
 		if err != nil || userId == "0" {
-			zap.Logger.Warn("ParseToken failed")
+			zap.Logger.Error("ParseToken failed")
 			c.JSON(http.StatusUnauthorized, dto.CommonResp{
 				Code: eh.Preset.CodeMiddlewareError,
 				Msg:  "ParseToken failed",
 			})
+			c.Abort()
 			return
 		}
 		cookie.SetUserId(c, userId)

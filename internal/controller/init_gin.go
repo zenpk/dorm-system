@@ -20,7 +20,7 @@ func InitGin() error {
 	}
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.
-	r.Use(ginzap.RecoveryWithZap(zap.Logger, true))
+	r.Use(ginzap.RecoveryWithZap(zap.Logger, false))
 	InitRouter(r)
 	err := r.Run(viper.GetString("server.host") + ":" + viper.GetString("server.port"))
 	return err

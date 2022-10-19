@@ -13,8 +13,8 @@ type Building struct{}
 
 func (b *Building) GetAvailableCount(c *gin.Context) {
 	id := util.QueryU32(c, "buildingId")
-	var dorm dal.Dorm
-	sum, err := dorm.SumAvailableByBuildingId(id)
+	var table *dal.Dorm
+	sum, err := table.SumAvailableByBuildingId(id)
 	errHandler := eh.JSONHandler{C: c, V: dto.GetAvailableCountResp{}}
 	if err != nil {
 		errHandler.Handle(err)
@@ -30,8 +30,8 @@ func (b *Building) GetAvailableCount(c *gin.Context) {
 }
 
 func (b *Building) GetAvailableBuildings(c *gin.Context) {
-	var dalBuilding dal.Building
-	buildings, err := dalBuilding.FindAllAvailable()
+	var table *dal.Building
+	buildings, err := table.FindAllAvailable()
 	errHandler := eh.JSONHandler{C: c, V: dto.GetAvailableBuildingsResp{}}
 	if err != nil {
 		errHandler.Handle(err)

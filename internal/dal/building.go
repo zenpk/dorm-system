@@ -10,12 +10,12 @@ type Building struct {
 	Info        string
 }
 
-func (b *Building) FindById(id uint32) (Building, error) {
-	var building Building
+func (b *Building) FindById(id uint32) (*Building, error) {
+	building := new(Building)
 	return building, DB.First(&building, id).Error
 }
 
-func (b *Building) FindAllAvailable() ([]Building, error) {
-	var buildings []Building
+func (b *Building) FindAllAvailable() ([]*Building, error) {
+	var buildings []*Building
 	return buildings, DB.Where("is_available = true").Find(&buildings).Error
 }

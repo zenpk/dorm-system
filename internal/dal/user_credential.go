@@ -6,13 +6,13 @@ type UserCredential struct {
 	Password string `gorm:"not null;"`
 }
 
-func (u *UserCredential) FindById(id uint64) (UserCredential, error) {
-	var userCredential UserCredential
+func (u *UserCredential) FindById(id uint64) (*UserCredential, error) {
+	userCredential := new(UserCredential)
 	return userCredential, DB.First(&userCredential, id).Error
 }
 
-func (u *UserCredential) FindByUsername(username string) (UserCredential, error) {
-	var userCredential UserCredential
+func (u *UserCredential) FindByUsername(username string) (*UserCredential, error) {
+	userCredential := new(UserCredential)
 	return userCredential, DB.Where("username = ?", username).First(&userCredential).Error
 }
 
@@ -21,21 +21,21 @@ func (u *UserCredential) Update(credential *UserCredential) error {
 }
 
 // RegisterNewUser register a new UserCredential along with a linked UserInfo
-func (u *UserCredential) RegisterNewUser(username, passwordHash string) (UserCredential, UserInfo, error) {
-	newUserCredential := UserCredential{
+func (u *UserCredential) RegisterNewUser(username, passwordHash string) (*UserCredential, *UserInfo, error) {
+	newUserCredential := &UserCredential{
 		Username: username,
 		Password: passwordHash,
 	}
 	if err := DB.Create(&newUserCredential).Error; err != nil {
-		return UserCredential{}, UserInfo{}, err
+		return nil, nil, err
 	}
 	// linked UserInfo
-	newUserInfo := UserInfo{
+	newUserInfo := &UserInfo{
 		UserId:   newUserCredential.Id,
 		Username: username,
 	}
-	if err := newUserInfo.Create(&newUserInfo); err != nil {
-		return UserCredential{}, UserInfo{}, err
+	if err := newUserInfo.Create(newUserInfo); err != nil {
+		return nil, nil, err
 	}
 	return newUserCredential, newUserInfo, nil
 }
