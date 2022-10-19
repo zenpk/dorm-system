@@ -12,8 +12,8 @@ cors:
 mysql:
   host: "localhost"
   port: 3306
-  username: "admin"
-  password: "admin"
+  username: "dorm"
+  password: "dorm"
   database: "dorm"
 redis:
   host: "localhost"

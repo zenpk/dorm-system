@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/dto"
-	"github.com/zenpk/dorm-system/internal/eh"
 	"github.com/zenpk/dorm-system/internal/util"
+	"github.com/zenpk/dorm-system/pkg/eh"
 	"net/http"
 )
 
@@ -15,14 +15,14 @@ func (b *Building) GetAvailableCount(c *gin.Context) {
 	id := util.QueryU32(c, "buildingId")
 	var dorm dal.Dorm
 	sum, err := dorm.SumAvailableByBuildingId(id)
-	errHandler := eh.Building{C: c}
+	errHandler := eh.JSONHandler{C: c, V: dto.GetAvailableCountResp{}}
 	if err != nil {
-		errHandler.GetAvailableCountErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	c.JSON(http.StatusOK, dto.GetAvailableCountResp{
 		CommonResp: dto.CommonResp{
-			Code: eh.CodeOK,
+			Code: eh.Preset.CodeOK,
 			Msg:  "success",
 		},
 		Count: sum,
@@ -32,9 +32,9 @@ func (b *Building) GetAvailableCount(c *gin.Context) {
 func (b *Building) GetAvailableBuildings(c *gin.Context) {
 	var dalBuilding dal.Building
 	buildings, err := dalBuilding.FindAllAvailable()
-	errHandler := eh.Building{C: c}
+	errHandler := eh.JSONHandler{C: c, V: dto.GetAvailableBuildingsResp{}}
 	if err != nil {
-		errHandler.GetAvailableBuildingsErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	var ids []int64
@@ -43,7 +43,7 @@ func (b *Building) GetAvailableBuildings(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.GetAvailableBuildingsResp{
 		CommonResp: dto.CommonResp{
-			Code: eh.CodeOK,
+			Code: eh.Preset.CodeOK,
 			Msg:  "success",
 		},
 		BuildingIds: ids,

@@ -7,9 +7,9 @@ import (
 	"github.com/zenpk/dorm-system/internal/cookie"
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/dto"
-	"github.com/zenpk/dorm-system/internal/eh"
 	"github.com/zenpk/dorm-system/internal/middleware"
 	"github.com/zenpk/dorm-system/internal/util"
+	"github.com/zenpk/dorm-system/pkg/eh"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -21,15 +21,15 @@ type UserCredential struct{}
 
 func (u *UserCredential) Register(c *gin.Context) {
 	var req dto.RegisterLoginReq
-	errHandler := eh.User{C: c}
+	errHandler := eh.JSONHandler{C: c, V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	// check password length
 	if len(req.Password) < viper.GetInt("auth.password_length") {
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeInputError,
+			Code: eh.Preset.CodeInputError,
 			Msg:  "password too short",
 		})
 		return
@@ -40,45 +40,45 @@ func (u *UserCredential) Register(c *gin.Context) {
 	if err == nil { // record found
 		zap.Logger.Warn("user already exists")
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeDatabaseError,
+			Code: eh.Preset.CodeDatabaseError,
 			Msg:  "user already exists",
 		})
 		return
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) { // not "Not Found" error
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	// no duplication
 	passwordHash, err := bCryptPassword(req.Password)
 	if err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	newUserCredential, _, err := dalUserCredential.RegisterNewUser(req.Username, passwordHash)
 	if err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	// generate JWT
 	token, err := middleware.GenToken(newUserCredential.Id, req.Username)
 	if err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	cookie.SetToken(c, token)
 	cookie.SetUserId(c, strconv.FormatUint(newUserCredential.Id, 10))
 	cookie.SetUsername(c, req.Username)
 	c.JSON(http.StatusOK, dto.CommonResp{
-		Code: eh.CodeOK,
+		Code: eh.Preset.CodeOK,
 		Msg:  "successfully registered",
 	})
 }
 
 func (u *UserCredential) Login(c *gin.Context) {
 	var req dto.RegisterLoginReq
-	errHandler := eh.User{C: c}
+	errHandler := eh.JSONHandler{C: c, V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	var dalUserCredential dal.UserCredential
@@ -86,12 +86,12 @@ func (u *UserCredential) Login(c *gin.Context) {
 	if errors.Is(err, gorm.ErrRecordNotFound) { // no record
 		zap.Logger.Warn(err.Error())
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeDatabaseError,
+			Code: eh.Preset.CodeDatabaseError,
 			Msg:  "user not exits",
 		})
 		return
 	} else if err != nil { // other errors
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	// record found
@@ -101,7 +101,7 @@ func (u *UserCredential) Login(c *gin.Context) {
 	if err := bcrypt.CompareHashAndPassword(passwordHashByte, passwordByte); errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		zap.Logger.Warn(err.Error())
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeLogicalError,
+			Code: eh.Preset.CodeLogicalError,
 			Msg:  "incorrect password",
 		})
 		return
@@ -111,7 +111,7 @@ func (u *UserCredential) Login(c *gin.Context) {
 	if err != nil {
 		zap.Logger.Warn(err.Error())
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeLogicalError,
+			Code: eh.Preset.CodeLogicalError,
 			Msg:  "user info not found",
 		})
 		return
@@ -119,13 +119,13 @@ func (u *UserCredential) Login(c *gin.Context) {
 	// generate JWT
 	token, err := middleware.GenToken(userCredential.Id, userInfo.Username)
 	if err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	cookie.SetToken(c, token)
 	cookie.SetUserId(c, strconv.FormatUint(userCredential.Id, 10))
 	c.JSON(http.StatusOK, dto.CommonResp{
-		Code: eh.CodeOK,
+		Code: eh.Preset.CodeOK,
 		Msg:  "successfully logged in",
 	})
 }
@@ -133,28 +133,28 @@ func (u *UserCredential) Login(c *gin.Context) {
 func (u *UserCredential) Logout(c *gin.Context) {
 	if _, err := cookie.GetUserId(c); err != nil {
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeTokenError,
+			Code: eh.Preset.CodeTokenError,
 			Msg:  "you're not logged in",
 		})
 		return
 	}
 	cookie.ClearAllUserInfos(c)
 	c.JSON(http.StatusOK, dto.CommonResp{
-		Code: eh.CodeOK,
+		Code: eh.Preset.CodeOK,
 		Msg:  "successfully logged out",
 	})
 }
 
 func (u *UserCredential) UpdatePassword(c *gin.Context) {
 	var req dto.RegisterLoginReq
-	errHandler := eh.User{C: c}
+	errHandler := eh.JSONHandler{C: c, V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	if len(req.Password) < viper.GetInt("auth.password_length") {
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeTokenError,
+			Code: eh.Preset.CodeTokenError,
 			Msg:  "password too short",
 		})
 		return
@@ -162,7 +162,7 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 	userIdStr, err := cookie.GetUserId(c)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeTokenError,
+			Code: eh.Preset.CodeTokenError,
 			Msg:  "you're not logged in",
 		})
 		return
@@ -172,7 +172,7 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 	userInfo, err = userInfo.FindByUserId(userId)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeDatabaseError,
+			Code: eh.Preset.CodeDatabaseError,
 			Msg:  "user not exits",
 		})
 		return
@@ -180,12 +180,12 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 	var dalUserCredential dal.UserCredential
 	userCredential, err := dalUserCredential.FindById(userInfo.UserId)
 	if err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(userCredential.Password), []byte(req.Password)); !errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		c.JSON(http.StatusOK, dto.CommonResp{
-			Code: eh.CodeDatabaseError,
+			Code: eh.Preset.CodeDatabaseError,
 			Msg:  "new password cannot be the same as old one",
 		})
 		return
@@ -193,11 +193,11 @@ func (u *UserCredential) UpdatePassword(c *gin.Context) {
 	// update password
 	userCredential.Password = req.Password
 	if err := dalUserCredential.Update(&userCredential); err != nil {
-		errHandler.RegisterLoginErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	c.JSON(http.StatusOK, dto.CommonResp{
-		Code: eh.CodeOK,
+		Code: eh.Preset.CodeOK,
 		Msg:  "password changed successfully",
 	})
 }

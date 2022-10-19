@@ -5,8 +5,8 @@ import (
 	"github.com/zenpk/dorm-system/internal/cookie"
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/dto"
-	"github.com/zenpk/dorm-system/internal/eh"
 	"github.com/zenpk/dorm-system/internal/util"
+	"github.com/zenpk/dorm-system/pkg/eh"
 	"net/http"
 )
 
@@ -18,26 +18,26 @@ func (*UserInfo) GetMyInfo(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, dto.GetUserInfoResp{
 			CommonResp: dto.CommonResp{
-				Code: eh.CodeTokenError,
+				Code: eh.Preset.CodeTokenError,
 				Msg:  "you're not logged in",
 			},
-			UserInfo: dal.UserInfo{},
+			UserInfo: &dal.UserInfo{},
 		})
 		return
 	}
 	id := util.ParseU64(idStr)
 	var userInfo dal.UserInfo
 	userInfo, err = userInfo.FindById(id)
-	errHandler := eh.User{C: c}
+	errHandler := eh.JSONHandler{C: c, V: dto.GetUserInfoResp{}}
 	if err != nil {
-		errHandler.GetMyInfoErr(err)
+		errHandler.Handle(err)
 		return
 	}
 	c.JSON(http.StatusOK, dto.GetUserInfoResp{
 		CommonResp: dto.CommonResp{
-			Code: eh.CodeOK,
+			Code: eh.Preset.CodeOK,
 			Msg:  "success",
 		},
-		UserInfo: userInfo,
+		UserInfo: &userInfo,
 	})
 }

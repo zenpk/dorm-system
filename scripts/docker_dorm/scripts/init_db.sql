@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS `dorm`;
 CREATE DATABASE `dorm`;
 
-CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';
-REVOKE ALL PRIVILEGES ON *.* FROM 'admin'@'%';
-GRANT ALL PRIVILEGES ON `dorm`.* TO 'admin'@'%';
+CREATE USER 'dorm'@'%' IDENTIFIED BY 'dorm';
+REVOKE ALL PRIVILEGES ON *.* FROM 'dorm'@'%';
+GRANT ALL PRIVILEGES ON `dorm`.* TO 'dorm'@'%';
 FLUSH PRIVILEGES;

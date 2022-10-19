@@ -1,6 +1,6 @@
 package dto
 
 type CommonResp struct {
-	Code int64  `json:"code"`
-	Msg  string `json:"msg"`
+	Code int64  `json:"code" eh:"CodeUncaughtError"`
+	Msg  string `json:"msg" eh:"err"`
 }

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/cookie"
 	"github.com/zenpk/dorm-system/internal/dto"
-	"github.com/zenpk/dorm-system/internal/eh"
+	"github.com/zenpk/dorm-system/pkg/eh"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"net/http"
 )
@@ -21,7 +21,7 @@ func CheckAuthInfo() gin.HandlerFunc {
 		if err != nil || userId == "0" {
 			zap.Logger.Warn("ParseToken failed")
 			c.JSON(http.StatusUnauthorized, dto.CommonResp{
-				Code: eh.CodeMiddlewareError,
+				Code: eh.Preset.CodeMiddlewareError,
 				Msg:  "ParseToken failed",
 			})
 			return
@@ -38,7 +38,7 @@ func RequireLogin() gin.HandlerFunc {
 		token, err := cookie.GetToken(c)
 		if err != nil || token == "" { // no Cookie
 			c.JSON(http.StatusUnauthorized, dto.CommonResp{
-				Code: eh.CodeMiddlewareError,
+				Code: eh.Preset.CodeMiddlewareError,
 				Msg:  "login required",
 			})
 			c.Abort()
@@ -48,7 +48,7 @@ func RequireLogin() gin.HandlerFunc {
 		if err != nil || userId == "0" {
 			zap.Logger.Warn("ParseToken failed")
 			c.JSON(http.StatusUnauthorized, dto.CommonResp{
-				Code: eh.CodeMiddlewareError,
+				Code: eh.Preset.CodeMiddlewareError,
 				Msg:  "ParseToken failed",
 			})
 			return
