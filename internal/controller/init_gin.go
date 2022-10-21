@@ -16,11 +16,11 @@ func InitGin() error {
 	//   - Logs to stdout.
 	//   - RFC3339 with UTC time format.
 	if viper.GetString("gin.mode") == "release" {
-		r.Use(ginzap.Ginzap(zap.Logger, time.RFC3339, true)) // enable zap on release mode
+		r.Use(ginzap.Ginzap(zap.Logger.Desugar(), time.RFC3339, true)) // enable zap on release mode
 	}
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.
-	r.Use(ginzap.RecoveryWithZap(zap.Logger, false))
+	r.Use(ginzap.RecoveryWithZap(zap.Logger.Desugar(), false))
 	InitRouter(r)
 	err := r.Run(viper.GetString("server.host") + ":" + viper.GetString("server.port"))
 	return err

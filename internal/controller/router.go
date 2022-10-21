@@ -10,10 +10,10 @@ func InitRouter(router *gin.Engine) {
 	router.Use(middleware.CORSFilter()) // CORS
 
 	// no other middleware URL
-	router.POST("/login", handler.userCredential.Login)
-	router.POST("/register", handler.userCredential.Register)
-	router.GET("/available-buildings", handler.building.GetAvailableBuildings)
-	router.GET("/all-available-count", handler.building.GetAvailableCount)
+	router.POST("/login", ginHandler.userCredential.Login)
+	router.POST("/register", ginHandler.userCredential.Register)
+	router.GET("/available-buildings", ginHandler.building.GetAvailableBuildings)
+	router.GET("/all-available-count", ginHandler.building.GetAvailableCount)
 
 	// not login required but can extract information from token
 	routerNoAuth := router.Group("/")
@@ -25,8 +25,8 @@ func InitRouter(router *gin.Engine) {
 	routerAuth := router.Group("/")
 	routerAuth.Use(middleware.RequireLogin())
 	{
-		router.GET("/my-info", handler.userInfo.GetMyInfo)
-		router.PATCH("/change-password", handler.userCredential.UpdatePassword)
-		router.GET("/logout", handler.userCredential.Logout)
+		router.GET("/my-info", ginHandler.userInfo.GetMyInfo)
+		router.PATCH("/change-password", ginHandler.userCredential.UpdatePassword)
+		router.GET("/logout", ginHandler.userCredential.Logout)
 	}
 }

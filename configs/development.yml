@@ -2,7 +2,7 @@
 gin:
   mode: "debug"
 zap:
-  log_path: "./logs/development.log"
+  log_path: "logs/development.log"
 server:
   host: "0.0.0.0"
   port: 80

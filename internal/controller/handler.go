@@ -1,13 +1,13 @@
 package controller
 
-import "github.com/zenpk/dorm-system/internal/service"
+import "github.com/zenpk/dorm-system/internal/handler"
 
 // Handler Gin HTTP request handler
 type Handler struct {
-	building       service.Building
-	dorm           service.Dorm
-	userCredential service.UserCredential
-	userInfo       service.UserInfo
+	building       handler.Building
+	dorm           handler.Dorm
+	userCredential handler.UserCredential
+	userInfo       handler.UserInfo
 }
 
-var handler Handler
+var ginHandler Handler

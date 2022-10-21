@@ -1,4 +1,4 @@
-package service
+package handler
 
 import (
 	"errors"
@@ -19,36 +19,59 @@ import (
 
 type UserCredential struct{}
 
-func (u *UserCredential) Register(req dto.RegisterLoginReq) dto.CommonResp {
+func (u *UserCredential) Register(c *gin.Context) {
+	var req dto.RegisterLoginReq
 	packer := ep.Packer{V: dto.CommonResp{}}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		packer.Pack(err)
+		return
+	}
 	// check password length
 	if len(req.Password) < viper.GetInt("auth.password_length") {
-		errPack := ep.ErrInputBody
-		errPack.Msg = "password too short"
-		return packer.Pack(errPack).(dto.CommonResp)
+		c.JSON(http.StatusOK, dto.CommonResp{
+			Code: int64(ep.ErrInputBody.Code),
+			Msg:  "password too short",
+		})
+		return
 	}
 	// username duplication check
 	var table *dal.UserCredential
 	_, err := table.FindByUsername(req.Username)
 	if err == nil { // record found
-		errPack := ep.ErrDuplicateRecord
-		errPack.Msg = "user already exists"
-		return packer.Pack(errPack).(dto.CommonResp)
+		zap.Logger.Warn("user already exists")
+		c.JSON(http.StatusOK, dto.CommonResp{
+			Code: ep.Preset.CodeDatabaseError,
+			Msg:  "user already exists",
+		})
+		return
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) { // not "Not Found" error
-		return packer.PackWithError(err).(dto.CommonResp)
+		packer.Pack(err)
+		return
 	}
 	// no duplication
 	passwordHash, err := bCryptPassword(req.Password)
 	if err != nil {
-		return packer.PackWithError(err).(dto.CommonResp)
+		packer.Pack(err)
+		return
 	}
 	newUserCredential, _, err := table.RegisterNewUser(req.Username, passwordHash)
 	if err != nil {
-		return packer.PackWithError(err).(dto.CommonResp)
+		packer.Pack(err)
+		return
 	}
-	errPack := ep.ErrOK
-	errPack.Msg = "successfully registered"
-	return packer.Pack(errPack).(dto.CommonResp)
+	// generate JWT
+	token, err := middleware.GenToken(newUserCredential.Id, req.Username)
+	if err != nil {
+		packer.Pack(err)
+		return
+	}
+	cookie.SetToken(c, token)
+	cookie.SetUserId(c, strconv.FormatUint(newUserCredential.Id, 10))
+	cookie.SetUsername(c, req.Username)
+	c.JSON(http.StatusOK, dto.CommonResp{
+		Code: ep.Preset.CodeOK,
+		Msg:  "successfully registered",
+	})
 }
 
 func (u *UserCredential) Login(c *gin.Context) {

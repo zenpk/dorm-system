@@ -1,8 +1,10 @@
 package cookie
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"github.com/zenpk/dorm-system/pkg/jwt"
 )
 
 func GetToken(c *gin.Context) (string, error) {
@@ -36,9 +38,20 @@ func SetRole(c *gin.Context, role string) {
 	c.SetCookie("_role", role, 0, "/", viper.GetString("server.domain"), false, true)
 }
 
-// ClearAllUserInfos 清除所有用户相关 Cookie
 func ClearAllUserInfos(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", viper.GetString("server.domain"), false, true)
 	c.SetCookie("_userId", "", -1, "/", viper.GetString("server.domain"), false, true)
 	c.SetCookie("_username", "", -1, "/", viper.GetString("server.domain"), false, true)
+}
+
+func SetAllFromToken(c *gin.Context, token string) error {
+	userId, username, err := jwt.ParseToken(token)
+	if err != nil {
+		return err
+	} else if userId == "0" {
+		return errors.New("user_id cannot be 0")
+	}
+	SetUserId(c, userId)
+	SetUsername(c, username)
+	return nil
 }

@@ -4,8 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/cookie"
 	"github.com/zenpk/dorm-system/internal/dto"
-	"github.com/zenpk/dorm-system/pkg/eh"
-	"github.com/zenpk/dorm-system/pkg/zap"
+	"github.com/zenpk/dorm-system/pkg/ep"
 	"net/http"
 )
 
@@ -13,50 +12,39 @@ import (
 func CheckAuthInfo() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := cookie.GetToken(c)
-		if err != nil || token == "" { // no Cookie
+		if err != nil || token == "" { // no cookie
 			c.Next()
 			return
 		}
-		userId, username, err := ParseToken(token)
-		if err != nil || userId == "0" {
-			zap.Logger.Error("ParseToken failed")
-			c.JSON(http.StatusUnauthorized, dto.CommonResp{
-				Code: eh.Preset.CodeMiddlewareError,
-				Msg:  "ParseToken failed",
-			})
+		if err := cookie.SetAllFromToken(c, token); err != nil {
+			packer := ep.Packer{V: dto.CommonResp{}}
+			errPack := ep.ErrInputToken
+			c.JSON(http.StatusUnauthorized, packer.PackWithError(errPack))
 			c.Abort()
 			return
 		}
-		cookie.SetUserId(c, userId)
-		cookie.SetUsername(c, username)
 		c.Next()
 	}
 }
 
-// RequireLogin if not login then abort
+// RequireLogin if no token then abort
 func RequireLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := cookie.GetToken(c)
-		if err != nil || token == "" { // no Cookie
-			c.JSON(http.StatusUnauthorized, dto.CommonResp{
-				Code: eh.Preset.CodeMiddlewareError,
-				Msg:  "login required",
-			})
+		packer := ep.Packer{V: dto.CommonResp{}}
+		if err != nil || token == "" { // no cookie
+			errPack := ep.ErrNotLogin
+			c.JSON(http.StatusUnauthorized, packer.Pack(errPack))
 			c.Abort()
 			return
 		}
-		userId, username, err := ParseToken(token)
-		if err != nil || userId == "0" {
-			zap.Logger.Error("ParseToken failed")
-			c.JSON(http.StatusUnauthorized, dto.CommonResp{
-				Code: eh.Preset.CodeMiddlewareError,
-				Msg:  "ParseToken failed",
-			})
+		if err := cookie.SetAllFromToken(c, token); err != nil {
+			errPack := ep.ErrNotLogin
+			errPack.Msg = ep.ErrInputToken.Msg
+			c.JSON(http.StatusUnauthorized, packer.PackWithError(errPack))
 			c.Abort()
 			return
 		}
-		cookie.SetUserId(c, userId)
-		cookie.SetUsername(c, username)
 		c.Next()
 	}
 }
