@@ -9,7 +9,7 @@ service Order{
 }
 
 message OrderRequest{
-  uint64 dormId = 1;
+  uint64 buildingId = 1;
   uint64 studentId1 = 2;
   uint64 studentId2 = 3;
   uint64 studentId3 = 4;

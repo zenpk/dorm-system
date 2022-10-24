@@ -28,14 +28,14 @@ func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, 
 	return sum, DB.WithContext(ctx).Model(&Dorm{}).Select("SUM(available)").Row().Scan(&sum)
 }
 
-func (d *Dorm) Allocate(ctx context.Context, num int) (*Dorm, error) {
+func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gender string) (*Dorm, error) {
 	dorm := new(Dorm)
 	// TODO: unable buildings
-	err := DB.WithContext(ctx).Where("available > ?", num).First(&dorm).Error
+	err := DB.WithContext(ctx).Where("building_id = ? AND available > ? AND gender = ?", buildingId, num, gender).First(&dorm).Error
 	if err != nil {
 		return nil, err
 	}
-	dorm.Available -= uint64(num)
+	dorm.Available -= num
 	return dorm, d.Update(ctx, dorm)
 }
 

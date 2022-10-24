@@ -1,9 +1,0 @@
-2022-10-24T19:29:02.862+0800	INFO	user/main.go:44	server listening at [::]:10001
-2022-10-24T19:39:25.745+0800	INFO	user/main.go:45	server listening at 0.0.0.0:10001
-2022-10-24T19:41:13.659+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080
-2022-10-24T19:50:40.354+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080
-2022-10-24T20:35:13.282+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080
-2022-10-24T20:36:22.021+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080
-2022-10-24T21:20:38.525+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080
-2022-10-24T22:07:14.662+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080
-2022-10-24T22:17:58.840+0800	INFO	user/main.go:45	server listening at 0.0.0.0:9080

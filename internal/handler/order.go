@@ -17,6 +17,12 @@ func (o *Order) Submit(c *gin.Context) {
 		response(c, packer.PackWithError(err))
 		return
 	}
+	if req.StudentId1 == 0 {
+		errPack := ep.ErrInputBody
+		errPack.Msg = "student id 1 mustn't be 0"
+		response(c, packer.PackWithInfo(errPack))
+		return
+	}
 	resp, err := rpc.Client.Order.Submit(&req)
 	if err != nil {
 		response(c, packer.PackWithError(err))
