@@ -1,39 +1,43 @@
 package dal
 
-import "github.com/google/uuid"
+import (
+	"context"
+)
 
 type UserInfo struct {
-	Id        uint64 `gorm:"primaryKey" json:"id"`
-	UserId    uint64 `gorm:"unique; not null; index" json:"-"`
-	Username  string `gorm:"unique; not null; index" json:"username"`
-	StudentId uint64 `gorm:"unique; not null; index" json:"studentId"`
-	Gender    string `gorm:"not null"`
-	Name      string `gorm:"not null; index;" json:"name"`
-	UUID      string `gorm:"unique; not null;" json:"uuid"`
+	Id               uint64 `gorm:"primaryKey" json:"-"`
+	UserCredentialId uint64 `gorm:"unique; not null; index" json:"-"`
+	Username         string `gorm:"unique; not null; index" json:"username,omitempty"`
+	StudentId        uint64 `gorm:"unique; not null; index" json:"studentId,omitempty"`
+	Gender           string `gorm:"not null" json:"gender,omitempty"`
+	Name             string `gorm:"not null; index;" json:"name,omitempty"`
+	DormId           uint64 `gorm:"not null; default:0" json:"dormId,omitempty"`
 }
 
-func (u *UserInfo) FindById(userId uint64) (*UserInfo, error) {
+func (u *UserInfo) FindById(ctx context.Context, userId uint64) (*UserInfo, error) {
 	userInfo := new(UserInfo)
-	return userInfo, DB.First(&userInfo, userId).Error
+	return userInfo, DB.WithContext(ctx).First(&userInfo, userId).Error
 }
 
-func (u *UserInfo) FindAll() ([]*UserInfo, error) {
+func (u *UserInfo) FindAll(ctx context.Context) ([]*UserInfo, error) {
 	var userInfos []*UserInfo
-	return userInfos, DB.Find(&userInfos).Error
+	return userInfos, DB.WithContext(ctx).Find(&userInfos).Error
 }
 
-func (u *UserInfo) FindByUserId(userId uint64) (*UserInfo, error) {
+func (u *UserInfo) FindByUserCredentialId(ctx context.Context, userId uint64) (*UserInfo, error) {
 	userInfo := new(UserInfo)
-	return userInfo, DB.Where("user_id = ?", userId).First(&userInfo).Error
+	return userInfo, DB.WithContext(ctx).Where("user_id = ?", userId).First(&userInfo).Error
 }
 
-func (u *UserInfo) FindByStudentId(studentId uint64) (*UserInfo, error) {
+func (u *UserInfo) FindByStudentId(ctx context.Context, studentId uint64) (*UserInfo, error) {
 	userInfo := new(UserInfo)
-	return userInfo, DB.Where("student_id = ?", studentId).First(&userInfo).Error
+	return userInfo, DB.WithContext(ctx).Where("student_id = ?", studentId).First(&userInfo).Error
 }
 
-// Create a new record with randomly generated UUID
-func (u *UserInfo) Create(info *UserInfo) error {
-	info.UUID = uuid.New().String()
-	return DB.Create(&info).Error
+func (u *UserInfo) Create(ctx context.Context, info *UserInfo) error {
+	return DB.WithContext(ctx).Create(&info).Error
+}
+
+func (u *UserInfo) Update(ctx context.Context, user *UserInfo) error {
+	return DB.WithContext(ctx).Save(&user).Error
 }

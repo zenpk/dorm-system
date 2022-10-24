@@ -1,16 +1,17 @@
 package rpc
 
 import (
-	"github.com/zenpk/dorm-system/pkg/config"
 	"github.com/zenpk/dorm-system/pkg/gmp"
+	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"google.golang.org/grpc"
 )
 
 type ClientSet struct {
-	User User
+	User  User
+	Order Order
 }
 
-var Client *ClientSet
+var Client ClientSet
 
 func InitClient() ([]*grpc.ClientConn, error) {
 	connList := make([]*grpc.ClientConn, 0)
@@ -21,15 +22,26 @@ func InitClient() ([]*grpc.ClientConn, error) {
 	path += "configs"
 
 	// user
-	userConfig, err := config.InitConfig("user")
+	userConfig, err := viperpkg.InitConfig("user")
 	if err != nil {
 		return nil, err
 	}
-	userConn, err := Client.User.initUser(userConfig)
+	userConn, err := Client.User.init(userConfig)
 	if err != nil {
 		return nil, err
 	}
 	connList = append(connList, userConn)
+
+	// order
+	orderConfig, err := viperpkg.InitConfig("order")
+	if err != nil {
+		return nil, err
+	}
+	orderConn, err := Client.Order.init(orderConfig)
+	if err != nil {
+		return nil, err
+	}
+	connList = append(connList, orderConn)
 
 	return connList, nil
 }

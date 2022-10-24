@@ -1,1 +1,0 @@
-2022-10-10T15:39:35.874+0800	INFO	zap@v0.1.0/zap.go:90	/index	{"status": 200, "method": "GET", "path": "/index", "query": "", "ip": "::1", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.37", "latency": 0.0005452, "time": "2022-10-10T07:39:35Z"}

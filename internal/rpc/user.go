@@ -13,9 +13,9 @@ type User struct {
 	config *viper.Viper
 }
 
-func (u *User) initUser(config *viper.Viper) (*grpc.ClientConn, error) {
+func (u *User) init(config *viper.Viper) (*grpc.ClientConn, error) {
 	u.config = config
-	addr := fmt.Sprintf("%s:%d", config.GetString("server.host"), config.GetInt("server.port"))
+	addr := fmt.Sprintf("%s:%d", config.GetString("server.target"), config.GetInt("server.port"))
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err

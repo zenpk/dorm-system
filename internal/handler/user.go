@@ -14,9 +14,9 @@ import (
 type UserCredential struct{}
 
 func (u *UserCredential) Register(c *gin.Context) {
-	var req *pb.RegisterLoginRequest
+	var req pb.RegisterLoginRequest
 	packer := ep.Packer{V: dto.CommonResp{}}
-	if err := c.ShouldBindJSON(req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.PackWithError(err))
 		return
 	}
@@ -27,7 +27,7 @@ func (u *UserCredential) Register(c *gin.Context) {
 		response(c, packer.Pack(errPack))
 		return
 	}
-	resp, err := rpc.Client.User.Register(req)
+	resp, err := rpc.Client.User.Register(&req)
 	if err != nil {
 		response(c, packer.PackWithError(err))
 		return
@@ -40,9 +40,9 @@ func (u *UserCredential) Register(c *gin.Context) {
 }
 
 func (u *UserCredential) Login(c *gin.Context) {
-	var req *pb.RegisterLoginRequest
+	var req pb.RegisterLoginRequest
 	packer := ep.Packer{V: dto.CommonResp{}}
-	if err := c.ShouldBindJSON(req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.PackWithError(err))
 		return
 	}
@@ -53,7 +53,7 @@ func (u *UserCredential) Login(c *gin.Context) {
 		response(c, packer.Pack(errPack))
 		return
 	}
-	resp, err := rpc.Client.User.Login(req)
+	resp, err := rpc.Client.User.Login(&req)
 	if err != nil {
 		response(c, packer.PackWithError(err))
 		return
@@ -66,9 +66,13 @@ func (u *UserCredential) Login(c *gin.Context) {
 }
 
 func (u *UserCredential) Logout(c *gin.Context) {
-
+	cookie.ClearAllUserInfos(c)
+	response(c, dto.CommonResp{
+		Code: 0,
+		Msg:  "successfully logged out",
+	})
 }
 
 func (u *UserCredential) UpdatePassword(c *gin.Context) {
-
+	
 }

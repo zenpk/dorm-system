@@ -1,0 +1,21 @@
+syntax = "proto3";
+package order;
+option go_package = "github.com/zenpk/dorm-system/internal/service/order";
+
+import "common.proto";
+
+service Order{
+  rpc Submit (OrderRequest) returns(OrderReply){}
+}
+
+message OrderRequest{
+  uint64 dormId = 1;
+  uint64 studentId1 = 2;
+  uint64 studentId2 = 3;
+  uint64 studentId3 = 4;
+  uint64 studentId4 = 5;
+}
+
+message OrderReply{
+  common.CommonResponse resp = 1;
+}

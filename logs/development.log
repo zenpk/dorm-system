@@ -1,27 +1,201 @@
-{"level":"info","ts":"2022-10-07T15:08:21.800+0800","caller":"zap@v0.1.0/zap.go:90","msg":"/index","status":200,"method":"GET","path":"/index","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34","latency":0,"time":"2022-10-07T07:08:21Z"}
-{"level":"info","ts":"2022-10-07T15:08:23.042+0800","caller":"zap@v0.1.0/zap.go:90","msg":"/index","status":200,"method":"GET","path":"/index","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34","latency":0,"time":"2022-10-07T07:08:23Z"}
-{"level":"info","ts":"2022-10-07T15:08:58.408+0800","caller":"zap@v0.1.0/zap.go:90","msg":"/index","status":200,"method":"GET","path":"/index","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34","latency":0,"time":"2022-10-07T07:08:58Z"}
-{"level":"warn","ts":"2022-10-07T22:19:42.198+0800","caller":"cmd/main.go:24","msg":"thisisawarn"}
-{"level":"error","ts":"2022-10-07T22:19:42.207+0800","caller":"cmd/main.go:25","msg":"thisisaerror","stacktrace":"main.main\n\tD:/OneDrive/coding/git/backend-demo/cmd/main.go:25\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:250"}
-{"level":"info","ts":"2022-10-07T22:19:42.208+0800","caller":"cmd/main.go:26","msg":"thisisainfo"}
-2022-10-07T22:21:37.012+0800	warn	cmd/main.go:24	thisisawarn
-2022-10-07T22:21:37.019+0800	error	cmd/main.go:25	thisisaerror
-main.main
-	D:/OneDrive/coding/git/backend-demo/cmd/main.go:25
-runtime.main
-	C:/Program Files/Go/src/runtime/proc.go:250
-2022-10-07T22:21:37.019+0800	info	cmd/main.go:26	thisisainfo
-2022-10-07T22:24:55.277+0800	WARN	cmd/main.go:24	thisisawarn
-2022-10-07T22:24:55.285+0800	ERROR	cmd/main.go:25	thisisaerror
-main.main
-	D:/OneDrive/coding/git/backend-demo/cmd/main.go:25
-runtime.main
-	C:/Program Files/Go/src/runtime/proc.go:250
-2022-10-07T22:24:55.285+0800	INFO	cmd/main.go:26	thisisainfo
-2022-10-09T22:03:34.866+0800	WARN	util/log.go:11	record not found
-2022-10-09T22:09:41.953+0800	WARN	util/log.go:11	user not exists
-2022-10-09T22:11:20.751+0800	WARN	util/log.go:11	wrong password
-2022-10-17T17:12:56.611+0800	WARN	service/user_credential.go:87	record not found
-2022-10-17T17:13:19.937+0800	WARN	service/user_credential.go:102	crypto/bcrypt: hashedPassword is not the hash of the given password
-2022-10-17T17:28:16.195+0800	WARN	eh/building.go:15	record not found
-2022-10-17T17:29:33.602+0800	WARN	eh/building.go:15	building unavailable
+2022-10-24T19:27:57.832+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:28:50.168+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:29:43.851+0800	ERROR	ep/packer.go:51	json: Unmarshal(nil *user.RegisterLoginRequest)
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Register
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user_credential.go:20
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T19:31:56.952+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:32:00.313+0800	ERROR	ep/packer.go:51	rpc error: code = Unavailable desc = connection closed before server preface received
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Register
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user_credential.go:32
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T19:34:40.944+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:36:34.167+0800	ERROR	ep/packer.go:51	rpc error: code = Unavailable desc = connection closed before server preface received
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Register
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user_credential.go:32
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T19:39:33.877+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:39:38.919+0800	ERROR	ep/packer.go:51	rpc error: code = Unavailable desc = connection closed before server preface received
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Register
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user_credential.go:32
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T19:41:18.762+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:41:24.114+0800	ERROR	ep/packer.go:51	rpc error: code = Unavailable desc = connection closed before server preface received
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Register
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user_credential.go:32
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T19:42:14.621+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:42:19.376+0800	ERROR	ep/packer.go:51	rpc error: code = Unavailable desc = connection closed before server preface received
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Register
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user_credential.go:32
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T19:50:45.543+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T19:54:55.802+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T20:36:47.247+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T20:37:02.003+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080
+2022-10-24T20:40:36.581+0800	ERROR	ep/packer.go:51	rpc error: code = Unknown desc = error: code=102, Msg=wrong password
+github.com/zenpk/dorm-system/pkg/ep.(*Packer).PackWithError
+	D:/OneDrive/coding/git/dorm-system/pkg/ep/packer.go:51
+github.com/zenpk/dorm-system/internal/handler.(*UserCredential).Login
+	D:/OneDrive/coding/git/dorm-system/internal/handler/user.go:58
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-contrib/zap.CustomRecoveryWithZap.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-contrib/zap@v0.1.0/zap.go:158
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/recovery.go:101
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/logger.go:240
+github.com/gin-gonic/gin.(*Context).Next
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/context.go:173
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:616
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	C:/Users/freed/Go/pkg/mod/github.com/gin-gonic/gin@v1.8.1/gin.go:572
+net/http.serverHandler.ServeHTTP
+	C:/Program Files/Go/src/net/http/server.go:2947
+net/http.(*conn).serve
+	C:/Program Files/Go/src/net/http/server.go:1991
+2022-10-24T21:40:33.221+0800	INFO	controller/init_gin.go:27	server listening at 0.0.0.0:8080

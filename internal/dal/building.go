@@ -1,21 +1,20 @@
 package dal
 
+import "context"
+
 type Building struct {
-	Id         uint32 `gorm:"primaryKey"`
-	BuildingId uint32 `gorm:"unique; not null; index"`
-	// use sum instead
-	//Available  uint32 `gorm:"not null"`
-	//AllNum     uint32 `gorm:"not null"`
-	IsAvailable bool `gorm:"not null"`
-	Info        string
+	Id          uint64 `gorm:"primaryKey" json:"-"`
+	BuildingId  uint64 `gorm:"unique; not null; index" json:"buildingId,omitempty"`
+	IsAvailable bool   `gorm:"not null" json:"isAvailable,omitempty"`
+	Info        string `json:"info,omitempty"`
 }
 
-func (b *Building) FindById(id uint32) (*Building, error) {
+func (b *Building) FindById(ctx context.Context, id uint64) (*Building, error) {
 	building := new(Building)
-	return building, DB.First(&building, id).Error
+	return building, DB.WithContext(ctx).First(&building, id).Error
 }
 
-func (b *Building) FindAllAvailable() ([]*Building, error) {
+func (b *Building) FindAllAvailable(ctx context.Context) ([]*Building, error) {
 	var buildings []*Building
-	return buildings, DB.Where("is_available = true").Find(&buildings).Error
+	return buildings, DB.WithContext(ctx).Where("is_available = true").Find(&buildings).Error
 }
