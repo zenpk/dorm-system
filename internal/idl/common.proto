@@ -1,0 +1,8 @@
+syntax = "proto3";
+package common;
+option go_package = "github.com/zenpk/dorm-system/internal/service/common";
+
+message CommonResponse{
+  int32 code = 1;
+  string msg = 2;
+}

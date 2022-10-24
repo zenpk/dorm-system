@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -22,6 +23,8 @@ func InitGin() error {
 	//   - stack means whether output the stack info.
 	r.Use(ginzap.RecoveryWithZap(zap.Logger.Desugar(), false))
 	InitRouter(r)
-	err := r.Run(viper.GetString("server.host") + ":" + viper.GetString("server.port"))
+	addr := fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port"))
+	zap.Logger.Infof("server listening at %v", addr)
+	err := r.Run(addr)
 	return err
 }

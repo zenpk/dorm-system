@@ -13,8 +13,8 @@ type Dorm struct {
 }
 
 func (d *Dorm) SumAvailableByBuildingId(id uint32) (int64, error) {
-	building := new(Building)
-	building, err := building.FindById(id)
+	table := new(Building)
+	building, err := table.FindById(id)
 	if err != nil {
 		return 0, err
 	}

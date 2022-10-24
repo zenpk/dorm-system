@@ -1,10 +1,9 @@
----
 zap:
-  log_path: "logs/testing.log"
+  path: "logs"
 server:
   host: "0.0.0.0"
   port: 80
-  domain: "192.168.31.23"
+  domain: "localhost"
 cors:
   whitelist:
     - "localhost"

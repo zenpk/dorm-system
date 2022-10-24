@@ -1,4 +1,22 @@
 syntax = "proto3";
 package user;
+option go_package = "github.com/zenpk/dorm-system/internal/service/user";
 
-option go_package = "user";
+import "common.proto";
+
+service User{
+  rpc Register (RegisterLoginRequest) returns(UserReply){}
+  rpc Login (RegisterLoginRequest) returns(UserReply){}
+}
+
+message RegisterLoginRequest{
+  string username = 1;
+  string password = 2;
+}
+
+message UserReply{
+  string token = 1;
+  uint64 userId = 2;
+  string username = 3;
+  common.CommonResponse resp = 4;
+}

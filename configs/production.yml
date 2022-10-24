@@ -1,8 +1,7 @@
----
 gin:
   mode: "release"
 zap:
-  log_path: "logs/production.log"
+  path: "logs"
 server:
   host: "0.0.0.0"
   port: 80
