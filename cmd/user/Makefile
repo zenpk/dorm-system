@@ -1,7 +1,7 @@
 build:
-	go build -o ../../bin/user main.go
+	go build -o ../../bin/user
 build-win:
-	go build -o ../../bin/user.exe main.go
+	go build -o ../../bin/user.exe
 grpc:
 	protoc user.proto --proto_path=../../internal/idl \
 	--go_out=../../internal/service/user --go_opt=paths=source_relative \

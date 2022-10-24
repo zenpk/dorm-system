@@ -1,7 +1,7 @@
 build:
-	go build -o ../../bin/order main.go
+	go build -o ../../bin/order
 build-win:
-	go build -o ../../bin/order.exe main.go
+	go build -o ../../bin/order.exe
 grpc:
 	protoc order.proto --proto_path=../../internal/idl \
 	--go_out=../../internal/service/order --go_opt=paths=source_relative \
