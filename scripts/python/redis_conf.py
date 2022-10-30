@@ -8,10 +8,10 @@ temp = ''
 for line in in_lines:
     if i % 2 != 0:
         if len(line) == 0:
-            temp += ' ""\n'
+            print("line %d empty, %s" % (i, temp))
         else:
             temp += ' ' + line + '\n'
-        write.writelines(temp)
+            write.writelines(temp)
     else:
         temp = line
     i += 1
