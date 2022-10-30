@@ -20,9 +20,9 @@ services:
       - "6379:6379"
     volumes:
       - dorm:/data # https://hub.docker.com/_/redis/
-      - ./redis.conf:/etc/redis/redis.conf
     deploy:
       restart_policy:
         condition: on-failure
+    command: redis-cli acl setuser root >redis_pass
 volumes:
   dorm: # 外部 volume，确保 container 销毁后数据依然保留
