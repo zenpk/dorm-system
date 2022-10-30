@@ -20,10 +20,10 @@ mysql:
 redis:
   host: "101.43.179.27"
   port: 6379
-  password: ""
+  password: "redis_pass"
   db: 0
 jwt:
-  secret: "demo_secret"
+  secret: "my_secret"
 cookie:
   token_age: 31536000 # one year
 time:
