@@ -15,7 +15,7 @@ func InitRedis() error {
 		Password: viper.GetString("redis.password"),
 		DB:       viper.GetInt("redis.db"),
 	})
-	var ctx = context.Background()
+	ctx := context.Background()
 	if _, err := Redis.Ping(ctx).Result(); err != nil {
 		return err
 	}
@@ -27,35 +27,30 @@ func InitRedis() error {
 
 // Warming preload warm data into Redis
 func Warming() error {
-	redisCli := redis.NewClient(&redis.Options{
-		Addr:     viper.GetString("redis.host") + ":" + viper.GetString("redis.port"),
-		Password: viper.GetString("redis.password"),
-		DB:       viper.GetInt("redis.db"),
-	})
-	if err := warmAvailable(redisCli); err != nil {
+	if err := warmAvailable(); err != nil {
 		return err
 	}
 	return nil
 }
 
 // warmAvailable preload available bed num into Redis
-func warmAvailable(redisCli *redis.Client) error {
-	var ctx context.Context
-	buildingTable := new(dal.Building)
-	dormTable := new(dal.Dorm)
+func warmAvailable() error {
+	ctx := context.Background()
 	all := int64(0)
-	availIds, err := buildingTable.FindAllAvailableIds(ctx)
+	availIds, err := dal.Table.Building.FindAllAvailableIds(ctx)
 	if err != nil {
 		return err
 	}
 	for _, id := range availIds {
-		num, err := dormTable.SumAvailableByBuildingId(ctx, id)
+		num, err := dal.Table.Dorm.SumAvailableByBuildingId(ctx, id)
 		if err != nil {
 			return err
 		}
-		Redis.HSet(ctx, "available", id, num)
+		err = Redis.HSet(ctx, "available", id, num).Err()
+		if err != nil {
+			return err
+		}
 		all += num
 	}
-	Redis.HSet(ctx, "available", "all", all)
-	return redisCli.Close()
+	return Redis.HSet(ctx, "available", "all", all).Err()
 }

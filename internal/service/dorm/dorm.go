@@ -23,7 +23,7 @@ func (s *Server) GetAvailableNum(ctx context.Context, req *EmptyRequest) (*MapRe
 			Code: ep.ErrOK.Code,
 			Msg:  ep.ErrOK.Msg,
 		},
-		Hash: res,
+		Available: res,
 	}
 	return reply, nil
 }

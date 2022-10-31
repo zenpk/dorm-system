@@ -29,6 +29,10 @@ func main() {
 		log.Fatalf("failed to initialize database: %v", err)
 	}
 	// Redis
+	if err := cache.InitRedis(); err != nil {
+		log.Fatalf("failed to initialize Redis: %v", err)
+	}
+	defer cache.Redis.Close()
 	if err := cache.Warming(); err != nil {
 		log.Fatalf("failed to warming Redis: %v", err)
 	}

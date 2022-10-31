@@ -16,8 +16,7 @@ type Dorm struct {
 }
 
 func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, error) {
-	table := new(Building)
-	building, err := table.FindById(ctx, id)
+	building, err := Table.Building.FindById(ctx, id)
 	if err != nil {
 		return 0, err
 	}
@@ -25,7 +24,7 @@ func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, 
 		return 0, errors.New("building unavailable")
 	}
 	var sum int64
-	return sum, DB.WithContext(ctx).Model(&Dorm{}).Select("SUM(available)").Row().Scan(&sum)
+	return sum, DB.WithContext(ctx).Model(&Dorm{}).Where("building_id = ?", id).Select("SUM(available)").Row().Scan(&sum)
 }
 
 func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gender string) (*Dorm, error) {

@@ -21,5 +21,5 @@ func (b *Building) FindAllAvailable(ctx context.Context) ([]*Building, error) {
 
 func (b *Building) FindAllAvailableIds(ctx context.Context) ([]uint64, error) {
 	var ids []uint64
-	return ids, DB.WithContext(ctx).Where("is_available = true").Distinct().Pluck("building_id", &ids).Error
+	return ids, DB.WithContext(ctx).Model(&Building{}).Where("is_available = true").Distinct().Pluck("building_id", &ids).Error
 }
