@@ -11,11 +11,11 @@ var DB *gorm.DB
 
 func InitDB() error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		viper.GetString("db.username"),
-		viper.GetString("db.password"),
-		viper.GetString("db.host"),
-		viper.GetString("db.port"),
-		viper.GetString("db.database"),
+		viper.GetString("mysql.username"),
+		viper.GetString("mysql.password"),
+		viper.GetString("mysql.host"),
+		viper.GetString("mysql.port"),
+		viper.GetString("mysql.database"),
 	)
 	// GORM connect to DB
 	var err error
@@ -27,7 +27,7 @@ func InitDB() error {
 	if err != nil {
 		return err
 	}
-	// CREATE TABLE
+	// create tables
 	if err = DB.AutoMigrate(&UserCredential{}); err != nil {
 		return err
 	}
