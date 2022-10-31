@@ -13,7 +13,7 @@ func InitRouter(router *gin.Engine) {
 	router.POST("/login", ginHandler.userCredential.Login)
 	router.POST("/register", ginHandler.userCredential.Register)
 	//router.GET("/available-buildings", ginHandler.building.GetAvailableBuildings)
-	//router.GET("/all-available-count", ginHandler.building.GetAvailableCount)
+	router.GET("/available-num", ginHandler.dorm.GetAvailableNum)
 
 	// not login required but can extract information from token
 	routerNoAuth := router.Group("/")

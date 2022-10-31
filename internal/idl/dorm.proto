@@ -1,0 +1,17 @@
+syntax = "proto3";
+package dorm;
+option go_package = "github.com/zenpk/dorm-system/internal/service/dorm";
+
+import "common.proto";
+
+service Dorm{
+  rpc GetAvailableNum (EmptyRequest) returns(MapReply){}
+}
+
+message EmptyRequest{
+}
+
+message MapReply{
+  common.CommonResponse resp = 1;
+  map<string, string> hash = 2;
+}

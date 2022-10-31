@@ -18,3 +18,8 @@ func (b *Building) FindAllAvailable(ctx context.Context) ([]*Building, error) {
 	var buildings []*Building
 	return buildings, DB.WithContext(ctx).Where("is_available = true").Find(&buildings).Error
 }
+
+func (b *Building) FindAllAvailableIds(ctx context.Context) ([]uint64, error) {
+	var ids []uint64
+	return ids, DB.WithContext(ctx).Where("is_available = true").Distinct().Pluck("building_id", &ids).Error
+}

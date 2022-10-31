@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"github.com/zenpk/dorm-system/internal/cache"
 	"github.com/zenpk/dorm-system/internal/controller"
+	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/rpc"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
@@ -23,13 +25,13 @@ func main() {
 	}
 	defer zap.Logger.Sync()
 	// GORM
-	//if err := dal.InitDB(); err != nil {
-	//	log.Fatalf("failed to initialize database: %v", err)
-	//}
+	if err := dal.InitDB(); err != nil {
+		log.Fatalf("failed to initialize database: %v", err)
+	}
 	// Redis
-	//if err := cache.InitRedis(); err != nil {
-	//	log.Fatalf("failed to initialize Redis: %v", err)
-	//}
+	if err := cache.Warming(); err != nil {
+		log.Fatalf("failed to warming Redis: %v", err)
+	}
 	// RPC connections
 	connList, err := rpc.InitClient()
 	if err != nil {

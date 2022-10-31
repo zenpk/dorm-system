@@ -54,8 +54,7 @@ func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*User
 }
 
 func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
-	credentialTable := new(dal.UserCredential)
-	userCredential, err := credentialTable.FindByUsername(ctx, req.Username)
+	userCredential, err := dal.Table.UserCredential.FindByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
 	}

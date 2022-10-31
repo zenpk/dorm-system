@@ -8,6 +8,7 @@ type HandlerSet struct {
 	userCredential handler.UserCredential
 	//userInfo       handler.UserInfo
 	order handler.Order
+	dorm  handler.Dorm
 }
 
 var ginHandler HandlerSet

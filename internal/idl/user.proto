@@ -15,8 +15,8 @@ message RegisterLoginRequest{
 }
 
 message UserReply{
-  string token = 1;
-  uint64 userId = 2;
-  string username = 3;
-  common.CommonResponse resp = 4;
+  common.CommonResponse resp = 1;
+  string token = 2;
+  uint64 userId = 3;
+  string username = 4;
 }

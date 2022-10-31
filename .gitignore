@@ -14,8 +14,12 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# My
 .idea/
-venv/
 myfile/
 local.yml
 *.log
+
+# Python
+venv/
+__pycache__/
