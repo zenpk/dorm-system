@@ -3,9 +3,9 @@ import util
 cnx = util.connect_db()
 cursor = cnx.cursor()
 
-query_insert = (
-    "INSERT INTO `buildings` (`building_id`, `is_available`, `info`)"
-    "VALUE (%s, %s, %s);"
+insert = (
+    "INSERT INTO `buildings` (`building_id`,`is_available`,`info`)"
+    "VALUE (%s,%s,%s);"
 )
 
 datas = [
@@ -21,7 +21,7 @@ datas = [
     [10, True, 'very small']
 ]
 
-cursor.executemany(query_insert, datas)
+cursor.executemany(insert, datas)
 
 cnx.commit()
 cursor.close()

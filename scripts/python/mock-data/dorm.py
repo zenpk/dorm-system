@@ -5,9 +5,9 @@ import util
 
 cnx = util.connect_db()
 cursor = cnx.cursor()
-query_insert = (
-    "INSERT INTO `dorms` (`dorm_id`, `building_id`, `gender`, `available`, `bed_num`, `info`)"
-    "VALUE (%s, %s, %s, %s, %s, %s);"
+insert = (
+    "INSERT INTO `dorms` (`dorm_id`,`building_id`,`gender`,`available`,`bed_num`,`info`)"
+    "VALUE (%s,%s,%s,%s,%s,%s);"
 )
 
 insert_data = []
@@ -25,7 +25,7 @@ for i in range(1, 1001):
     insert_data.append([dorm_id, building_id, gender, available, bed_num, info])
 
 print(len(insert_data))
-cursor.executemany(query_insert, insert_data)
+cursor.executemany(insert, insert_data)
 
 cnx.commit()
 cursor.close()

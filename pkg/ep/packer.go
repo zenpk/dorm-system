@@ -16,7 +16,7 @@ package ep
 
 import (
 	"errors"
-	"github.com/zenpk/dorm-system/pkg/zap"
+	"log"
 	"reflect"
 	"strconv"
 )
@@ -34,21 +34,21 @@ func (p *Packer) Pack(err error) interface{} {
 // PackWithInfo will do the pack and additionally log the error with INFO level
 func (p *Packer) PackWithInfo(err error) interface{} {
 	errPack := convertErrPack(err)
-	zap.Logger.Info(errPack.Msg) // use the logger you prefer
+	log.Printf("INFO: %s", errPack.Msg) // use the logger you prefer
 	return p.packCore(errPack)
 }
 
 // PackWithWarn will do the pack and additionally log the error with WARN level
 func (p *Packer) PackWithWarn(err error) interface{} {
 	errPack := convertErrPack(err)
-	zap.Logger.Warn(errPack.Msg) // use the logger you prefer
+	log.Printf("WARN: %s", errPack.Msg) // use the logger you prefer
 	return p.packCore(errPack)
 }
 
 // PackWithError will do the pack and additionally log the error with Error level
 func (p *Packer) PackWithError(err error) interface{} {
 	errPack := convertErrPack(err)
-	zap.Logger.Error(errPack.Msg) // use the logger you prefer
+	log.Printf("ERROR: %s", errPack.Msg) // use the logger you prefer
 	return p.packCore(errPack)
 }
 
@@ -71,6 +71,15 @@ func (p *Packer) packCore(errPack ErrPack) interface{} {
 	refCopy := reflect.New(ref.Elem().Type()).Elem()
 	for i := 0; i < ref.Elem().NumField(); i++ {
 		tag := ref.Elem().Type().Field(i).Tag.Get("ep")
+		if tag == "-" {
+			continue
+		}
+		// embedded struct, must be exported
+		if ref.Elem().Field(i).Kind() == reflect.Struct {
+			embeddedPack := &Packer{V: ref.Elem().Field(i).Interface()}
+			refCopy.Field(i).Set(reflect.ValueOf(embeddedPack.packCore(errPack)))
+			continue
+		}
 		if len(tag) <= 0 {
 			continue
 		}

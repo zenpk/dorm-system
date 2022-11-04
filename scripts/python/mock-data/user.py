@@ -5,9 +5,9 @@ from faker import Faker
 
 cnx = util.connect_db()
 cursor = cnx.cursor()
-query_insert = (
-    "INSERT INTO `user_infos` (`user_credential_id`, `username`, `student_id`, `gender`, `name`)"
-    "VALUE (%s, %s, %s, %s, %s);"
+insert = (
+    "INSERT INTO `user_infos` (`user_credential_id`,`username`,`student_id`,`gender`,`name`)"
+    "VALUE (%s,%s,%s,%s,%s);"
 )
 fake = Faker("zh_CN")
 
@@ -25,7 +25,7 @@ for i in range(1, 1001):
     insert_data.append([credential_id, username, student_id, gender, name])
 
 print(len(insert_data))
-cursor.executemany(query_insert, insert_data)
+cursor.executemany(insert, insert_data)
 
 cnx.commit()
 cursor.close()
