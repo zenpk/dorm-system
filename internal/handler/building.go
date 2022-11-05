@@ -30,7 +30,7 @@ type Building struct{}
 //	}
 //	var ids []int64
 //	for _, b := range buildings {
-//		ids = append(ids, int64(b.BuildingId))
+//		ids = append(ids, int64(b.BuildingNum))
 //	}
 //	c.JSON(http.StatusOK, dto.GetAvailableBuildingsResp{
 //		CommonResp: dto.CommonResp{

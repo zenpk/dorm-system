@@ -3,10 +3,10 @@ package dal
 import "context"
 
 type Building struct {
-	Id          uint64 `gorm:"primaryKey" json:"-"`
-	BuildingId  uint64 `gorm:"unique; not null; index" json:"buildingId,omitempty"`
-	IsAvailable bool   `gorm:"not null" json:"isAvailable,omitempty"`
-	Info        string `json:"info,omitempty"`
+	Id      uint64 `gorm:"primaryKey" json:"-"`
+	Num     string `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
+	Enabled bool   `gorm:"not null; default:1" json:"enabled,omitempty"`
+	Info    string `json:"info,omitempty"`
 }
 
 func (b *Building) FindById(ctx context.Context, id uint64) (*Building, error) {

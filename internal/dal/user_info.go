@@ -5,13 +5,13 @@ import (
 )
 
 type UserInfo struct {
-	Id               uint64 `gorm:"primaryKey" json:"-"`
-	UserCredentialId uint64 `gorm:"unique; not null; index" json:"-"`
-	Username         string `gorm:"unique; not null; index" json:"username,omitempty"`
-	StudentId        uint64 `gorm:"unique; not null; index" json:"studentId,omitempty"`
-	Gender           string `gorm:"not null" json:"gender,omitempty"`
-	Name             string `gorm:"not null; index;" json:"name,omitempty"`
-	DormId           uint64 `gorm:"not null; default:0" json:"dormId,omitempty"`
+	Id           uint64 `gorm:"primaryKey" json:"-"`
+	CredentialId uint64 `gorm:"not null; unique; index" json:"-"`
+	Username     string `gorm:"not null; unique; index" json:"username,omitempty"`
+	StudentNum   string `gorm:"not null; unique; index" json:"studentNum,omitempty"`
+	Name         string `gorm:"size:20; not null; index" json:"name,omitempty"`
+	Gender       string `gorm:"size:10; not null; index" json:"gender,omitempty"`
+	DormId       uint64 `gorm:"not null; default:0; index" json:"dormId,omitempty"`
 }
 
 func (u *UserInfo) FindById(ctx context.Context, userId uint64) (*UserInfo, error) {
@@ -29,7 +29,7 @@ func (u *UserInfo) FindByUserCredentialId(ctx context.Context, userId uint64) (*
 	return userInfo, DB.WithContext(ctx).Where("user_id = ?", userId).First(&userInfo).Error
 }
 
-func (u *UserInfo) FindByStudentId(ctx context.Context, studentId uint64) (*UserInfo, error) {
+func (u *UserInfo) FindByStudentId(ctx context.Context, studentId string) (*UserInfo, error) {
 	userInfo := new(UserInfo)
 	return userInfo, DB.WithContext(ctx).Where("student_id = ?", studentId).First(&userInfo).Error
 }

@@ -4,8 +4,8 @@ import "context"
 
 type UserCredential struct {
 	Id       uint64 `gorm:"primaryKey"`
-	Username string `gorm:"unique; not null; index"`
-	Password string `gorm:"not null;"`
+	Username string `gorm:"not null; unique; index"`
+	Password string `gorm:"not null"`
 }
 
 func (u *UserCredential) FindById(ctx context.Context, id uint64) (*UserCredential, error) {
@@ -33,8 +33,8 @@ func (u *UserCredential) RegisterNewUser(ctx context.Context, username, password
 	}
 	// linked UserInfo
 	newUserInfo := &UserInfo{
-		UserCredentialId: newUserCredential.Id,
-		Username:         username,
+		CredentialId: newUserCredential.Id,
+		Username:     username,
 	}
 	if err := newUserInfo.Create(ctx, newUserInfo); err != nil {
 		return nil, nil, err

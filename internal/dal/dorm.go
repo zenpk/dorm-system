@@ -7,11 +7,12 @@ import (
 
 type Dorm struct {
 	Id         uint64 `gorm:"primaryKey" json:"-"`
-	DormId     uint64 `gorm:"unique; not null; index" json:"dormId,omitempty"`
+	Num        string `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
 	BuildingId uint64 `gorm:"not null; index" json:"buildingId,omitempty"`
-	Gender     string `gorm:"not null" json:"gender,omitempty"`
-	Available  uint64 `gorm:"not null" json:"available,omitempty"`
-	BedNum     uint64 `gorm:"not null" json:"bedNum,omitempty"`
+	Gender     string `gorm:"size:10; not null" json:"gender,omitempty"`
+	RemainCnt  uint64 `gorm:"not null" json:"remainCnt,omitempty"`
+	BedCnt     uint64 `gorm:"not null" json:"bedCnt,omitempty"`
+	Enabled    bool   `gorm:"not null; default:1" json:"enabled,omitempty"`
 	Info       string `json:"info,omitempty"`
 }
 
@@ -20,7 +21,7 @@ func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, 
 	if err != nil {
 		return 0, err
 	}
-	if building.IsAvailable == false {
+	if building.Enabled == false {
 		return 0, errors.New("building unavailable")
 	}
 	var sum int64
@@ -34,7 +35,7 @@ func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gend
 	if err != nil {
 		return nil, err
 	}
-	dorm.Available -= num
+	dorm.RemainCnt -= num
 	return dorm, d.Update(ctx, dorm)
 }
 
