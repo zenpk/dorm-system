@@ -76,6 +76,7 @@ CREATE TABLE `user_infos`
     `student_num`   varchar(200) UNIQUE    NOT NULL,
     `name`          varchar(20)            NOT NULL,
     `gender`        varchar(10)            NOT NULL,
+    `role`          int                    NOT NULL DEFAULT 0,
     `dorm_id`       bigint unsigned        NOT NULL DEFAULT 0
 );
 
@@ -93,6 +94,9 @@ ALTER TABLE `user_infos`
 
 ALTER TABLE `user_infos`
     ADD INDEX (`gender`);
+
+ALTER TABLE `user_infos`
+    ADD INDEX (`role`);
 
 ALTER TABLE `user_infos`
     ADD INDEX (`dorm_id`);

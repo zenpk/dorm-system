@@ -11,6 +11,7 @@ type UserInfo struct {
 	StudentNum   string `gorm:"not null; unique; index" json:"studentNum,omitempty"`
 	Name         string `gorm:"size:20; not null; index" json:"name,omitempty"`
 	Gender       string `gorm:"size:10; not null; index" json:"gender,omitempty"`
+	Role         int32  `gorm:"not null; default:0; index" json:"-"`
 	DormId       uint64 `gorm:"not null; default:0; index" json:"dormId,omitempty"`
 }
 

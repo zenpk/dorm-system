@@ -19,8 +19,7 @@ type Server struct {
 
 func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
 	// username duplication check
-	table := new(dal.UserCredential)
-	_, err := table.FindByUsername(ctx, req.Username)
+	_, err := dal.Table.UserCredential.FindByUsername(ctx, req.Username)
 	if err == nil { // user already exists
 		errPack := ep.ErrDuplicateRecord
 		errPack.Msg = "user already exists"
@@ -33,7 +32,7 @@ func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*User
 	if err != nil {
 		return nil, err
 	}
-	newUserCredential, _, err := table.RegisterNewUser(ctx, req.Username, passwordHash)
+	newUserCredential, _, err := dal.Table.UserCredential.RegisterNewUser(ctx, req.Username, passwordHash)
 	if err != nil {
 		return nil, err
 	}

@@ -28,4 +28,7 @@ cookie:
 time:
   format: "2006-01-02 15:04:05"
 auth:
-  password_length: 5 # minimal password length
+  password_length: 4 # minimal password length
+kafka:
+  brokers:
+    - "101.43.179.27:19092"

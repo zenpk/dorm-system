@@ -5,6 +5,7 @@ import (
 	"github.com/zenpk/dorm-system/internal/cache"
 	"github.com/zenpk/dorm-system/internal/controller"
 	"github.com/zenpk/dorm-system/internal/dal"
+	"github.com/zenpk/dorm-system/internal/mq"
 	"github.com/zenpk/dorm-system/internal/rpc"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
@@ -43,6 +44,10 @@ func main() {
 	}
 	for _, conn := range connList {
 		defer conn.Close()
+	}
+	// Kafka
+	if err := mq.InitProducer(); err != nil {
+		log.Fatalf("failed to init Kafka producer: %v", err)
 	}
 	// Gin
 	if err := controller.InitGin(); err != nil {
