@@ -8,7 +8,7 @@ services:
     ports:
       - "3306:3306" # 主机端口对应容器 3306 端口
     volumes:
-      - dorm:/var/lib/db # 将 db 中的数据映射到外部 volume
+      - db:/var/lib/db # 将 db 中的数据映射到外部 volume
       - ./scripts:/docker-entrypoint-initdb.d # 根据 scripts/*.sql 进行初始化
     deploy:
       restart_policy:
@@ -20,10 +20,10 @@ services:
       - "6379:6379"
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
-      - dorm:/data # https://hub.docker.com/_/redis/
+      - db:/data # https://hub.docker.com/_/redis/
       - ./redis.conf:/usr/local/etc/redis/redis.conf
     deploy:
       restart_policy:
         condition: on-failure
 volumes:
-  dorm: # 外部 volume，确保 container 销毁后数据依然保留
+  db: # 外部 volume，确保 container 销毁后数据依然保留
