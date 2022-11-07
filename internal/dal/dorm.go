@@ -42,8 +42,3 @@ func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gend
 func (d *Dorm) Update(ctx context.Context, dorm *Dorm) error {
 	return DB.WithContext(ctx).Save(&dorm).Error
 }
-
-//func (d *Dorm) SumBedNumByBuildingId(ctx context.Context, id uint32) (int64, error) {
-//	var sum int64
-//	return sum, DB.WithContext(ctx).Model(&Dorm{}).Select("SUM(bed_num)").Row().Scan(&sum)
-//}

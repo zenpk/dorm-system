@@ -10,6 +10,7 @@ import (
 	"github.com/zenpk/dorm-system/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 type Server struct {
@@ -32,39 +33,43 @@ func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*User
 	if err != nil {
 		return nil, err
 	}
-	newUserCredential, _, err := dal.Table.UserCredential.RegisterNewUser(ctx, req.Username, passwordHash)
+	credential, info, err := dal.Table.UserCredential.RegisterNewUser(ctx, req.Username, passwordHash)
 	if err != nil {
 		return nil, err
 	}
 	// generate JWT
-	token, err := jwt.GenToken(newUserCredential.Id, req.Username)
+	token, err := jwt.GenToken(strconv.FormatUint(credential.Id, 10), req.Username, strconv.FormatInt(int64(info.Role), 10))
 	if err != nil {
 		return nil, err
 	}
 	resp := new(UserReply)
 	resp.Resp = &common.CommonResponse{
-		Code: 0,
+		Code: ep.ErrOK.Code,
 		Msg:  "successfully registered",
 	}
 	resp.Token = token
-	resp.UserId = newUserCredential.Id
+	resp.UserId = credential.Id
 	resp.Username = req.Username
 	return resp, nil
 }
 
 func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
-	userCredential, err := dal.Table.UserCredential.FindByUsername(ctx, req.Username)
+	credential, err := dal.Table.UserCredential.FindByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
 	}
-	passwordHashByte := []byte(userCredential.Password)
+	passwordHashByte := []byte(credential.Password)
 	passwordByte := []byte(req.Password)
 	if err := bcrypt.CompareHashAndPassword(passwordHashByte, passwordByte); errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		errPack := ep.ErrInputBody
 		errPack.Msg = "wrong password"
 		return nil, errPack
 	}
-	token, err := jwt.GenToken(userCredential.Id, req.Username)
+	info, err := dal.Table.UserInfo.FindByCredentialId(ctx, credential.Id)
+	if err != nil {
+		return nil, ep.ErrNoRecord
+	}
+	token, err := jwt.GenToken(strconv.FormatUint(credential.Id, 10), req.Username, strconv.FormatInt(int64(info.Role), 10))
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +79,7 @@ func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserRep
 		Msg:  "successfully logged in",
 	}
 	resp.Token = token
-	resp.UserId = userCredential.Id
+	resp.UserId = credential.Id
 	resp.Username = req.Username
 	return resp, nil
 }

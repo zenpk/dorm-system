@@ -9,17 +9,17 @@ type Building struct {
 	Info    string `json:"info,omitempty"`
 }
 
-func (b *Building) FindById(ctx context.Context, id uint64) (*Building, error) {
-	building := new(Building)
-	return building, DB.WithContext(ctx).First(&building, id).Error
+func (b *Building) FindById(ctx context.Context, id uint64) (building *Building, err error) {
+	err = DB.WithContext(ctx).First(&building, id).Error
+	return
 }
 
-func (b *Building) FindAllAvailable(ctx context.Context) ([]*Building, error) {
-	var buildings []*Building
-	return buildings, DB.WithContext(ctx).Where("is_available = true").Find(&buildings).Error
+func (b *Building) FindAllAvailable(ctx context.Context) (buildings []*Building, err error) {
+	err = DB.WithContext(ctx).Where("enabled = true").Find(&buildings).Error
+	return
 }
 
-func (b *Building) FindAllAvailableIds(ctx context.Context) ([]uint64, error) {
-	var ids []uint64
-	return ids, DB.WithContext(ctx).Model(&Building{}).Where("is_available = true").Distinct().Pluck("building_id", &ids).Error
+func (b *Building) FindAllAvailableIds(ctx context.Context) (ids []uint64, err error) {
+	err = DB.WithContext(ctx).Model(&Building{}).Where("enabled = true").Distinct().Pluck("id", &ids).Error
+	return
 }

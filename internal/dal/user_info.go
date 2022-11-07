@@ -25,7 +25,7 @@ func (u *UserInfo) FindAll(ctx context.Context) ([]*UserInfo, error) {
 	return userInfos, DB.WithContext(ctx).Find(&userInfos).Error
 }
 
-func (u *UserInfo) FindByUserCredentialId(ctx context.Context, userId uint64) (*UserInfo, error) {
+func (u *UserInfo) FindByCredentialId(ctx context.Context, userId uint64) (*UserInfo, error) {
 	userInfo := new(UserInfo)
 	return userInfo, DB.WithContext(ctx).Where("user_id = ?", userId).First(&userInfo).Error
 }

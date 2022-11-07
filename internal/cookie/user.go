@@ -72,6 +72,7 @@ func ClearAllUserInfos(c *gin.Context, urls ...string) {
 	c.SetCookie("token", "", -1, "/", url, false, true)
 	c.SetCookie("_userId", "", -1, "/", url, false, true)
 	c.SetCookie("_username", "", -1, "/", url, false, true)
+	c.SetCookie("_role", "", -1, "/", url, false, true)
 }
 
 func SetAllFromToken(c *gin.Context, token string, urls ...string) error {
@@ -81,7 +82,7 @@ func SetAllFromToken(c *gin.Context, token string, urls ...string) error {
 	} else {
 		url = urls[0]
 	}
-	userId, username, err := jwt.ParseToken(token)
+	userId, username, role, err := jwt.ParseToken(token)
 	if err != nil {
 		return err
 	} else if userId == "0" {
@@ -89,5 +90,6 @@ func SetAllFromToken(c *gin.Context, token string, urls ...string) error {
 	}
 	SetUserId(c, userId, url)
 	SetUsername(c, username, url)
+	SetRole(c, role, url)
 	return nil
 }
