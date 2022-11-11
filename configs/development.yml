@@ -33,3 +33,5 @@ auth:
 kafka:
   brokers:
     - "101.43.179.27:19092"
+  order:
+    topic: "order"

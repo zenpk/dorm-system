@@ -3,31 +3,30 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/dto"
-	"github.com/zenpk/dorm-system/internal/rpc"
-	pb "github.com/zenpk/dorm-system/internal/service/order"
+	"github.com/zenpk/dorm-system/internal/mq"
 	"github.com/zenpk/dorm-system/pkg/ep"
 )
 
 type Order struct{}
 
 func (o *Order) Submit(c *gin.Context) {
-	var req pb.OrderRequest
+	var req dto.OrderRequest
 	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.PackWithError(err))
 		return
 	}
-	if req.StudentId1 == 0 {
+	if len(req.StudentNum1) <= 0 {
 		errPack := ep.ErrInputBody
-		errPack.Msg = "student id 1 mustn't be 0"
+		errPack.Msg = "studentNum1 mustn't be empty"
 		response(c, packer.PackWithInfo(errPack))
 		return
 	}
-	resp, err := rpc.Client.Order.Submit(&req)
-	if err != nil {
+	if err := mq.Producer.Order.Send(&req); err != nil {
 		response(c, packer.PackWithError(err))
 		return
 	}
-	dtoResp := resp.Resp
-	response(c, dtoResp)
+	errPack := ep.ErrOK
+	errPack.Msg = "submitted successfully"
+	response(c, packer.Pack(errPack))
 }

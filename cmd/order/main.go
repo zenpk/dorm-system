@@ -22,6 +22,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to initialize specified config: %v", err)
 	}
+	if err := mq.Consumer.Order.InitConsumer(); err != nil {
+		log.Fatalf("failed to initialize consumer: %v", err)
+	}
 	// zap
 	if err := zap.InitLogger("order"); err != nil {
 		log.Fatalf("failed to initialize zap: %v", err)
@@ -31,5 +34,8 @@ func main() {
 	if err := dal.InitDB(); err != nil {
 		log.Fatalf("failed to initialize database: %v", err)
 	}
-
+	zap.Logger.Infof("order consumer is subscribed")
+	if err := mq.Consumer.Order.Subscribe(); err != nil {
+		log.Fatalf("failed to subscribe: %v", err)
+	}
 }

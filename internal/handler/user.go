@@ -11,9 +11,9 @@ import (
 	"strconv"
 )
 
-type UserCredential struct{}
+type User struct{}
 
-func (u *UserCredential) Register(c *gin.Context) {
+func (u *User) Register(c *gin.Context) {
 	var req pb.RegisterLoginRequest
 	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -39,7 +39,7 @@ func (u *UserCredential) Register(c *gin.Context) {
 	response(c, dtoResp)
 }
 
-func (u *UserCredential) Login(c *gin.Context) {
+func (u *User) Login(c *gin.Context) {
 	var req pb.RegisterLoginRequest
 	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -65,7 +65,7 @@ func (u *UserCredential) Login(c *gin.Context) {
 	response(c, dtoResp)
 }
 
-func (u *UserCredential) Logout(c *gin.Context) {
+func (u *User) Logout(c *gin.Context) {
 	cookie.ClearAllUserInfos(c)
 	response(c, dto.CommonResp{
 		Code: 0,
@@ -73,6 +73,6 @@ func (u *UserCredential) Logout(c *gin.Context) {
 	})
 }
 
-func (u *UserCredential) UpdatePassword(c *gin.Context) {
-	
+func (u *User) UpdatePassword(c *gin.Context) {
+
 }

@@ -7,9 +7,8 @@ import (
 )
 
 type ClientSet struct {
-	User  User
-	Order Order
-	Dorm  Dorm
+	User User
+	Dorm Dorm
 }
 
 var Client ClientSet
@@ -32,17 +31,6 @@ func InitClient() ([]*grpc.ClientConn, error) {
 		return nil, err
 	}
 	connList = append(connList, userConn)
-
-	// order
-	orderConfig, err := viperpkg.InitConfig("order")
-	if err != nil {
-		return nil, err
-	}
-	orderConn, err := Client.Order.init(orderConfig)
-	if err != nil {
-		return nil, err
-	}
-	connList = append(connList, orderConn)
 
 	// dorm
 	dormConfig, err := viperpkg.InitConfig("dorm")

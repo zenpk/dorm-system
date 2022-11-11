@@ -12,7 +12,7 @@ type Dorm struct {
 	Gender     string `gorm:"size:10; not null" json:"gender,omitempty"`
 	RemainCnt  uint64 `gorm:"not null" json:"remainCnt,omitempty"`
 	BedCnt     uint64 `gorm:"not null" json:"bedCnt,omitempty"`
-	Enabled    bool   `gorm:"not null; default:1" json:"enabled,omitempty"`
+	Enabled    bool   `gorm:"not null; default:1; index" json:"enabled,omitempty"`
 	Info       string `json:"info,omitempty"`
 }
 

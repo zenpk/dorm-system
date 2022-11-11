@@ -10,93 +10,119 @@ CREATE TABLE `dorms`
     `enabled`     tinyint            NOT NULL DEFAULT 1,
     `info`        varchar(200)
 );
-
 ALTER TABLE `dorms`
     ADD INDEX (`num`);
-
 ALTER TABLE `dorms`
     ADD INDEX (`building_id`);
-
 ALTER TABLE `dorms`
     ADD INDEX (`enabled`);
 
 CREATE TABLE `buildings`
 (
-    `id`      bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `num`     varchar(10) UNIQUE NOT NULL,
-    `enabled` tinyint            NOT NULL DEFAULT 1,
-    `info`    varchar(200)
+    `id`        bigint unsigned PRIMARY KEY AUTO_INCREMENT,
+    `num`       varchar(10) UNIQUE NOT NULL,
+    `enabled`   tinyint            NOT NULL DEFAULT 1,
+    `image_url` varchar(200),
+    `info`      varchar(200)
 );
-
 ALTER TABLE `buildings`
     ADD INDEX (`num`);
-
 ALTER TABLE `buildings`
     ADD INDEX (`enabled`);
 
 CREATE TABLE `orders`
 (
-    `id`           bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `dorm_id`      bigint unsigned        NOT NULL,
-    `student_id_1` bigint unsigned UNIQUE NOT NULL,
-    `student_id_2` bigint unsigned,
-    `student_id_3` bigint unsigned,
-    `student_id_4` bigint unsigned
+    `id`          bigint unsigned PRIMARY KEY AUTO_INCREMENT,
+    `building_id` bigint unsigned NOT NULL,
+    `dorm_id`     bigint unsigned NOT NULL DEFAULT 0,
+    `team_id`     bigint unsigned NOT NULL,
+    `success`     tinyint         NOT NULL DEFAULT 0,
+    `info`        varchar(200),
+    `deleted`     tinyint         NOT NULL DEFAULT 0
 );
-
+ALTER TABLE `orders`
+    ADD INDEX (`building_id`);
 ALTER TABLE `orders`
     ADD INDEX (`dorm_id`);
+ALTER TABLE `orders`
+    ADD INDEX (`team_id`);
+ALTER TABLE `orders`
+    ADD INDEX (`deleted`);
 
-CREATE TABLE `team`
-(
-    `id`            bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `student_num_1` varchar(200) UNIQUE NOT NULL,
-    `student_num_2` varchar(200),
-    `student_num_3` varchar(200),
-    `student_num_4` varchar(200)
-);
-
-ALTER TABLE `team`
-    ADD INDEX (`student_num_1`);
-
-CREATE TABLE `user_credentials`
+CREATE TABLE `teams`
 (
     `id`       bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `username` varchar(200) UNIQUE NOT NULL,
-    `password` varchar(200)        NOT NULL
+    `code`     varchar(200) UNIQUE    NOT NULL,
+    `gender`   varchar(10)            NOT NULL,
+    `owner_id` bigint unsigned UNIQUE NOT NULL,
+    `deleted`  tinyint                NOT NULL DEFAULT 0
 );
-ALTER TABLE `user_credentials`
-    ADD INDEX (`username`);
+ALTER TABLE `teams`
+    ADD INDEX (`code`);
+ALTER TABLE `teams`
+    ADD INDEX (`owner_id`);
+ALTER TABLE `teams`
+    ADD INDEX (`deleted`);
 
-CREATE TABLE `user_infos`
+CREATE TABLE `team_users`
+(
+    `id`      bigint unsigned PRIMARY KEY AUTO_INCREMENT,
+    `team_id` bigint unsigned NOT NULL,
+    `uid`     bigint unsigned NOT NULL,
+    `deleted` tinyint         NOT NULL DEFAULT 0
+);
+ALTER TABLE `team_users`
+    ADD INDEX (`team_id`);
+ALTER TABLE `team_users`
+    ADD INDEX (`uid`);
+ALTER TABLE `team_users`
+    ADD INDEX (`deleted`);
+
+CREATE TABLE `accounts`
+(
+    `id`       bigint unsigned PRIMARY KEY AUTO_INCREMENT,
+    `uid`      bigint unsigned     NOT NULL,
+    `username` varchar(200) UNIQUE NOT NULL,
+    `password` varchar(200)        NOT NULL,
+    `deleted`  tinyint             NOT NULL DEFAULT 0
+);
+ALTER TABLE `accounts`
+    ADD INDEX (`uid`);
+ALTER TABLE `accounts`
+    ADD INDEX (`username`);
+ALTER TABLE `accounts`
+    ADD INDEX (`deleted`);
+
+CREATE TABLE `users`
+(
+    `id`          bigint unsigned PRIMARY KEY AUTO_INCREMENT,
+    `student_num` varchar(200) UNIQUE NOT NULL,
+    `name`        varchar(20)         NOT NULL,
+    `gender`      varchar(10)         NOT NULL,
+    `role`        int                 NOT NULL DEFAULT 0,
+    `deleted`     tinyint             NOT NULL DEFAULT 0
+);
+ALTER TABLE `users`
+    ADD INDEX (`name`);
+ALTER TABLE `users`
+    ADD INDEX (`gender`);
+ALTER TABLE `users`
+    ADD INDEX (`role`);
+ALTER TABLE `users`
+    ADD INDEX (`deleted`);
+
+CREATE TABLE `tokens`
 (
     `id`            bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `credential_id` bigint unsigned UNIQUE NOT NULL,
-    `username`      varchar(200) UNIQUE    NOT NULL,
-    `student_num`   varchar(200) UNIQUE    NOT NULL,
-    `name`          varchar(20)            NOT NULL,
-    `gender`        varchar(10)            NOT NULL,
-    `role`          int                    NOT NULL DEFAULT 0,
-    `dorm_id`       bigint unsigned        NOT NULL DEFAULT 0
+    `refresh_token` varchar(200)    NOT NULL,
+    `uid`           bigint unsigned NOT NULL,
+    `create_time`   datetime(3)     NOT NULL,
+    `exp_time`      datetime(3)     NOT NULL,
+    `deleted`       tinyint         NOT NULL DEFAULT 0
 );
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`credential_id`);
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`username`);
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`student_num`);
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`name`);
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`gender`);
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`role`);
-
-ALTER TABLE `user_infos`
-    ADD INDEX (`dorm_id`);
+ALTER TABLE `tokens`
+    ADD INDEX (`refresh_token`);
+ALTER TABLE `tokens`
+    ADD INDEX (`uid`);
+ALTER TABLE `tokens`
+    ADD INDEX (`deleted`);

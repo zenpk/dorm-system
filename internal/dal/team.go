@@ -1,9 +1,9 @@
 package dal
 
 type Team struct {
-	Id          uint64 `gorm:"primaryKey" json:"-"`
-	StudentNum1 string `gorm:"not null; unique" json:"studentId1,omitempty"`
-	StudentNum2 string `json:"studentId2,omitempty"`
-	StudentNum3 string `json:"studentId3,omitempty"`
-	StudentNum4 string `json:"studentId4,omitempty"`
+	Id      uint64 `gorm:"primaryKey"`
+	Code    string `gorm:"not null; unique; index"`
+	Gender  string `gorm:"size:10; not null"`
+	OwnerId uint64 `gorm:"not null; unique; index"`
+	Deleted bool   `gorm:"not null; default:0; index"`
 }

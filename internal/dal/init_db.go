@@ -28,7 +28,7 @@ func InitDB() error {
 		return err
 	}
 	// create tables
-	if err = DB.AutoMigrate(&Building{}, &Dorm{}, &Order{}, &Team{}, &UserCredential{}, &UserInfo{}); err != nil {
+	if err = DB.AutoMigrate(&Building{}, &Dorm{}, &Order{}, &Team{}, &Account{}, &User{}); err != nil {
 		return err
 	}
 	return nil

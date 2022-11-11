@@ -9,11 +9,11 @@ service Order{
 }
 
 message OrderRequest{
-  uint64 buildingId = 1;
-  uint64 studentId1 = 2;
-  uint64 studentId2 = 3;
-  uint64 studentId3 = 4;
-  uint64 studentId4 = 5;
+  string buildingNum = 1;
+  string studentNum1 = 2;
+  string studentNum2 = 3;
+  string studentNum3 = 4;
+  string studentNum4 = 5;
 }
 
 message OrderReply{

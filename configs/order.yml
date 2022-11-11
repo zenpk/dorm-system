@@ -1,5 +1,4 @@
-server:
-  host: "0.0.0.0"
-  target: "127.0.0.1"
-  port: 9081
-timeout: 3 # second
+kafka:
+  brokers:
+    - "101.43.179.27:19092"
+  topic: "order"

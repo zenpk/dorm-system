@@ -3,12 +3,13 @@ package dal
 import "context"
 
 type Order struct {
-	Id         uint64 `gorm:"primaryKey" json:"-"`
-	DormId     uint64 `gorm:"not null" json:"dormId,omitempty"`
-	StudentId1 uint64 `gorm:"not null; unique" json:"studentId1,omitempty"`
-	StudentId2 uint64 `json:"studentId2,omitempty"`
-	StudentId3 uint64 `json:"studentId3,omitempty"`
-	StudentId4 uint64 `json:"studentId4,omitempty"`
+	Id         uint64 `gorm:"primaryKey"`
+	BuildingId uint64 `gorm:"not null; index"`
+	DormId     uint64 `gorm:"not null; default:0; index"`
+	TeamId     uint64 `gorm:"not null; index"`
+	Success    bool   `gorm:"not null; default:0"`
+	Info       string
+	Deleted    bool `gorm:"not null; default:0; index"`
 }
 
 func (o *Order) Create(ctx context.Context, order *Order) error {

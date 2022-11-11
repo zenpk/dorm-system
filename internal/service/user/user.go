@@ -84,8 +84,8 @@ func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserRep
 	return resp, nil
 }
 
-//// GetMyInfo get UserInfo based on the id in Cookie
-//func (*UserInfo) GetMyInfo(c *gin.Context) {
+//// GetMyInfo get User based on the id in Cookie
+//func (*User) GetMyInfo(c *gin.Context) {
 //	idStr, err := cookie.GetUserId(c)
 //	if err != nil {
 //		c.JSON(http.StatusOK, dto.GetUserInfoResp{
@@ -97,7 +97,7 @@ func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserRep
 //		return
 //	}
 //	id := util.ParseU64(idStr)
-//	var userInfo *dal.UserInfo
+//	var userInfo *dal.User
 //	userInfo, err = userInfo.FindById(id)
 //	errHandler := eh.JSONHandler{C: c, V: dto.GetUserInfoResp{}}
 //	if err != nil {
@@ -109,6 +109,6 @@ func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserRep
 //			Code: eh.Preset.CodeOK,
 //			Msg:  "success",
 //		},
-//		UserInfo: userInfo,
+//		User: userInfo,
 //	})
 //}

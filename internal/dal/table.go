@@ -5,8 +5,8 @@ type TableSet struct {
 	Dorm           *Dorm
 	Order          *Order
 	Team           *Team
-	UserCredential *UserCredential
-	UserInfo       *UserInfo
+	UserCredential *Account
+	UserInfo       *User
 }
 
 var Table TableSet

@@ -10,9 +10,8 @@ func InitRouter(router *gin.Engine) {
 	router.Use(middleware.CORSFilter()) // CORS
 
 	// no other middleware URL
-	router.POST("/login", ginHandler.userCredential.Login)
-	router.POST("/register", ginHandler.userCredential.Register)
-	//router.GET("/available-buildings", ginHandler.building.GetAvailableBuildings)
+	router.POST("/login", ginHandler.user.Login)
+	router.POST("/register", ginHandler.user.Register)
 	router.GET("/available-num", ginHandler.dorm.GetAvailableNum)
 
 	// not login required but can extract information from token
@@ -26,8 +25,8 @@ func InitRouter(router *gin.Engine) {
 	routerAuth.Use(middleware.RequireLogin())
 	{
 		//router.GET("/my-info", ginHandler.userInfo.GetMyInfo)
-		//router.PATCH("/change-password", ginHandler.userCredential.UpdatePassword)
-		router.GET("/logout", ginHandler.userCredential.Logout)
-		router.POST("/submit-order", ginHandler.order.Submit)
+		//router.PATCH("/change-password", ginHandler.user.UpdatePassword)
+		router.GET("/logout", ginHandler.user.Logout)
+		router.POST("/order", ginHandler.order.Submit)
 	}
 }

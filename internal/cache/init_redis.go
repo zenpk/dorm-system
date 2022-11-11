@@ -37,7 +37,7 @@ func Warming() error {
 func warmAvailable() error {
 	ctx := context.Background()
 	all := int64(0)
-	availIds, err := dal.Table.Building.FindAllAvailableIds(ctx)
+	availIds, err := dal.Table.Building.PluckAllAvailableIds(ctx)
 	if err != nil {
 		return err
 	}
