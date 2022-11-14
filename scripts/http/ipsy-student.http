@@ -1,7 +1,0 @@
-### get my
-GET {{url}}/center/info
-Accept: application/json
-
-### get all
-GET {{url}}/importData/stutable
-Accept: application/json
