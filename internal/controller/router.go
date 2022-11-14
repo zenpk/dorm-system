@@ -12,7 +12,7 @@ func InitRouter(router *gin.Engine) {
 	// no other middleware URL
 	router.POST("/login", ginHandler.user.Login)
 	router.POST("/register", ginHandler.user.Register)
-	router.GET("/available-num", ginHandler.dorm.GetAvailableNum)
+	router.GET("/available", ginHandler.dorm.GetAvailableNum)
 
 	// not login required but can extract information from token
 	routerNoAuth := router.Group("/")
@@ -27,6 +27,6 @@ func InitRouter(router *gin.Engine) {
 		//router.GET("/my-info", ginHandler.userInfo.GetMyInfo)
 		//router.PATCH("/change-password", ginHandler.user.UpdatePassword)
 		router.GET("/logout", ginHandler.user.Logout)
-		router.POST("/order", ginHandler.order.Submit)
+		router.POST("/order-create", ginHandler.order.Submit)
 	}
 }

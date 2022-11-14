@@ -7,10 +7,8 @@ import (
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/service/common"
 	"github.com/zenpk/dorm-system/pkg/ep"
-	"github.com/zenpk/dorm-system/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type Server struct {
@@ -20,7 +18,7 @@ type Server struct {
 
 func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
 	// username duplication check
-	_, err := dal.Table.UserCredential.FindByUsername(ctx, req.Username)
+	_, err := dal.Table.Account.FindByUsername(ctx, req.Username)
 	if err == nil { // user already exists
 		errPack := ep.ErrDuplicateRecord
 		errPack.Msg = "user already exists"
@@ -33,54 +31,43 @@ func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*User
 	if err != nil {
 		return nil, err
 	}
-	credential, info, err := dal.Table.UserCredential.RegisterNewUser(ctx, req.Username, passwordHash)
+	user, err := dal.Table.Account.RegisterNewUser(ctx, req.Username, passwordHash)
 	if err != nil {
 		return nil, err
 	}
-	// generate JWT
-	token, err := jwt.GenToken(strconv.FormatUint(credential.Id, 10), req.Username, strconv.FormatInt(int64(info.Role), 10))
-	if err != nil {
-		return nil, err
+	resp := &UserReply{
+		Resp: &common.CommonResponse{
+			Code: ep.ErrOK.Code,
+			Msg:  ep.ErrOK.Msg,
+		},
+		UserId: user.Id,
 	}
-	resp := new(UserReply)
-	resp.Resp = &common.CommonResponse{
-		Code: ep.ErrOK.Code,
-		Msg:  "successfully registered",
-	}
-	resp.Token = token
-	resp.UserId = credential.Id
-	resp.Username = req.Username
 	return resp, nil
 }
 
 func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
-	credential, err := dal.Table.UserCredential.FindByUsername(ctx, req.Username)
+	account, err := dal.Table.Account.FindByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
 	}
-	passwordHashByte := []byte(credential.Password)
+	passwordHashByte := []byte(account.Password)
 	passwordByte := []byte(req.Password)
 	if err := bcrypt.CompareHashAndPassword(passwordHashByte, passwordByte); errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		errPack := ep.ErrInputBody
 		errPack.Msg = "wrong password"
 		return nil, errPack
 	}
-	info, err := dal.Table.UserInfo.FindByCredentialId(ctx, credential.Id)
+	user, err := dal.Table.User.FindByCredentialId(ctx, account.Id)
 	if err != nil {
 		return nil, ep.ErrNoRecord
 	}
-	token, err := jwt.GenToken(strconv.FormatUint(credential.Id, 10), req.Username, strconv.FormatInt(int64(info.Role), 10))
-	if err != nil {
-		return nil, err
+	resp := &UserReply{
+		Resp: &common.CommonResponse{
+			Code: ep.ErrOK.Code,
+			Msg:  ep.ErrOK.Msg,
+		},
+		UserId: user.Id,
 	}
-	resp := new(UserReply)
-	resp.Resp = &common.CommonResponse{
-		Code: ep.ErrOK.Code,
-		Msg:  "successfully logged in",
-	}
-	resp.Token = token
-	resp.UserId = credential.Id
-	resp.Username = req.Username
 	return resp, nil
 }
 

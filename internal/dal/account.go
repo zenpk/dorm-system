@@ -4,40 +4,45 @@ import "context"
 
 type Account struct {
 	Id       uint64 `gorm:"primaryKey"`
-	Uid      uint64 `gorm:"not null; index"`
+	UserId   uint64 `gorm:"not null; index"`
 	Username string `gorm:"not null; unique; index"`
 	Password string `gorm:"not null"`
 	Deleted  bool   `gorm:"not null; default:0; index"`
 }
 
 func (a *Account) FindById(ctx context.Context, id uint64) (*Account, error) {
-	userCredential := new(Account)
-	return userCredential, DB.WithContext(ctx).First(&userCredential, id).Error
+	account := new(Account)
+	return account, DB.WithContext(ctx).First(&account, id).Error
+}
+
+func (a *Account) FindByUserId(ctx context.Context, id uint64) (*Account, error) {
+	account := new(Account)
+	return account, DB.WithContext(ctx).Where("user_id = ?", id).First(&account).Error
 }
 
 func (a *Account) FindByUsername(ctx context.Context, username string) (*Account, error) {
-	userCredential := new(Account)
-	return userCredential, DB.WithContext(ctx).Where("username = ?", username).First(&userCredential).Error
+	account := new(Account)
+	return account, DB.WithContext(ctx).Where("username = ?", username).First(&account).Error
 }
 
-func (a *Account) Update(ctx context.Context, credential *Account) error {
-	return DB.WithContext(ctx).Save(&credential).Error
+func (a *Account) Update(ctx context.Context, account *Account) error {
+	return DB.WithContext(ctx).Save(&account).Error
 }
 
 // RegisterNewUser register a new Account along with a linked User
-func (a *Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (*Account, *User, error) {
+func (a *Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (*User, error) {
 	// create User and get uid
 	user := &User{}
 	if err := user.Create(ctx, user); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	account := &Account{
-		Uid:      user.Id,
+		UserId:   user.Id,
 		Username: username,
 		Password: passwordHash,
 	}
 	if err := DB.WithContext(ctx).Create(&account).Error; err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return account, user, nil
+	return user, nil
 }

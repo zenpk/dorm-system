@@ -7,12 +7,14 @@ import (
 )
 
 type ClientSet struct {
-	User User
-	Dorm Dorm
+	Dorm  Dorm
+	Token Token
+	User  User
 }
 
 var Client ClientSet
 
+// InitClient initialize RPC clients and return all connections
 func InitClient() ([]*grpc.ClientConn, error) {
 	connList := make([]*grpc.ClientConn, 0)
 	path, err := gmp.GetModPath()
@@ -20,6 +22,17 @@ func InitClient() ([]*grpc.ClientConn, error) {
 		return nil, err
 	}
 	path += "configs"
+
+	// dorm
+	dormConfig, err := viperpkg.InitConfig("dorm")
+	if err != nil {
+		return nil, err
+	}
+	dormConn, err := Client.Dorm.init(dormConfig)
+	if err != nil {
+		return nil, err
+	}
+	connList = append(connList, dormConn)
 
 	// user
 	userConfig, err := viperpkg.InitConfig("user")
@@ -32,16 +45,16 @@ func InitClient() ([]*grpc.ClientConn, error) {
 	}
 	connList = append(connList, userConn)
 
-	// dorm
-	dormConfig, err := viperpkg.InitConfig("dorm")
+	// token
+	tokenConfig, err := viperpkg.InitConfig("token")
 	if err != nil {
 		return nil, err
 	}
-	dormConn, err := Client.Dorm.init(dormConfig)
+	tokenConn, err := Client.Token.init(tokenConfig)
 	if err != nil {
 		return nil, err
 	}
-	connList = append(connList, dormConn)
+	connList = append(connList, tokenConn)
 
 	return connList, nil
 }

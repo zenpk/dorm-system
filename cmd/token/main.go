@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/zenpk/dorm-system/internal/dal"
-	pb "github.com/zenpk/dorm-system/internal/service/user"
+	pb "github.com/zenpk/dorm-system/internal/service/token"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"google.golang.org/grpc"
@@ -22,7 +22,7 @@ func main() {
 	// specified config
 	server := new(pb.Server)
 	var err error
-	server.Config, err = viperpkg.InitConfig("user")
+	server.Config, err = viperpkg.InitConfig("token")
 	if err != nil {
 		log.Fatalf("failed to initialize specified config: %v", err)
 	}
@@ -41,7 +41,7 @@ func main() {
 		log.Fatalf("failed to initialize TCP listener: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterUserServer(grpcServer, server)
+	pb.RegisterTokenServer(grpcServer, server)
 	zap.Logger.Infof("server listening at %v", addr)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

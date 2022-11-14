@@ -14,27 +14,27 @@ type User struct {
 }
 
 func (u *User) FindById(ctx context.Context, userId uint64) (*User, error) {
-	userInfo := new(User)
-	return userInfo, DB.WithContext(ctx).First(&userInfo, userId).Error
+	user := new(User)
+	return user, DB.WithContext(ctx).First(&user, userId).Error
 }
 
 func (u *User) FindAll(ctx context.Context) ([]*User, error) {
-	var userInfos []*User
-	return userInfos, DB.WithContext(ctx).Find(&userInfos).Error
+	var users []*User
+	return users, DB.WithContext(ctx).Find(&users).Error
 }
 
 func (u *User) FindByCredentialId(ctx context.Context, userId uint64) (*User, error) {
-	userInfo := new(User)
-	return userInfo, DB.WithContext(ctx).Where("user_id = ?", userId).First(&userInfo).Error
+	user := new(User)
+	return user, DB.WithContext(ctx).Where("user_id = ?", userId).First(&user).Error
 }
 
 func (u *User) FindByStudentNum(ctx context.Context, studentNum string) (*User, error) {
-	userInfo := new(User)
-	return userInfo, DB.WithContext(ctx).Where("student_num = ?", studentNum).First(&userInfo).Error
+	user := new(User)
+	return user, DB.WithContext(ctx).Where("student_num = ?", studentNum).First(&user).Error
 }
 
-func (u *User) Create(ctx context.Context, info *User) error {
-	return DB.WithContext(ctx).Create(&info).Error
+func (u *User) Create(ctx context.Context, user *User) error {
+	return DB.WithContext(ctx).Create(&user).Error
 }
 
 func (u *User) Update(ctx context.Context, user *User) error {

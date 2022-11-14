@@ -68,26 +68,26 @@ CREATE TABLE `team_users`
 (
     `id`      bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `team_id` bigint unsigned NOT NULL,
-    `uid`     bigint unsigned NOT NULL,
+    `user_id`     bigint unsigned NOT NULL,
     `deleted` tinyint         NOT NULL DEFAULT 0
 );
 ALTER TABLE `team_users`
     ADD INDEX (`team_id`);
 ALTER TABLE `team_users`
-    ADD INDEX (`uid`);
+    ADD INDEX (`user_id`);
 ALTER TABLE `team_users`
     ADD INDEX (`deleted`);
 
 CREATE TABLE `accounts`
 (
     `id`       bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `uid`      bigint unsigned     NOT NULL,
+    `user_id`      bigint unsigned     NOT NULL,
     `username` varchar(200) UNIQUE NOT NULL,
     `password` varchar(200)        NOT NULL,
     `deleted`  tinyint             NOT NULL DEFAULT 0
 );
 ALTER TABLE `accounts`
-    ADD INDEX (`uid`);
+    ADD INDEX (`user_id`);
 ALTER TABLE `accounts`
     ADD INDEX (`username`);
 ALTER TABLE `accounts`
@@ -115,7 +115,7 @@ CREATE TABLE `tokens`
 (
     `id`            bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `refresh_token` varchar(200)    NOT NULL,
-    `uid`           bigint unsigned NOT NULL,
+    `user_id`           bigint unsigned NOT NULL,
     `create_time`   datetime(3)     NOT NULL,
     `exp_time`      datetime(3)     NOT NULL,
     `deleted`       tinyint         NOT NULL DEFAULT 0
@@ -123,6 +123,6 @@ CREATE TABLE `tokens`
 ALTER TABLE `tokens`
     ADD INDEX (`refresh_token`);
 ALTER TABLE `tokens`
-    ADD INDEX (`uid`);
+    ADD INDEX (`user_id`);
 ALTER TABLE `tokens`
     ADD INDEX (`deleted`);

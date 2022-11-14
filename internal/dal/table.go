@@ -1,12 +1,14 @@
 package dal
 
 type TableSet struct {
-	Building       *Building
-	Dorm           *Dorm
-	Order          *Order
-	Team           *Team
-	UserCredential *Account
-	UserInfo       *User
+	Account  Account
+	Building Building
+	Dorm     Dorm
+	Order    Order
+	Team     Team
+	TeamUser TeamUser
+	Token    Token
+	User     User
 }
 
 var Table TableSet

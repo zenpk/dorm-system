@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/cookie"
 	"github.com/zenpk/dorm-system/internal/dto"
+	"github.com/zenpk/dorm-system/internal/rpc"
+	pb "github.com/zenpk/dorm-system/internal/service/token"
 	"github.com/zenpk/dorm-system/pkg/ep"
 	"net/http"
 )
@@ -11,15 +13,28 @@ import (
 // CheckAuthInfo extract user infos from the JWT token in Cookie
 func CheckAuthInfo() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, err := cookie.GetToken(c)
-		if err != nil || token == "" { // no cookie
-			c.Next()
-			return
-		}
-		if err := cookie.SetAllFromToken(c, token); err != nil {
-			packer := ep.Packer{V: dto.CommonResp{}}
-			errPack := ep.ErrInputToken
-			c.JSON(http.StatusUnauthorized, packer.PackWithError(errPack))
+		packer := ep.Packer{V: dto.CommonResp{}}
+		token := cookie.GetAccessToken(c)
+		if token == "" { // no access_token
+			refreshToken := cookie.GetRefreshToken(c)
+			if refreshToken != "" {
+				req := &pb.GenAccessTokenRequest{RefreshToken: refreshToken}
+				tokenResp, err := rpc.Client.Token.GenAccessToken(req)
+				if err != nil {
+					c.JSON(http.StatusOK, packer.PackWithError(err))
+					c.Abort()
+					return
+				}
+				accessToken := tokenResp.AccessToken
+				cookie.SetAccessToken(c, accessToken)
+				if err := cookie.SetAllFromAccessToken(c, accessToken); err != nil {
+					c.JSON(http.StatusOK, packer.PackWithError(err))
+					c.Abort()
+					return
+				}
+			}
+		} else if err := cookie.SetAllFromAccessToken(c, token); err != nil {
+			c.JSON(http.StatusOK, packer.PackWithError(err))
 			c.Abort()
 			return
 		}
@@ -30,18 +45,31 @@ func CheckAuthInfo() gin.HandlerFunc {
 // RequireLogin if no token then abort
 func RequireLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, err := cookie.GetToken(c)
+		token := cookie.GetAccessToken(c)
 		packer := ep.Packer{V: dto.CommonResp{}}
-		if err != nil || token == "" { // no cookie
-			errPack := ep.ErrNotLogin
-			c.JSON(http.StatusUnauthorized, packer.Pack(errPack))
-			c.Abort()
-			return
-		}
-		if err := cookie.SetAllFromToken(c, token); err != nil {
-			errPack := ep.ErrNotLogin
-			errPack.Msg = ep.ErrInputToken.Msg
-			c.JSON(http.StatusUnauthorized, packer.PackWithError(errPack))
+		if token == "" { // no access_token
+			refreshToken := cookie.GetRefreshToken(c)
+			if refreshToken == "" { // no refresh_token
+				c.JSON(http.StatusOK, packer.Pack(ep.ErrNotLogin))
+				c.Abort()
+				return
+			}
+			req := &pb.GenAccessTokenRequest{RefreshToken: refreshToken}
+			tokenResp, err := rpc.Client.Token.GenAccessToken(req)
+			if err != nil {
+				c.JSON(http.StatusOK, packer.PackWithError(err))
+				c.Abort()
+				return
+			}
+			accessToken := tokenResp.AccessToken
+			cookie.SetAccessToken(c, accessToken)
+			if err := cookie.SetAllFromAccessToken(c, accessToken); err != nil {
+				c.JSON(http.StatusOK, packer.PackWithError(err))
+				c.Abort()
+				return
+			}
+		} else if err := cookie.SetAllFromAccessToken(c, token); err != nil {
+			c.JSON(http.StatusOK, packer.PackWithError(err))
 			c.Abort()
 			return
 		}

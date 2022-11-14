@@ -21,9 +21,9 @@ func main() {
 		log.Fatalf("failed to initialize Viper: %v", err)
 	}
 	// specified config
-	dormServer := new(pb.Server)
+	server := new(pb.Server)
 	var err error
-	dormServer.Config, err = viperpkg.InitConfig("dorm")
+	server.Config, err = viperpkg.InitConfig("dorm")
 	if err != nil {
 		log.Fatalf("failed to initialize specified config: %v", err)
 	}
@@ -41,15 +41,15 @@ func main() {
 		log.Fatalf("failed to initialize Redis: %v", err)
 	}
 	defer cache.Redis.Close()
-	addr := fmt.Sprintf("%s:%d", dormServer.Config.GetString("server.host"), dormServer.Config.GetInt("server.port"))
+	addr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("failed to initialize TCP listener: %v", err)
 	}
-	server := grpc.NewServer()
-	pb.RegisterDormServer(server, dormServer)
+	grpcServer := grpc.NewServer()
+	pb.RegisterDormServer(grpcServer, server)
 	zap.Logger.Infof("server listening at %v", addr)
-	if err := server.Serve(lis); err != nil {
+	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }

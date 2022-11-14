@@ -24,8 +24,10 @@ redis:
   db: 0
 jwt:
   secret: "my_secret"
+  age_hour: 24 # 24 hours
 cookie:
-  token_age: 31536000 # one year
+  access_token_age: 8640 # one day
+  refresh_token_age: 31536000 # one year
 time:
   format: "2006-01-02 15:04:05"
 auth:
@@ -35,3 +37,5 @@ kafka:
     - "101.43.179.27:19092"
   order:
     topic: "order"
+snowflake:
+  node: 1

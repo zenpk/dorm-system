@@ -4,12 +4,12 @@ services:
     image: mysql:latest
     container_name: mysql
     environment:
-      - "MYSQL_ROOT_PASSWORD=root" # root 用户密码
+      - "MYSQL_ROOT_PASSWORD=root"
     ports:
-      - "3306:3306" # 主机端口对应容器 3306 端口
+      - "3306:3306"
     volumes:
-      - db:/var/lib/db # 将 db 中的数据映射到外部 volume
-      - ./scripts:/docker-entrypoint-initdb.d # 根据 scripts/*.sql 进行初始化
+      - db:/var/lib/db
+      - ./scripts:/docker-entrypoint-initdb.d # initialize database from scripts/*.sql
     deploy:
       restart_policy:
         condition: on-failure
@@ -21,9 +21,9 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - db:/data # https://hub.docker.com/_/redis/
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis.conf:/usr/local/etc/redis/redis.conf # initialize Redis from ./redis.conf
     deploy:
       restart_policy:
         condition: on-failure
 volumes:
-  db: # 外部 volume，确保 container 销毁后数据依然保留
+  db:
