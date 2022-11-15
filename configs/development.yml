@@ -25,9 +25,11 @@ redis:
 jwt:
   secret: "my_secret"
   age_hour: 24 # 24 hours
+refresh_token:
+  age_hour: 720 # 30 days
 cookie:
-  access_token_age: 8640 # one day
-  refresh_token_age: 31536000 # one year
+  access_token_age: 86400 # 1 day
+  refresh_token_age: 2592000 # 1 month
 time:
   format: "2006-01-02 15:04:05"
 auth:

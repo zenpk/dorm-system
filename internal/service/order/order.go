@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/Shopify/sarama"
 	"github.com/zenpk/dorm-system/internal/dal"
-	"github.com/zenpk/dorm-system/pkg/ep"
 )
 
 func Submit(message *sarama.ConsumerMessage) error {
@@ -56,16 +55,16 @@ func Submit(message *sarama.ConsumerMessage) error {
 }
 
 func checkStudent(teamGender string, student *dal.User) error {
-	if student.DormId != 0 {
-		errPack := ep.ErrInputBody
-		errPack.Msg = "someone already has a dorm"
-		return errPack
-	}
-	if student.Gender != teamGender {
-		errPack := ep.ErrInputBody
-		errPack.Msg = "genders must be the same"
-		return errPack
-	}
+	//if student.DormId != 0 {
+	//	errPack := ep.ErrInputBody
+	//	errPack.Msg = "someone already has a dorm"
+	//	return errPack
+	//}
+	//if student.Gender != teamGender {
+	//	errPack := ep.ErrInputBody
+	//	errPack.Msg = "genders must be the same"
+	//	return errPack
+	//}
 	return nil
 }
 

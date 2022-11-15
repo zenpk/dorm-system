@@ -57,7 +57,7 @@ func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserRep
 		errPack.Msg = "wrong password"
 		return nil, errPack
 	}
-	user, err := dal.Table.User.FindByCredentialId(ctx, account.Id)
+	user, err := dal.Table.User.FindById(ctx, account.UserId)
 	if err != nil {
 		return nil, ep.ErrNoRecord
 	}

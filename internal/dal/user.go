@@ -23,11 +23,6 @@ func (u *User) FindAll(ctx context.Context) ([]*User, error) {
 	return users, DB.WithContext(ctx).Find(&users).Error
 }
 
-func (u *User) FindByCredentialId(ctx context.Context, userId uint64) (*User, error) {
-	user := new(User)
-	return user, DB.WithContext(ctx).Where("user_id = ?", userId).First(&user).Error
-}
-
 func (u *User) FindByStudentNum(ctx context.Context, studentNum string) (*User, error) {
 	user := new(User)
 	return user, DB.WithContext(ctx).Where("student_num = ?", studentNum).First(&user).Error

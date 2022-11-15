@@ -25,7 +25,7 @@ func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, 
 		return 0, errors.New("building unavailable")
 	}
 	var sum int64
-	return sum, DB.WithContext(ctx).Model(&Dorm{}).Where("building_id = ?", id).Select("SUM(available)").Row().Scan(&sum)
+	return sum, DB.WithContext(ctx).Model(&Dorm{}).Where("building_id = ?", id).Select("SUM(remain_cnt)").Row().Scan(&sum)
 }
 
 func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gender string) (*Dorm, error) {

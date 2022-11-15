@@ -1,33 +1,23 @@
 import random
-import string
-import util
+import account
 from faker import Faker
 
-cnx = util.connect_db()
-cursor = cnx.cursor()
-insert = (
-    "INSERT INTO `user_infos` (`user_credential_id`,`username`,`student_id`,`gender`,`name`)"
-    "VALUE (%s,%s,%s,%s,%s);"
-)
-fake = Faker("zh_CN")
 
-insert_data = []
-for i in range(1, 1001):
-    credential_id = str(i)
-    student_id = str(i)
-    username = ''.join(random.choices(string.ascii_letters, k=6))
-    odd = random.random()
-    if odd < 0.5:
-        gender = '男'
-    else:
-        gender = '女'
-    name = fake.name()
-    insert_data.append([credential_id, username, student_id, gender, name])
-
-print(len(insert_data))
-cursor.executemany(insert, insert_data)
-
-cnx.commit()
-cursor.close()
-cnx.close()
-print('finish')
+def create(cursor):
+    sql = (
+        "INSERT INTO `users` (`student_num`,`name`,`gender`)"
+        "VALUE (%s,%s,%s);"
+    )
+    fake = Faker("zh_CN")
+    for i in range(1, 1001):
+        student_num = str(i)
+        odd = random.random()
+        if odd < 0.5:
+            gender = '男'
+        else:
+            gender = '女'
+        name = fake.name()
+        cursor.execute(sql, [student_num, name, gender])
+        user_id = cursor.lastrowid
+        account.create(cursor, user_id)
+    print('users finished')

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/bwmarrin/snowflake"
 	"github.com/spf13/viper"
+	"github.com/zenpk/dorm-system/internal/util"
 	"time"
 )
 
@@ -21,10 +22,15 @@ func (t *Token) GenNew(ctx context.Context, id uint64) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	createTime := util.GetUTCTime()
+	age := time.Duration(viper.GetInt64("refresh_token.age_hour")) * time.Hour
+	expTime := createTime.Add(age)
 	snowflakeId := node.Generate()
 	token := &Token{
 		RefreshToken: snowflakeId.Base64(),
 		UserId:       id,
+		CreateTime:   &createTime,
+		ExpTime:      &expTime,
 	}
 	return token.RefreshToken, DB.WithContext(ctx).Create(&token).Error
 }
