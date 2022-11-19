@@ -12,9 +12,11 @@ import (
 	"log"
 )
 
+var (
+	mode = flag.String("mode", "development", "define program mode")
+)
+
 func main() {
-	// read mode from commandline, default as development
-	mode := flag.String("mode", "development", "define program mode")
 	flag.Parse()
 	// Viper
 	if err := viperpkg.InitGlobalConfig(*mode); err != nil {
@@ -46,9 +48,10 @@ func main() {
 		defer conn.Close()
 	}
 	// Kafka
-	if err := mq.InitProducer(); err != nil {
-		log.Fatalf("failed to init Kafka producer: %v", err)
+	if err := mq.InitMQ(); err != nil {
+		log.Fatalf("failed to init Kafka: %v", err)
 	}
+	defer mq.ClusterAdmin.Close()
 	// Gin
 	if err := controller.InitGin(); err != nil {
 		log.Fatalf("failed to initialize Gin: %v", err)

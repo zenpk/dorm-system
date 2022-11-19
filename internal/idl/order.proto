@@ -10,10 +10,7 @@ service Order{
 
 message OrderRequest{
   string buildingNum = 1;
-  string studentNum1 = 2;
-  string studentNum2 = 3;
-  string studentNum3 = 4;
-  string studentNum4 = 5;
+  string teamId = 2;
 }
 
 message OrderReply{

@@ -12,8 +12,11 @@ import (
 	"net"
 )
 
+var (
+	mode = flag.String("mode", "development", "define program mode")
+)
+
 func main() {
-	mode := flag.String("mode", "development", "define program mode")
 	flag.Parse()
 	// Viper
 	if err := viperpkg.InitGlobalConfig(*mode); err != nil {

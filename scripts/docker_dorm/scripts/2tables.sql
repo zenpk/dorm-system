@@ -36,8 +36,9 @@ CREATE TABLE `orders`
     `building_id` bigint unsigned NOT NULL,
     `dorm_id`     bigint unsigned NOT NULL DEFAULT 0,
     `team_id`     bigint unsigned NOT NULL,
-    `success`     tinyint         NOT NULL DEFAULT 0,
+    `code`        varchar(200)    NOT NULL,
     `info`        varchar(200),
+    `success`     tinyint         NOT NULL DEFAULT 0,
     `deleted`     tinyint         NOT NULL DEFAULT 0
 );
 ALTER TABLE `orders`
@@ -46,6 +47,8 @@ ALTER TABLE `orders`
     ADD INDEX (`dorm_id`);
 ALTER TABLE `orders`
     ADD INDEX (`team_id`);
+ALTER TABLE `orders`
+    ADD INDEX (`code`);
 ALTER TABLE `orders`
     ADD INDEX (`deleted`);
 
@@ -68,7 +71,7 @@ CREATE TABLE `team_users`
 (
     `id`      bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `team_id` bigint unsigned NOT NULL,
-    `user_id`     bigint unsigned NOT NULL,
+    `user_id` bigint unsigned NOT NULL,
     `deleted` tinyint         NOT NULL DEFAULT 0
 );
 ALTER TABLE `team_users`
@@ -81,7 +84,7 @@ ALTER TABLE `team_users`
 CREATE TABLE `accounts`
 (
     `id`       bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `user_id`      bigint unsigned     NOT NULL,
+    `user_id`  bigint unsigned     NOT NULL,
     `username` varchar(200) UNIQUE NOT NULL,
     `password` varchar(200)        NOT NULL,
     `deleted`  tinyint             NOT NULL DEFAULT 0
@@ -99,7 +102,7 @@ CREATE TABLE `users`
     `student_num` varchar(200) UNIQUE NOT NULL,
     `name`        varchar(20)         NOT NULL,
     `gender`      varchar(10)         NOT NULL,
-    `role`        int                 NOT NULL DEFAULT 0,
+    `role`        int                 NOT NULL DEFAULT 1,
     `deleted`     tinyint             NOT NULL DEFAULT 0
 );
 ALTER TABLE `users`
@@ -115,7 +118,7 @@ CREATE TABLE `tokens`
 (
     `id`            bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `refresh_token` varchar(200)    NOT NULL,
-    `user_id`           bigint unsigned NOT NULL,
+    `user_id`       bigint unsigned NOT NULL,
     `create_time`   datetime(3)     NOT NULL,
     `exp_time`      datetime(3)     NOT NULL,
     `deleted`       tinyint         NOT NULL DEFAULT 0

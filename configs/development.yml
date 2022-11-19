@@ -17,6 +17,9 @@ mysql:
   username: "dorm"
   password: "dorm"
   database: "dorm"
+  charset: "utf8mb4"
+  parse_time: "true"
+  loc: "UTC"
 redis:
   host: "101.43.179.27"
   port: 6379
@@ -32,12 +35,13 @@ cookie:
   refresh_token_age: 2592000 # 1 month
 time:
   format: "2006-01-02 15:04:05"
+  zone: 8 # GMT/UTC+8
 auth:
   password_length: 4 # minimal password length
 kafka:
   brokers:
     - "101.43.179.27:19092"
-  order:
-    topic: "order"
+  topics:
+    order: "order"
 snowflake:
   node: 1

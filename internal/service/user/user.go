@@ -20,7 +20,7 @@ func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*User
 	// username duplication check
 	_, err := dal.Table.Account.FindByUsername(ctx, req.Username)
 	if err == nil { // user already exists
-		errPack := ep.ErrDuplicateRecord
+		errPack := ep.ErrDuplicatedRecord
 		errPack.Msg = "user already exists"
 		return nil, errPack
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) { // something went wrong

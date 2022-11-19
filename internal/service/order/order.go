@@ -2,6 +2,7 @@ package order
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/zenpk/dorm-system/internal/dal"
 )
@@ -11,47 +12,8 @@ func Submit(message *sarama.ConsumerMessage) error {
 	if err := json.Unmarshal(message.Value, &req); err != nil {
 		return err
 	}
-	order := &dal.Order{}
-	//student1, err := dal.Table.User.FindByStudentNum(nil, req.StudentNum2)
-	//if err != nil {
-	//	return err
-	//}
-	//if err := checkStudent(student1.Gender, student1); err != nil {
-	//	return err
-	//}
-	//order.StudentId1 = student1.Id
-	//if len(req.StudentNum2) > 0 {
-	//	student2, err := dal.Table.User.FindByStudentNum(nil, req.StudentNum2)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	if err := checkStudent(student1.Gender, student2); err != nil {
-	//		return err
-	//	}
-	//	order.StudentId2 = student2.Id
-	//}
-	//if len(req.StudentNum3) > 0 {
-	//	student3, err := dal.Table.User.FindByStudentNum(nil, req.StudentNum3)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	if err := checkStudent(student1.Gender, student3); err != nil {
-	//		return err
-	//	}
-	//	order.StudentId3 = student3.Id
-	//}
-	//if len(req.StudentNum4) > 0 {
-	//	student4, err := dal.Table.User.FindByStudentNum(nil, req.StudentNum4)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	if err := checkStudent(student1.Gender, student4); err != nil {
-	//		return err
-	//	}
-	//	order.StudentId4 = student4.Id
-	//}
-	return dal.Table.Order.Create(nil, order)
-	// TODO
+	fmt.Println(req)
+	return nil
 }
 
 func checkStudent(teamGender string, student *dal.User) error {

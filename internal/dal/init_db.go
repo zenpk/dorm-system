@@ -10,12 +10,15 @@ import (
 var DB *gorm.DB
 
 func InitDB() error {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=%s&loc=%s",
 		viper.GetString("mysql.username"),
 		viper.GetString("mysql.password"),
 		viper.GetString("mysql.host"),
 		viper.GetString("mysql.port"),
 		viper.GetString("mysql.database"),
+		viper.GetString("mysql.charset"),
+		viper.GetString("mysql.parse_time"),
+		viper.GetString("mysql.loc"),
 	)
 	// GORM connect to DB
 	var err error

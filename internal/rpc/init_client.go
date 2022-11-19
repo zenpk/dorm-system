@@ -6,14 +6,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-type ClientSet struct {
-	Dorm  Dorm
-	Token Token
-	User  User
-}
-
-var Client ClientSet
-
 // InitClient initialize RPC clients and return all connections
 func InitClient() ([]*grpc.ClientConn, error) {
 	connList := make([]*grpc.ClientConn, 0)

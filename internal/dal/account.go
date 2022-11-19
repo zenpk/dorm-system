@@ -1,6 +1,9 @@
 package dal
 
-import "context"
+import (
+	"context"
+	"gorm.io/gorm"
+)
 
 type Account struct {
 	Id       uint64 `gorm:"primaryKey"`
@@ -29,20 +32,26 @@ func (a *Account) Update(ctx context.Context, account *Account) error {
 	return DB.WithContext(ctx).Save(&account).Error
 }
 
-// RegisterNewUser register a new Account along with a linked User
+// RegisterNewUser register a new Account along with a linked User, using transaction
 func (a *Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (*User, error) {
-	// create User and get uid
 	user := &User{}
-	if err := user.Create(ctx, user); err != nil {
+	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// create User and get uid
+		if err := tx.WithContext(ctx).Create(&user).Error; err != nil {
+			return err
+		}
+		account := &Account{
+			UserId:   user.Id,
+			Username: username,
+			Password: passwordHash,
+		}
+		if err := DB.WithContext(ctx).Create(&account).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
 		return nil, err
 	}
-	account := &Account{
-		UserId:   user.Id,
-		Username: username,
-		Password: passwordHash,
-	}
-	if err := DB.WithContext(ctx).Create(&account).Error; err != nil {
-		return nil, err
-	}
-	return user, nil
+	return user, err
 }

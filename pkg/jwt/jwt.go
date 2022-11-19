@@ -16,7 +16,7 @@ type MyCustomClaims struct {
 
 // GenToken generate JWT from user infos with secret
 func GenToken(claims *MyCustomClaims) (string, error) {
-	age := time.Duration(viper.GetUint64("jwt.age_hour")) * time.Hour
+	age := time.Duration(viper.GetInt64("jwt.age_hour")) * time.Hour
 	customClaims := MyCustomClaims{
 		jwt.RegisteredClaims{
 			// Also fixed dates can be used for the NumericDate

@@ -7,8 +7,9 @@ type Order struct {
 	BuildingId uint64 `gorm:"not null; index"`
 	DormId     uint64 `gorm:"not null; default:0; index"`
 	TeamId     uint64 `gorm:"not null; index"`
-	Success    bool   `gorm:"not null; default:0"`
+	Code       string `gorm:"not null; index"`
 	Info       string
+	Success    bool `gorm:"not null; default:0"`
 	Deleted    bool `gorm:"not null; default:0; index"`
 }
 

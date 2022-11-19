@@ -5,9 +5,22 @@ import (
 	"time"
 )
 
-// TimeToString time.Time -> string
+// TimeToString UTC time.Time -> local time string
 func TimeToString(t time.Time) string {
-	return t.Format(viper.GetString("time.format"))
+	offset := viper.GetInt("time.zone")
+	newT := ParseUTCTime(t, offset)
+	return newT.Format(viper.GetString("time.format"))
+}
+
+// StringToTime local time string -> UTC time.Time
+func StringToTime(str string) (time.Time, error) {
+	offset := viper.GetInt("time.zone")
+	t, err := time.Parse(viper.GetString("time.format"), str)
+	if err != nil {
+		return time.Time{}, err
+	}
+	newT := FormatUTCTime(t, offset)
+	return newT, nil
 }
 
 // GetUTCTime UTC format time now
@@ -16,7 +29,13 @@ func GetUTCTime() time.Time {
 }
 
 // ParseUTCTime UTC -> local time
-func ParseUTCTime(t *time.Time, offset int) time.Time {
+func ParseUTCTime(t time.Time, offset int) time.Time {
 	newT := t.Add(time.Hour * time.Duration(offset))
+	return newT
+}
+
+// FormatUTCTime local time -> UTC
+func FormatUTCTime(t time.Time, offset int) time.Time {
+	newT := t.Add(time.Hour * time.Duration(-offset))
 	return newT
 }
