@@ -13,6 +13,7 @@ func InitRouter(router *gin.Engine) {
 	router.POST("/login", ginHandler.user.Login)
 	router.POST("/register", ginHandler.user.Register)
 	router.GET("/available", ginHandler.dorm.GetAvailableNum)
+	router.POST("/order-create", ginHandler.order.Submit)
 
 	// login required URL
 	routerAuth := router.Group("/")
@@ -20,9 +21,8 @@ func InitRouter(router *gin.Engine) {
 	{
 		//router.GET("/my-info", ginHandler.userInfo.GetMyInfo)
 		//router.PATCH("/change-password", ginHandler.user.UpdatePassword)
-		router.GET("/logout", ginHandler.user.Logout)
-		router.POST("/order-create", ginHandler.order.Submit)
-		router.POST("/team-create", ginHandler.team.Create)
+		routerAuth.GET("/logout", ginHandler.user.Logout)
+		routerAuth.POST("/team-create", ginHandler.team.Create)
 	}
 
 	// admin required URL

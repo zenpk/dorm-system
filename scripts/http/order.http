@@ -1,0 +1,7 @@
+### create
+POST {{url}}/order-create
+Content-Type: application/json
+
+{
+  "buildingNum": "183652"
+}

@@ -20,20 +20,27 @@ type OrderProducer struct {
 // init create topic and producer
 func (o *OrderProducer) init(c *viper.Viper) error {
 	o.config = c
-	// create topic
-	detail := &sarama.TopicDetail{
-		NumPartitions:     1,
-		ReplicationFactor: 1,
-	}
-	if err := ClusterAdmin.CreateTopic(o.config.GetString("kafka.topic"), detail, false); err != nil {
+	// check if topic exists
+	topicMap, err := ClusterAdmin.ListTopics()
+	if err != nil {
 		return err
+	}
+	topic := o.config.GetString("kafka.topic")
+	if _, ok := topicMap[topic]; !ok { // topic doesn't exist
+		// create topic
+		detail := &sarama.TopicDetail{
+			NumPartitions:     1,
+			ReplicationFactor: 1,
+		}
+		if err := ClusterAdmin.CreateTopic(topic, detail, false); err != nil {
+			return err
+		}
 	}
 	// create producer
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForLocal       // Only wait for the leader to ack
 	config.Producer.Compression = sarama.CompressionSnappy   // Compress messages
 	config.Producer.Flush.Frequency = 500 * time.Millisecond // Flush batches every 500ms
-	var err error
 	o.producer, err = sarama.NewAsyncProducer(o.config.GetStringSlice("kafka.brokers"), config)
 	return err
 }
