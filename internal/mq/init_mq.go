@@ -2,25 +2,29 @@ package mq
 
 import (
 	"github.com/Shopify/sarama"
-	"github.com/spf13/viper"
+	"github.com/zenpk/dorm-system/pkg/viperpkg"
 )
 
 var ClusterAdmin sarama.ClusterAdmin
 
 func InitMQ() error {
-	// Init ClusterAdmin
-	config := sarama.NewConfig()
-	var err error
-	ClusterAdmin, err = sarama.NewClusterAdmin(viper.GetStringSlice("kafka.broker"), config)
+	// initialize cluster
+	// read all configs
+	brokers := make([]string, 0)
+	orderConfig, err := viperpkg.InitConfig("order")
 	if err != nil {
 		return err
 	}
-	return InitProducer()
-}
+	brokers = append(brokers, orderConfig.GetStringSlice("kafka.brokers")...)
+	config := sarama.NewConfig()
+	ClusterAdmin, err = sarama.NewClusterAdmin(brokers, config)
+	if err != nil {
+		return err
+	}
 
-// InitProducer initialize all producers
-func InitProducer() error {
-	if err := Producer.Order.Init(); err != nil {
+	// initialize producers
+	// order
+	if err := Producer.Order.init(orderConfig); err != nil {
 		return err
 	}
 	return nil

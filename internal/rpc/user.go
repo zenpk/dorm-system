@@ -9,8 +9,8 @@ import (
 )
 
 type User struct {
-	client pb.UserClient
 	config *viper.Viper
+	client pb.UserClient
 }
 
 func (u *User) init(config *viper.Viper) (*grpc.ClientConn, error) {

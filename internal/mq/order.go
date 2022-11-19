@@ -1,12 +1,11 @@
 package mq
 
 import (
-	"encoding/json"
 	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
-	"github.com/zenpk/dorm-system/internal/dto"
 	"github.com/zenpk/dorm-system/internal/service/order"
 	"github.com/zenpk/dorm-system/pkg/zap"
+	"google.golang.org/protobuf/proto"
 	"log"
 	"os"
 	"os/signal"
@@ -14,55 +13,56 @@ import (
 )
 
 type OrderProducer struct {
-	Producer sarama.AsyncProducer
+	config   *viper.Viper
+	producer sarama.AsyncProducer
 }
 
-// Init create topic and initialize producer
-func (o *OrderProducer) Init() error {
+// init create topic and producer
+func (o *OrderProducer) init(c *viper.Viper) error {
+	o.config = c
 	// create topic
 	detail := &sarama.TopicDetail{
 		NumPartitions:     1,
 		ReplicationFactor: 1,
 	}
-	if err := ClusterAdmin.CreateTopic(viper.GetString("kafka.topics.order"), detail, false); err != nil {
+	if err := ClusterAdmin.CreateTopic(o.config.GetString("kafka.topic"), detail, false); err != nil {
 		return err
 	}
-	return o.initProducer()
-}
-
-func (o *OrderProducer) initProducer() error {
+	// create producer
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForLocal       // Only wait for the leader to ack
 	config.Producer.Compression = sarama.CompressionSnappy   // Compress messages
 	config.Producer.Flush.Frequency = 500 * time.Millisecond // Flush batches every 500ms
 	var err error
-	o.Producer, err = sarama.NewAsyncProducer(viper.GetStringSlice("kafka.brokers"), config)
+	o.producer, err = sarama.NewAsyncProducer(o.config.GetStringSlice("kafka.brokers"), config)
 	return err
 }
 
-func (o *OrderProducer) Send(req *dto.OrderRequest) error {
-	reqByte, err := json.Marshal(req)
+func (o *OrderProducer) Send(req *order.OrderRequest) error {
+	reqByte, err := proto.Marshal(req)
 	if err != nil {
 		return err
 	}
 	msg := &sarama.ProducerMessage{
-		Topic: viper.GetString("kafka.order.topic"),
+		Topic: o.config.GetString("kafka.topic"),
 		Value: sarama.ByteEncoder(reqByte),
 	}
-	o.Producer.Input() <- msg
+	o.producer.Input() <- msg
 	return nil
 }
 
 type OrderConsumer struct {
-	Consumer sarama.Consumer
+	config   *viper.Viper
+	consumer sarama.Consumer
 }
 
 // Init consumer and subscribe
-func (o *OrderConsumer) Init() error {
+func (o *OrderConsumer) Init(c *viper.Viper) error {
+	o.config = c
 	// init consumer
 	config := sarama.NewConfig()
 	var err error
-	o.Consumer, err = sarama.NewConsumer(viper.GetStringSlice("kafka.brokers"), config)
+	o.consumer, err = sarama.NewConsumer(o.config.GetStringSlice("kafka.brokers"), config)
 	if err != nil {
 		return err
 	}
@@ -71,16 +71,16 @@ func (o *OrderConsumer) Init() error {
 
 func (o *OrderConsumer) subscribe() error {
 	defer func() {
-		if err := o.Consumer.Close(); err != nil {
+		if err := o.consumer.Close(); err != nil {
 			log.Fatalf("failed to close consumer: %v", err)
 		}
 	}()
-	partitionList, err := o.Consumer.Partitions(viper.GetString("kafka.topics.order"))
+	partitionList, err := o.consumer.Partitions(o.config.GetString("kafka.topic"))
 	if err != nil {
 		return err
 	}
 	for _, partition := range partitionList {
-		partitionConsumer, err := o.Consumer.ConsumePartition(viper.GetString("kafka.topics.order"), partition, sarama.OffsetOldest)
+		partitionConsumer, err := o.consumer.ConsumePartition(o.config.GetString("kafka.topic"), partition, sarama.OffsetOldest)
 		if err != nil {
 			return err
 		}

@@ -10,7 +10,7 @@ service Order{
 
 message OrderRequest{
   string buildingNum = 1;
-  string teamId = 2;
+  uint64 teamId = 2;
 }
 
 message OrderReply{

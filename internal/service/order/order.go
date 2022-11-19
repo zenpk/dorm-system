@@ -1,18 +1,19 @@
 package order
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/zenpk/dorm-system/internal/dal"
+	"google.golang.org/protobuf/proto"
 )
 
 func Submit(message *sarama.ConsumerMessage) error {
 	var req OrderRequest
-	if err := json.Unmarshal(message.Value, &req); err != nil {
+	if err := proto.Unmarshal(message.Value, &req); err != nil {
 		return err
 	}
-	fmt.Println(req)
+	fmt.Println(req.BuildingNum)
+	fmt.Println(req.TeamId)
 	return nil
 }
 

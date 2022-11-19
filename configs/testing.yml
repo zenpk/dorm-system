@@ -31,10 +31,5 @@ time:
   zone: 8 # GMT/UTC+8
 auth:
   password_length: 4 # minimal password length
-kafka:
-  brokers:
-    - "101.43.179.27:19092"
-  topics:
-    order: "order"
 snowflake:
   node: 1

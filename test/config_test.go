@@ -7,5 +7,5 @@ import (
 )
 
 func TestViper(t *testing.T) {
-	log.Println(rpc.InitClient())
+	log.Println(rpc.InitClients())
 }

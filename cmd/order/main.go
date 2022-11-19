@@ -19,6 +19,10 @@ func main() {
 	if err := viperpkg.InitGlobalConfig(*mode); err != nil {
 		log.Fatalf("failed to initialize Viper: %v", err)
 	}
+	orderConfig, err := viperpkg.InitConfig("order")
+	if err != nil {
+		log.Fatalf("failed to initialize specified config: %v", err)
+	}
 	// zap
 	if err := zap.InitLogger("order"); err != nil {
 		log.Fatalf("failed to initialize zap: %v", err)
@@ -29,7 +33,7 @@ func main() {
 		log.Fatalf("failed to initialize database: %v", err)
 	}
 	zap.Logger.Infof("order consumer is subscribed")
-	if err := mq.Consumer.Order.Init(); err != nil {
+	if err := mq.Consumer.Order.Init(orderConfig); err != nil {
 		log.Fatalf("failed to initialize consumer: %v", err)
 	}
 }

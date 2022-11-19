@@ -6,8 +6,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-// InitClient initialize RPC clients and return all connections
-func InitClient() ([]*grpc.ClientConn, error) {
+// InitClients initialize RPC clients and return all connections
+func InitClients() ([]*grpc.ClientConn, error) {
 	connList := make([]*grpc.ClientConn, 0)
 	path, err := gmp.GetModPath()
 	if err != nil {

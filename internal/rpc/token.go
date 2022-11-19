@@ -9,8 +9,8 @@ import (
 )
 
 type Token struct {
-	client pb.TokenClient
 	config *viper.Viper
+	client pb.TokenClient
 }
 
 func (t *Token) init(config *viper.Viper) (*grpc.ClientConn, error) {

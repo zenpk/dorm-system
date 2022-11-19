@@ -9,8 +9,8 @@ import (
 )
 
 type Dorm struct {
-	client pb.DormClient
 	config *viper.Viper
+	client pb.DormClient
 }
 
 func (d *Dorm) init(config *viper.Viper) (*grpc.ClientConn, error) {

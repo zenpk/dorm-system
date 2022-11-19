@@ -40,7 +40,7 @@ func main() {
 		log.Fatalf("failed to warming Redis: %v", err)
 	}
 	// RPC connections
-	connList, err := rpc.InitClient()
+	connList, err := rpc.InitClients()
 	if err != nil {
 		log.Fatalf("failed to initialize RPC clients: %v", err)
 	}
