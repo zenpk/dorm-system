@@ -22,7 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderClient interface {
-	Submit(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderReply, error)
+	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitReply, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error)
 }
 
 type orderClient struct {
@@ -33,9 +34,18 @@ func NewOrderClient(cc grpc.ClientConnInterface) OrderClient {
 	return &orderClient{cc}
 }
 
-func (c *orderClient) Submit(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderReply, error) {
-	out := new(OrderReply)
+func (c *orderClient) Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitReply, error) {
+	out := new(SubmitReply)
 	err := c.cc.Invoke(ctx, "/order.Order/Submit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error) {
+	out := new(GetReply)
+	err := c.cc.Invoke(ctx, "/order.Order/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +56,8 @@ func (c *orderClient) Submit(ctx context.Context, in *OrderRequest, opts ...grpc
 // All implementations must embed UnimplementedOrderServer
 // for forward compatibility
 type OrderServer interface {
-	Submit(context.Context, *OrderRequest) (*OrderReply, error)
+	Submit(context.Context, *SubmitRequest) (*SubmitReply, error)
+	Get(context.Context, *GetRequest) (*GetReply, error)
 	mustEmbedUnimplementedOrderServer()
 }
 
@@ -54,8 +65,11 @@ type OrderServer interface {
 type UnimplementedOrderServer struct {
 }
 
-func (UnimplementedOrderServer) Submit(context.Context, *OrderRequest) (*OrderReply, error) {
+func (UnimplementedOrderServer) Submit(context.Context, *SubmitRequest) (*SubmitReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Submit not implemented")
+}
+func (UnimplementedOrderServer) Get(context.Context, *GetRequest) (*GetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedOrderServer) mustEmbedUnimplementedOrderServer() {}
 
@@ -71,7 +85,7 @@ func RegisterOrderServer(s grpc.ServiceRegistrar, srv OrderServer) {
 }
 
 func _Order_Submit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OrderRequest)
+	in := new(SubmitRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -83,7 +97,25 @@ func _Order_Submit_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/order.Order/Submit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServer).Submit(ctx, req.(*OrderRequest))
+		return srv.(OrderServer).Submit(ctx, req.(*SubmitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.Order/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).Get(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -98,6 +130,10 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Submit",
 			Handler:    _Order_Submit_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _Order_Get_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

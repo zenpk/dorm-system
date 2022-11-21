@@ -8,7 +8,7 @@ import (
 )
 
 func Submit(message *sarama.ConsumerMessage) error {
-	var req OrderRequest
+	var req SubmitRequest
 	if err := proto.Unmarshal(message.Value, &req); err != nil {
 		return err
 	}

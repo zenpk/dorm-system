@@ -11,14 +11,14 @@ import (
 type Order struct{}
 
 func (o *Order) Submit(c *gin.Context) {
-	var req dto.OrderRequest
+	var req dto.OrderSubmitReq
 	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.PackWithError(err))
 		return
 	}
 	// TODO
-	reqPb := &pb.OrderRequest{
+	reqPb := &pb.SubmitRequest{
 		BuildingNum: req.BuildingNum,
 		TeamId:      0,
 	}

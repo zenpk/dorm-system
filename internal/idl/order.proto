@@ -5,14 +5,32 @@ option go_package = "github.com/zenpk/dorm-system/internal/service/order";
 import "common.proto";
 
 service Order{
-  rpc Submit (OrderRequest) returns(OrderReply){}
+  rpc Submit (SubmitRequest) returns(SubmitReply){}
+  rpc Get(GetRequest) returns (GetReply){}
 }
 
-message OrderRequest{
+message SubmitRequest{
   string buildingNum = 1;
   uint64 teamId = 2;
 }
 
-message OrderReply{
+message SubmitReply{
   common.CommonResponse resp = 1;
+}
+
+message GetRequest{
+  uint64 teamId = 1;
+}
+
+message GetReply{
+  repeated OrderInfo infos = 1;
+}
+
+message OrderInfo{
+  uint64 id = 1;
+  string buildingNum = 2;
+  string dormNum = 3;
+  string info = 4;
+  bool success = 5;
+  bool deleted = 6;
 }

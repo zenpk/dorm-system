@@ -45,7 +45,7 @@ func (o *OrderProducer) init(c *viper.Viper) error {
 	return err
 }
 
-func (o *OrderProducer) Send(req *order.OrderRequest) error {
+func (o *OrderProducer) Send(req *order.SubmitRequest) error {
 	reqByte, err := proto.Marshal(req)
 	if err != nil {
 		return err

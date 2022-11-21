@@ -1,5 +1,5 @@
 package dto
 
-type OrderRequest struct {
+type OrderSubmitReq struct {
 	BuildingNum string `json:"buildingNum,omitempty"`
 }
