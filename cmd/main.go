@@ -6,7 +6,6 @@ import (
 	"github.com/zenpk/dorm-system/internal/controller"
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/mq"
-	"github.com/zenpk/dorm-system/internal/rpc"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"log"
@@ -40,13 +39,13 @@ func main() {
 		log.Fatalf("failed to warming Redis: %v", err)
 	}
 	// RPC connections
-	connList, err := rpc.InitClients()
-	if err != nil {
-		log.Fatalf("failed to initialize RPC clients: %v", err)
-	}
-	for _, conn := range connList {
-		defer conn.Close()
-	}
+	//connList, err := rpc.InitClients()
+	//if err != nil {
+	//	log.Fatalf("failed to initialize RPC clients: %v", err)
+	//}
+	//for _, conn := range connList {
+	//	defer conn.Close()
+	//}
 	// Kafka
 	if err := mq.InitMQ(); err != nil {
 		log.Fatalf("failed to init Kafka: %v", err)

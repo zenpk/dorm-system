@@ -3,17 +3,19 @@ package dal
 import (
 	"context"
 	"errors"
+	"gorm.io/gorm"
 )
 
 type Dorm struct {
-	Id         uint64 `gorm:"primaryKey" json:"-"`
-	Num        string `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
-	BuildingId uint64 `gorm:"not null; index" json:"buildingId,omitempty"`
-	Gender     string `gorm:"size:10; not null" json:"gender,omitempty"`
-	RemainCnt  uint64 `gorm:"not null" json:"remainCnt,omitempty"`
-	BedCnt     uint64 `gorm:"not null" json:"bedCnt,omitempty"`
-	Enabled    bool   `gorm:"not null; default:1; index" json:"enabled,omitempty"`
-	Info       string `json:"info,omitempty"`
+	Id         uint64         `gorm:"primaryKey" json:"-"`
+	Num        string         `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
+	BuildingId uint64         `gorm:"not null; index" json:"buildingId,omitempty"`
+	Gender     string         `gorm:"size:10; not null" json:"gender,omitempty"`
+	RemainCnt  uint64         `gorm:"not null" json:"remainCnt,omitempty"`
+	BedCnt     uint64         `gorm:"not null" json:"bedCnt,omitempty"`
+	Info       string         `json:"info,omitempty"`
+	Enabled    bool           `gorm:"not null; default:1; index" json:"enabled,omitempty"`
+	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
 func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, error) {

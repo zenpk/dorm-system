@@ -2,15 +2,16 @@ package dal
 
 import (
 	"context"
+	"gorm.io/gorm"
 )
 
 type User struct {
-	Id         uint64 `gorm:"primaryKey" json:"-"`
-	StudentNum string `gorm:"not null; unique; index" json:"studentNum,omitempty"`
-	Name       string `gorm:"size:20; not null; index" json:"name,omitempty"`
-	Gender     string `gorm:"size:10; not null; index" json:"gender,omitempty"`
-	Role       int32  `gorm:"not null; default:1; index" json:"-"`
-	Deleted    uint64 `gorm:"not null; default:0; index"`
+	Id         uint64         `gorm:"primaryKey" json:"-"`
+	StudentNum string         `gorm:"not null; unique; index" json:"studentNum,omitempty"`
+	Name       string         `gorm:"size:20; not null; index" json:"name,omitempty"`
+	Gender     string         `gorm:"size:10; not null; index" json:"gender,omitempty"`
+	Role       int32          `gorm:"not null; default:1; index" json:"-"`
+	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
 func (u *User) FindById(ctx context.Context, userId uint64) (*User, error) {

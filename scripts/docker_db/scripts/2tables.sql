@@ -7,8 +7,9 @@ CREATE TABLE `dorms`
     `gender`      varchar(10)        NOT NULL,
     `remain_cnt`  bigint unsigned    NOT NULL,
     `bed_cnt`     bigint unsigned    NOT NULL,
+    `info`        varchar(200),
     `enabled`     tinyint            NOT NULL DEFAULT 1,
-    `info`        varchar(200)
+    `deleted`     datetime(3)
 );
 ALTER TABLE `dorms`
     ADD INDEX (`num`);
@@ -16,19 +17,24 @@ ALTER TABLE `dorms`
     ADD INDEX (`building_id`);
 ALTER TABLE `dorms`
     ADD INDEX (`enabled`);
+ALTER TABLE `dorms`
+    ADD INDEX (`deleted`);
 
 CREATE TABLE `buildings`
 (
     `id`        bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `num`       varchar(10) UNIQUE NOT NULL,
-    `enabled`   tinyint            NOT NULL DEFAULT 1,
     `image_url` varchar(200),
-    `info`      varchar(200)
+    `info`      varchar(200),
+    `enabled`   tinyint            NOT NULL DEFAULT 1,
+    `deleted`   datetime(3)
 );
 ALTER TABLE `buildings`
     ADD INDEX (`num`);
 ALTER TABLE `buildings`
     ADD INDEX (`enabled`);
+ALTER TABLE `buildings`
+    ADD INDEX (`deleted`);
 
 CREATE TABLE `orders`
 (
@@ -39,7 +45,7 @@ CREATE TABLE `orders`
     `code`        varchar(200)    NOT NULL,
     `info`        varchar(200),
     `success`     tinyint         NOT NULL DEFAULT 0,
-    `deleted`     tinyint         NOT NULL DEFAULT 0
+    `deleted`     datetime(3)
 );
 ALTER TABLE `orders`
     ADD INDEX (`building_id`);
@@ -58,7 +64,7 @@ CREATE TABLE `teams`
     `code`     varchar(200) UNIQUE    NOT NULL,
     `gender`   varchar(10)            NOT NULL,
     `owner_id` bigint unsigned UNIQUE NOT NULL,
-    `deleted`  tinyint                NOT NULL DEFAULT 0
+    `deleted`  datetime(3)
 );
 ALTER TABLE `teams`
     ADD INDEX (`code`);
@@ -72,7 +78,7 @@ CREATE TABLE `team_users`
     `id`      bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `team_id` bigint unsigned NOT NULL,
     `user_id` bigint unsigned NOT NULL,
-    `deleted` tinyint         NOT NULL DEFAULT 0
+    `deleted` datetime(3)
 );
 ALTER TABLE `team_users`
     ADD INDEX (`team_id`);
@@ -87,7 +93,7 @@ CREATE TABLE `accounts`
     `user_id`  bigint unsigned     NOT NULL,
     `username` varchar(200) UNIQUE NOT NULL,
     `password` varchar(200)        NOT NULL,
-    `deleted`  tinyint             NOT NULL DEFAULT 0
+    `deleted`  datetime(3)
 );
 ALTER TABLE `accounts`
     ADD INDEX (`user_id`);
@@ -103,7 +109,7 @@ CREATE TABLE `users`
     `name`        varchar(20)         NOT NULL,
     `gender`      varchar(10)         NOT NULL,
     `role`        int                 NOT NULL DEFAULT 1,
-    `deleted`     tinyint             NOT NULL DEFAULT 0
+    `deleted`     datetime(3)
 );
 ALTER TABLE `users`
     ADD INDEX (`name`);
@@ -121,7 +127,7 @@ CREATE TABLE `tokens`
     `user_id`       bigint unsigned NOT NULL,
     `create_time`   datetime(3)     NOT NULL,
     `exp_time`      datetime(3)     NOT NULL,
-    `deleted`       tinyint         NOT NULL DEFAULT 0
+    `deleted`       datetime(3)
 );
 ALTER TABLE `tokens`
     ADD INDEX (`refresh_token`);

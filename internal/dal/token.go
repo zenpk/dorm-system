@@ -5,16 +5,17 @@ import (
 	"github.com/bwmarrin/snowflake"
 	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/internal/util"
+	"gorm.io/gorm"
 	"time"
 )
 
 type Token struct {
-	Id           uint64     `gorm:"primaryKey" json:"-"`
-	RefreshToken string     `gorm:"not null; index" json:"refreshToken,omitempty"`
-	UserId       uint64     `gorm:"not null; index" json:"-"`
-	CreateTime   *time.Time `gorm:"not null" json:"createTime,omitempty"`
-	ExpTime      *time.Time `gorm:"not null" json:"expTime,omitempty"`
-	Deleted      bool       `gorm:"not null; default:0; index" json:"deleted,omitempty"`
+	Id           uint64         `gorm:"primaryKey" json:"-"`
+	RefreshToken string         `gorm:"not null; index" json:"refreshToken,omitempty"`
+	UserId       uint64         `gorm:"not null; index" json:"-"`
+	CreateTime   time.Time      `gorm:"not null" json:"createTime,omitempty"`
+	ExpTime      time.Time      `gorm:"not null" json:"expTime,omitempty"`
+	Deleted      gorm.DeletedAt `gorm:"index"`
 }
 
 func (t *Token) GenNew(ctx context.Context, id uint64) (string, error) {
@@ -29,8 +30,8 @@ func (t *Token) GenNew(ctx context.Context, id uint64) (string, error) {
 	token := &Token{
 		RefreshToken: snowflakeId.Base64(),
 		UserId:       id,
-		CreateTime:   &createTime,
-		ExpTime:      &expTime,
+		CreateTime:   createTime,
+		ExpTime:      expTime,
 	}
 	return token.RefreshToken, DB.WithContext(ctx).Create(&token).Error
 }

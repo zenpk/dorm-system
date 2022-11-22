@@ -4,14 +4,15 @@ import (
 	"context"
 	"github.com/bwmarrin/snowflake"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
 type Team struct {
-	Id      uint64 `gorm:"primaryKey"`
-	Code    string `gorm:"not null; unique; index"`
-	Gender  string `gorm:"size:10; not null"`
-	OwnerId uint64 `gorm:"not null; unique; index"`
-	Deleted bool   `gorm:"not null; default:0; index"`
+	Id      uint64         `gorm:"primaryKey"`
+	Code    string         `gorm:"not null; unique; index"`
+	Gender  string         `gorm:"size:10; not null"`
+	OwnerId uint64         `gorm:"not null; unique; index"`
+	Deleted gorm.DeletedAt `gorm:"index"`
 }
 
 func (t *Team) GenNew(ctx context.Context, owner *User) (*Team, error) {

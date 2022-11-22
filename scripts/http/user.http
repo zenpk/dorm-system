@@ -6,3 +6,9 @@ Content-Type: application/json
   "username": "temp",
   "password": "temp"
 }
+###
+GET {{url}}/aaa
+
+###
+
+GET {{url}}/bbb

@@ -1,6 +1,9 @@
 package dal
 
-import "context"
+import (
+	"context"
+	"gorm.io/gorm"
+)
 
 type Order struct {
 	Id         uint64 `gorm:"primaryKey"`
@@ -9,8 +12,8 @@ type Order struct {
 	TeamId     uint64 `gorm:"not null; index"`
 	Code       string `gorm:"not null; index"`
 	Info       string
-	Success    bool `gorm:"not null; default:0"`
-	Deleted    bool `gorm:"not null; default:0; index"`
+	Success    bool           `gorm:"not null; default:0"`
+	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
 func (o *Order) Create(ctx context.Context, order *Order) error {

@@ -10,6 +10,7 @@ import (
 )
 
 var Logger *zap.SugaredLogger
+var LoggerProd *zap.Logger
 
 func InitLogger(name string) error {
 	path, err := gmp.GetModPath()
@@ -25,10 +26,12 @@ func InitLogger(name string) error {
 		return err
 	}
 	logLevel := zapcore.DebugLevel
-	cores := zapcore.NewTee(
+	developmentCores := zapcore.NewTee(
 		zapcore.NewCore(consoleEncoder, zapcore.AddSync(logFile), logLevel),   // log to file
 		zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), logLevel), // log to console
 	)
-	Logger = zap.New(cores, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel)).Sugar() // only trace at ERROR level
+	productionCore := zapcore.NewCore(consoleEncoder, zapcore.AddSync(logFile), logLevel)
+	Logger = zap.New(developmentCores, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel)).Sugar() // only trace at ERROR level
+	LoggerProd = zap.New(productionCore, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))       // only log to file in production mode
 	return nil
 }
