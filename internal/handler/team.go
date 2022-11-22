@@ -20,7 +20,15 @@ func (t *Team) Create(c *gin.Context) {
 }
 
 func (t *Team) Get(c *gin.Context) {
-	packer := ep.Packer{V: dto.TeamCreateGetResp{}}
+	packer := ep.Packer{V: dto.TeamRespCreateGet{}}
+	userIdStr := cookie.GetUserId(c)
+	userId := util.ParseU64(userIdStr)
+	if userId <= 0 { // userId shouldn't be 0
+		response(c, packer.Pack(ep.ErrInputHeader))
+	}
+}
+func (t *Team) Join(c *gin.Context) {
+	packer := ep.Packer{V: dto.CommonResp{}}
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
 	if userId <= 0 { // userId shouldn't be 0

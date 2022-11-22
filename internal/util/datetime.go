@@ -7,16 +7,20 @@ import (
 
 // TimeToString UTC time.Time -> local time string
 func TimeToString(t time.Time) string {
-	offset := viper.GetInt("time.zone")
+	offset := viper.GetInt("datetime.timezone")
 	newT := ParseUTCTime(t, offset)
-	return newT.Format(viper.GetString("time.format"))
+	return newT.Format(viper.GetString("datetime.format.time"))
 }
 
 // StringToTime local time string -> UTC time.Time
 func StringToTime(str string) (time.Time, error) {
-	offset := viper.GetInt("time.zone")
-	t, err := time.Parse(viper.GetString("time.format"), str)
+	offset := viper.GetInt("datetime.timezone")
+	var t time.Time
+	var err error
+	t, err = time.Parse(viper.GetString("datetime.format.time"), str)
 	if err != nil {
+		// if time format not working, try date format
+		t, err = time.Parse(viper.GetString("datetime.format.date"), str)
 		return time.Time{}, err
 	}
 	newT := FormatUTCTime(t, offset)

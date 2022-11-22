@@ -2,7 +2,7 @@ package dto
 
 import "github.com/zenpk/dorm-system/internal/dal"
 
-type UserGetInfoResp struct {
+type UserRespGet struct {
 	CommonResp
-	UserInfo *dal.User `json:"userInfo,omitempty"`
+	User *dal.User `json:"user,omitempty"`
 }

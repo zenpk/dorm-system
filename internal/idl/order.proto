@@ -23,7 +23,7 @@ message GetRequest{
 }
 
 message GetReply{
-  repeated OrderInfo infos = 1;
+  repeated OrderInfo orders = 1;
 }
 
 message OrderInfo{

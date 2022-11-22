@@ -28,9 +28,11 @@ jwt:
   secret: "my_secret"
 cookie:
   token_age: 31536000 # one year
-time:
-  format: "2006-01-02 15:04:05"
-  zone: 8 # GMT/UTC+8
+datetime:
+  format:
+    date: "2006-01-02"
+    time: "2006-01-02 15:04:05"
+  timezone: 8 # GMT/UTC+8
 auth:
   password_length: 4 # minimal password length
 snowflake:

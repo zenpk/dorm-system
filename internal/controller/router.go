@@ -12,7 +12,7 @@ func InitRouter(router *gin.Engine) {
 	// no middleware URL
 	router.POST("/login", ginHandler.user.Login)
 	router.POST("/register", ginHandler.user.Register)
-	router.GET("/available", ginHandler.dorm.GetAvailableNum)
+	router.GET("/available", ginHandler.dorm.GetAvailableNum) // get the number of available dorms in each building
 
 	// login required URL
 	routerAuth := router.Group("/")
@@ -21,9 +21,11 @@ func InitRouter(router *gin.Engine) {
 		//router.GET("/my-info", ginHandler.userInfo.GetMyInfo)
 		//router.PATCH("/change-password", ginHandler.user.UpdatePassword)
 		routerAuth.GET("/logout", ginHandler.user.Logout)
-		routerAuth.GET("/team", ginHandler.team.Get)
 		routerAuth.POST("/team-create", ginHandler.team.Create)
+		routerAuth.GET("/team", ginHandler.team.Get) // get one's team info
+		routerAuth.POST("/team-join", ginHandler.team.Join)
 		routerAuth.POST("/order-create", ginHandler.order.Submit)
+		routerAuth.GET("/order", ginHandler.order.Get) // get one's team's order info
 	}
 
 	// admin required URL

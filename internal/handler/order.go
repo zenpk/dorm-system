@@ -11,7 +11,7 @@ import (
 type Order struct{}
 
 func (o *Order) Submit(c *gin.Context) {
-	var req dto.OrderSubmitReq
+	var req dto.OrderReqSubmit
 	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.PackWithError(err))
@@ -29,4 +29,8 @@ func (o *Order) Submit(c *gin.Context) {
 	errPack := ep.ErrOK
 	errPack.Msg = "submitted successfully"
 	response(c, packer.Pack(errPack))
+}
+
+func (o *Order) Get(c *gin.Context) {
+	return
 }
