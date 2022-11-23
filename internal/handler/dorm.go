@@ -10,10 +10,10 @@ import (
 
 type Dorm struct{}
 
-func (d *Dorm) GetAvailableNum(c *gin.Context) {
+func (d *Dorm) GetRemainCnt(c *gin.Context) {
 	packer := &ep.Packer{V: dto.CommonResp{}}
 	req := new(pb.EmptyRequest)
-	resp, err := rpc.Client.Dorm.GetAvailableNum(req)
+	resp, err := rpc.Client.Dorm.GetRemainCnt(req)
 	if err != nil {
 		response(c, packer.PackWithError(err))
 		return

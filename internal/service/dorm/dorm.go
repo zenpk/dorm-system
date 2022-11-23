@@ -13,7 +13,7 @@ type Server struct {
 	UnimplementedDormServer
 }
 
-func (s *Server) GetAvailableNum(ctx context.Context, req *EmptyRequest) (*MapReply, error) {
+func (s *Server) GetRemainCnt(ctx context.Context, req *EmptyRequest) (*MapReply, error) {
 	res, err := cache.All.Dorm.GetAvailableNum(ctx)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func (s *Server) GetAvailableNum(ctx context.Context, req *EmptyRequest) (*MapRe
 			Code: ep.ErrOK.Code,
 			Msg:  ep.ErrOK.Msg,
 		},
-		Available: res,
+		RemainCnt: res,
 	}
 	return reply, nil
 }

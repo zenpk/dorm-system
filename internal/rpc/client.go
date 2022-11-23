@@ -1,9 +1,10 @@
 package rpc
 
-type ClientSet struct {
+type AllClient struct {
 	Dorm  Dorm
+	Team  Team
 	Token Token
 	User  User
 }
 
-var Client ClientSet
+var Client AllClient

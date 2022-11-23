@@ -10,7 +10,7 @@ func (d *Dorm) GetAvailableNum(ctx context.Context) (map[string]string, error) {
 		return nil, err
 	}
 	if len(res) == 0 {
-		if err := warmAvailable(); err != nil {
+		if err := warmRemainCnt(); err != nil {
 			return nil, err
 		}
 	}

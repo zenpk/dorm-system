@@ -18,22 +18,21 @@ type Dorm struct {
 	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
-func (d *Dorm) SumAvailableByBuildingId(ctx context.Context, id uint64) (int64, error) {
+func (d *Dorm) SumRemainCntByBuildingId(ctx context.Context, id uint64) (sum int64, err error) {
 	building, err := Table.Building.FindById(ctx, id)
 	if err != nil {
 		return 0, err
 	}
 	if building.Enabled == false {
-		return 0, errors.New("building unavailable")
+		return 0, errors.New("building is not enabled")
 	}
-	var sum int64
-	return sum, DB.WithContext(ctx).Model(&Dorm{}).Where("building_id = ?", id).Select("SUM(remain_cnt)").Row().Scan(&sum)
+	return sum, DB.WithContext(ctx).Model(&Dorm{}).Select("SUM(remain_cnt)").Where("building_id = ?", id).Scan(&sum).Error
 }
 
 func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gender string) (*Dorm, error) {
 	dorm := new(Dorm)
 	// TODO: unable buildings
-	err := DB.WithContext(ctx).Where("building_id = ? AND available > ? AND gender = ?", buildingId, num, gender).First(&dorm).Error
+	err := DB.WithContext(ctx).Where("building_id = ? AND remain_cnt > ? AND gender = ?", buildingId, num, gender).Take(&dorm).Error
 	if err != nil {
 		return nil, err
 	}

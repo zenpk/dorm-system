@@ -5,7 +5,7 @@ type Building struct{}
 //func (b *Building) GetAvailableCount(c *gin.Context) {
 //	id := util.QueryU32(c, "buildingId")
 //	var table *dal.Dorm
-//	sum, err := table.SumAvailableByBuildingId(id)
+//	sum, err := table.SumRemainCntByBuildingId(id)
 //	errHandler := eh.JSONHandler{C: c, V: dto.GetAvailableCountResp{}}
 //	if err != nil {
 //		errHandler.Handle(err)

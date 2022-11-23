@@ -23,7 +23,8 @@ message GetRequest{
 }
 
 message GetReply{
-  repeated OrderInfo orders = 1;
+  common.CommonResponse resp = 1;
+  repeated OrderInfo orders = 2;
 }
 
 message OrderInfo{

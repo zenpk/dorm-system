@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TeamClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateGetReply, error)
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*CreateGetReply, error)
+	Create(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*CreateReply, error)
+	Get(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*GetReply, error)
 	Join(ctx context.Context, in *JoinRequest, opts ...grpc.CallOption) (*JoinReply, error)
 }
 
@@ -35,8 +35,8 @@ func NewTeamClient(cc grpc.ClientConnInterface) TeamClient {
 	return &teamClient{cc}
 }
 
-func (c *teamClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateGetReply, error) {
-	out := new(CreateGetReply)
+func (c *teamClient) Create(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*CreateReply, error) {
+	out := new(CreateReply)
 	err := c.cc.Invoke(ctx, "/team.Team/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -44,8 +44,8 @@ func (c *teamClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc
 	return out, nil
 }
 
-func (c *teamClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*CreateGetReply, error) {
-	out := new(CreateGetReply)
+func (c *teamClient) Get(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*GetReply, error) {
+	out := new(GetReply)
 	err := c.cc.Invoke(ctx, "/team.Team/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -66,8 +66,8 @@ func (c *teamClient) Join(ctx context.Context, in *JoinRequest, opts ...grpc.Cal
 // All implementations must embed UnimplementedTeamServer
 // for forward compatibility
 type TeamServer interface {
-	Create(context.Context, *CreateRequest) (*CreateGetReply, error)
-	Get(context.Context, *GetRequest) (*CreateGetReply, error)
+	Create(context.Context, *CreateGetRequest) (*CreateReply, error)
+	Get(context.Context, *CreateGetRequest) (*GetReply, error)
 	Join(context.Context, *JoinRequest) (*JoinReply, error)
 	mustEmbedUnimplementedTeamServer()
 }
@@ -76,10 +76,10 @@ type TeamServer interface {
 type UnimplementedTeamServer struct {
 }
 
-func (UnimplementedTeamServer) Create(context.Context, *CreateRequest) (*CreateGetReply, error) {
+func (UnimplementedTeamServer) Create(context.Context, *CreateGetRequest) (*CreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedTeamServer) Get(context.Context, *GetRequest) (*CreateGetReply, error) {
+func (UnimplementedTeamServer) Get(context.Context, *CreateGetRequest) (*GetReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedTeamServer) Join(context.Context, *JoinRequest) (*JoinReply, error) {
@@ -99,7 +99,7 @@ func RegisterTeamServer(s grpc.ServiceRegistrar, srv TeamServer) {
 }
 
 func _Team_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRequest)
+	in := new(CreateGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,13 +111,13 @@ func _Team_Create_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/team.Team/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TeamServer).Create(ctx, req.(*CreateRequest))
+		return srv.(TeamServer).Create(ctx, req.(*CreateGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Team_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRequest)
+	in := new(CreateGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func _Team_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{
 		FullMethod: "/team.Team/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TeamServer).Get(ctx, req.(*GetRequest))
+		return srv.(TeamServer).Get(ctx, req.(*CreateGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

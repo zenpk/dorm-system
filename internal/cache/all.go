@@ -1,7 +1,7 @@
 package cache
 
-type CacheSet struct {
+type AllCache struct {
 	Dorm Dorm
 }
 
-var All CacheSet
+var All AllCache

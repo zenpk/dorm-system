@@ -1,0 +1,3 @@
+### temp
+GET {{url}}/temp
+Accept: application/json

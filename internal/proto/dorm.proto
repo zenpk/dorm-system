@@ -5,7 +5,7 @@ option go_package = "github.com/zenpk/dorm-system/internal/service/dorm";
 import "common.proto";
 
 service Dorm{
-  rpc GetAvailableNum (EmptyRequest) returns(MapReply){}
+  rpc GetRemainCnt(EmptyRequest) returns(MapReply){}
 }
 
 message EmptyRequest{
@@ -13,5 +13,5 @@ message EmptyRequest{
 
 message MapReply{
   common.CommonResponse resp = 1;
-  map<string, string> available = 2;
+  map<string, string> remainCnt = 2;
 }

@@ -24,10 +24,10 @@ func (d *Dorm) init(config *viper.Viper) (*grpc.ClientConn, error) {
 	return conn, nil
 }
 
-func (d *Dorm) GetAvailableNum(req *pb.EmptyRequest) (*pb.MapReply, error) {
+func (d *Dorm) GetRemainCnt(req *pb.EmptyRequest) (*pb.MapReply, error) {
 	ctx, cancel := createCtx(d.config.GetInt("timeout"))
 	defer cancel()
-	resp, err := d.client.GetAvailableNum(ctx, req)
+	resp, err := d.client.GetRemainCnt(ctx, req)
 	if err != nil {
 		return nil, err
 	}

@@ -18,7 +18,7 @@ type Token struct {
 	Deleted      gorm.DeletedAt `gorm:"index"`
 }
 
-func (t *Token) GenNew(ctx context.Context, id uint64) (string, error) {
+func (t *Token) GenNew(ctx context.Context, id uint64) (refreshToken string, err error) {
 	node, err := snowflake.NewNode(viper.GetInt64("snowflake.node"))
 	if err != nil {
 		return "", err
@@ -36,7 +36,6 @@ func (t *Token) GenNew(ctx context.Context, id uint64) (string, error) {
 	return token.RefreshToken, DB.WithContext(ctx).Create(&token).Error
 }
 
-func (t *Token) FindByRefreshToken(ctx context.Context, refreshToken string) (*Token, error) {
-	token := new(Token)
-	return token, DB.WithContext(ctx).Where("refresh_token = ?", refreshToken).First(&token).Error
+func (t *Token) FindByRefreshToken(ctx context.Context, refreshToken string) (token *Token, err error) {
+	return token, DB.WithContext(ctx).Where("refresh_token = ?", refreshToken).Take(&token).Error
 }

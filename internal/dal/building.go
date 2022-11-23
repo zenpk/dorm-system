@@ -14,17 +14,14 @@ type Building struct {
 	Deleted  gorm.DeletedAt `gorm:"index"`
 }
 
-func (b *Building) FindById(ctx context.Context, id uint64) (*Building, error) {
-	building := new(Building)
-	return building, DB.WithContext(ctx).First(&building, id).Error
+func (b *Building) FindById(ctx context.Context, id uint64) (building *Building, err error) {
+	return building, DB.WithContext(ctx).Take(&building, id).Error
 }
 
-func (b *Building) FindAllAvailable(ctx context.Context) ([]*Building, error) {
-	var buildings []*Building
+func (b *Building) FindAllEnabled(ctx context.Context) (buildings []*Building, err error) {
 	return buildings, DB.WithContext(ctx).Where("enabled = true").Find(&buildings).Error
 }
 
-func (b *Building) PluckAllAvailableIds(ctx context.Context) ([]uint64, error) {
-	var ids []uint64
-	return ids, DB.WithContext(ctx).Model(&Building{}).Where("enabled = true").Distinct().Pluck("id", &ids).Error
+func (b *Building) PluckAllEnabledIds(ctx context.Context) (ids []uint64, err error) {
+	return ids, DB.WithContext(ctx).Model(&Building{}).Select("id").Where("enabled = true").Scan(&ids).Error
 }

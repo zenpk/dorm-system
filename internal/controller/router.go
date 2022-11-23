@@ -8,11 +8,12 @@ import (
 func InitRouter(router *gin.Engine) {
 	//router.Static("/static", "./assets/public") // static resources
 	router.Use(middleware.CORSFilter()) // CORS
+	router.GET("/temp", tempHandler)    // for testing
 
 	// no middleware URL
 	router.POST("/login", ginHandler.user.Login)
 	router.POST("/register", ginHandler.user.Register)
-	router.GET("/available", ginHandler.dorm.GetAvailableNum) // get the number of available dorms in each building
+	router.GET("/remain-cnt", ginHandler.dorm.GetRemainCnt) // get the number of remaining beds count in each building
 
 	// login required URL
 	routerAuth := router.Group("/")

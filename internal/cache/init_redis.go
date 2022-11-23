@@ -27,22 +27,22 @@ func InitRedis() error {
 
 // Warming preload warm data into Redis
 func Warming() error {
-	if err := warmAvailable(); err != nil {
+	if err := warmRemainCnt(); err != nil {
 		return err
 	}
 	return nil
 }
 
-// warmAvailable preload available bed num into Redis
-func warmAvailable() error {
+// warmRemainCnt preload remaining beds count of each building into Redis
+func warmRemainCnt() error {
 	ctx := context.Background()
 	all := int64(0)
-	availIds, err := dal.Table.Building.PluckAllAvailableIds(ctx)
+	availIds, err := dal.Table.Building.PluckAllEnabledIds(ctx)
 	if err != nil {
 		return err
 	}
 	for _, id := range availIds {
-		num, err := dal.Table.Dorm.SumAvailableByBuildingId(ctx, id)
+		num, err := dal.Table.Dorm.SumRemainCntByBuildingId(ctx, id)
 		if err != nil {
 			return err
 		}

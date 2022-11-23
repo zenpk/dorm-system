@@ -13,19 +13,16 @@ type Account struct {
 	Deleted  gorm.DeletedAt `gorm:"index"`
 }
 
-func (a *Account) FindById(ctx context.Context, id uint64) (*Account, error) {
-	account := new(Account)
-	return account, DB.WithContext(ctx).First(&account, id).Error
+func (a *Account) FindById(ctx context.Context, id uint64) (account *Account, err error) {
+	return account, DB.WithContext(ctx).Take(&account, id).Error
 }
 
-func (a *Account) FindByUserId(ctx context.Context, id uint64) (*Account, error) {
-	account := new(Account)
-	return account, DB.WithContext(ctx).Where("user_id = ?", id).First(&account).Error
+func (a *Account) FindByUserId(ctx context.Context, id uint64) (account *Account, err error) {
+	return account, DB.WithContext(ctx).Where("user_id = ?", id).Take(&account).Error
 }
 
-func (a *Account) FindByUsername(ctx context.Context, username string) (*Account, error) {
-	account := new(Account)
-	return account, DB.WithContext(ctx).Where("username = ?", username).First(&account).Error
+func (a *Account) FindByUsername(ctx context.Context, username string) (account *Account, err error) {
+	return account, DB.WithContext(ctx).Where("username = ?", username).Take(&account).Error
 }
 
 func (a *Account) Update(ctx context.Context, account *Account) error {
@@ -33,9 +30,8 @@ func (a *Account) Update(ctx context.Context, account *Account) error {
 }
 
 // RegisterNewUser register a new Account along with a linked User, using transaction
-func (a *Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (*User, error) {
-	user := &User{}
-	err := DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+func (a *Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (user *User, err error) {
+	err = DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// create User and get uid
 		if err := tx.WithContext(ctx).Create(&user).Error; err != nil {
 			return err

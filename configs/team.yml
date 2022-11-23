@@ -3,3 +3,4 @@ server:
   target: "127.0.0.1"
   port: 9083
 timeout: 3 # second
+max_member_lim: 4 # max number of students in a team

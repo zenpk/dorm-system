@@ -1,6 +1,6 @@
 package dal
 
-type TableSet struct {
+type AllTable struct {
 	Account  Account
 	Building Building
 	Dorm     Dorm
@@ -11,4 +11,4 @@ type TableSet struct {
 	User     User
 }
 
-var Table TableSet
+var Table AllTable

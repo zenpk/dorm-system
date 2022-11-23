@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DormClient interface {
-	GetAvailableNum(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*MapReply, error)
+	GetRemainCnt(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*MapReply, error)
 }
 
 type dormClient struct {
@@ -33,9 +33,9 @@ func NewDormClient(cc grpc.ClientConnInterface) DormClient {
 	return &dormClient{cc}
 }
 
-func (c *dormClient) GetAvailableNum(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*MapReply, error) {
+func (c *dormClient) GetRemainCnt(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*MapReply, error) {
 	out := new(MapReply)
-	err := c.cc.Invoke(ctx, "/dorm.Dorm/GetAvailableNum", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dorm.Dorm/GetRemainCnt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *dormClient) GetAvailableNum(ctx context.Context, in *EmptyRequest, opts
 // All implementations must embed UnimplementedDormServer
 // for forward compatibility
 type DormServer interface {
-	GetAvailableNum(context.Context, *EmptyRequest) (*MapReply, error)
+	GetRemainCnt(context.Context, *EmptyRequest) (*MapReply, error)
 	mustEmbedUnimplementedDormServer()
 }
 
@@ -54,8 +54,8 @@ type DormServer interface {
 type UnimplementedDormServer struct {
 }
 
-func (UnimplementedDormServer) GetAvailableNum(context.Context, *EmptyRequest) (*MapReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAvailableNum not implemented")
+func (UnimplementedDormServer) GetRemainCnt(context.Context, *EmptyRequest) (*MapReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRemainCnt not implemented")
 }
 func (UnimplementedDormServer) mustEmbedUnimplementedDormServer() {}
 
@@ -70,20 +70,20 @@ func RegisterDormServer(s grpc.ServiceRegistrar, srv DormServer) {
 	s.RegisterService(&Dorm_ServiceDesc, srv)
 }
 
-func _Dorm_GetAvailableNum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Dorm_GetRemainCnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmptyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DormServer).GetAvailableNum(ctx, in)
+		return srv.(DormServer).GetRemainCnt(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dorm.Dorm/GetAvailableNum",
+		FullMethod: "/dorm.Dorm/GetRemainCnt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DormServer).GetAvailableNum(ctx, req.(*EmptyRequest))
+		return srv.(DormServer).GetRemainCnt(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +96,8 @@ var Dorm_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DormServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetAvailableNum",
-			Handler:    _Dorm_GetAvailableNum_Handler,
+			MethodName: "GetRemainCnt",
+			Handler:    _Dorm_GetRemainCnt_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

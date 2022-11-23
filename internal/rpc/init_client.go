@@ -48,5 +48,16 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	}
 	connList = append(connList, tokenConn)
 
+	// team
+	teamConfig, err := viperpkg.InitConfig("team")
+	if err != nil {
+		return nil, err
+	}
+	teamConn, err := Client.Team.init(teamConfig)
+	if err != nil {
+		return nil, err
+	}
+	connList = append(connList, teamConn)
+
 	return connList, nil
 }

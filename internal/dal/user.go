@@ -14,19 +14,20 @@ type User struct {
 	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
-func (u *User) FindById(ctx context.Context, userId uint64) (*User, error) {
-	user := new(User)
-	return user, DB.WithContext(ctx).First(&user, userId).Error
+func (u *User) FindById(ctx context.Context, userId uint64) (user *User, err error) {
+	return user, DB.WithContext(ctx).Take(&user, userId).Error
 }
 
-func (u *User) FindAll(ctx context.Context) ([]*User, error) {
-	var users []*User
+func (u *User) FindAll(ctx context.Context) (users []*User, err error) {
 	return users, DB.WithContext(ctx).Find(&users).Error
 }
 
-func (u *User) FindByStudentNum(ctx context.Context, studentNum string) (*User, error) {
-	user := new(User)
-	return user, DB.WithContext(ctx).Where("student_num = ?", studentNum).First(&user).Error
+func (u *User) FindByStudentNum(ctx context.Context, studentNum string) (user *User, err error) {
+	return user, DB.WithContext(ctx).Where("student_num = ?", studentNum).Take(&user).Error
+}
+
+func (u *User) FindAllByIds(ctx context.Context, ids []uint64) (users []*User, err error) {
+	return users, DB.WithContext(ctx).Where("id IN ?", ids).Find(&users).Error
 }
 
 func (u *User) Create(ctx context.Context, user *User) error {

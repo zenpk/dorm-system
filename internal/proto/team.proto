@@ -1,0 +1,43 @@
+syntax = "proto3";
+package team;
+option go_package = "github.com/zenpk/dorm-system/internal/service/team";
+
+import "common.proto";
+
+service Team{
+  rpc Create (CreateGetRequest) returns(CreateReply){}
+  rpc Get (CreateGetRequest) returns(GetReply){}
+  rpc Join (JoinRequest) returns(JoinReply){}
+}
+
+message UserInfo{
+  string studentNum = 1;
+  string name = 2;
+}
+
+message CreateGetRequest{
+  uint64 userId = 1;
+}
+
+message CreateReply{
+  common.CommonResponse resp = 1;
+  string code = 2;
+}
+
+message JoinReply{
+  common.CommonResponse resp = 1;
+}
+
+message GetReply{
+  common.CommonResponse resp = 1;
+  uint64 id = 2;
+  string code = 3;
+  string gender = 4;
+  UserInfo owner = 5;
+  repeated UserInfo members = 6;
+}
+
+message JoinRequest{
+  uint64 userId = 1;
+  string code = 2;
+}
