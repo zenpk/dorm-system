@@ -16,7 +16,7 @@ type Server struct {
 	UnimplementedUserServer
 }
 
-func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
+func (s Server) Register(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
 	// username duplication check
 	_, err := dal.Table.Account.FindByUsername(ctx, req.Username)
 	if err == nil { // user already exists
@@ -36,16 +36,16 @@ func (s *Server) Register(ctx context.Context, req *RegisterLoginRequest) (*User
 		return nil, err
 	}
 	resp := &UserReply{
-		Resp: &common.CommonResponse{
+		Err: &common.CommonResponse{
 			Code: ep.ErrOK.Code,
-			Msg:  ep.ErrOK.Msg,
+			Msg:  "successfully registered",
 		},
 		UserId: user.Id,
 	}
 	return resp, nil
 }
 
-func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
+func (s Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserReply, error) {
 	account, err := dal.Table.Account.FindByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
@@ -62,40 +62,11 @@ func (s *Server) Login(ctx context.Context, req *RegisterLoginRequest) (*UserRep
 		return nil, ep.ErrNoRecord
 	}
 	resp := &UserReply{
-		Resp: &common.CommonResponse{
+		Err: &common.CommonResponse{
 			Code: ep.ErrOK.Code,
-			Msg:  ep.ErrOK.Msg,
+			Msg:  "successfully logged in",
 		},
 		UserId: user.Id,
 	}
 	return resp, nil
 }
-
-//// GetMyInfo get User based on the id in Cookie
-//func (*User) GetMyInfo(c *gin.Context) {
-//	idStr, err := cookie.GetUserId(c)
-//	if err != nil {
-//		c.JSON(http.StatusOK, dto.GetUserInfoResp{
-//			CommonResp: dto.CommonResp{
-//				Code: eh.Preset.CodeTokenError,
-//				Msg:  "you're not logged in",
-//			},
-//		})
-//		return
-//	}
-//	id := util.ParseU64(idStr)
-//	var userInfo *dal.User
-//	userInfo, err = userInfo.FindById(id)
-//	errHandler := eh.JSONHandler{C: c, V: dto.GetUserInfoResp{}}
-//	if err != nil {
-//		errHandler.Handle(err)
-//		return
-//	}
-//	c.JSON(http.StatusOK, dto.GetUserInfoResp{
-//		CommonResp: dto.CommonResp{
-//			Code: eh.Preset.CodeOK,
-//			Msg:  "success",
-//		},
-//		User: userInfo,
-//	})
-//}

@@ -3,6 +3,6 @@ build:
 build-win:
 	go build -o ../../bin/token.exe
 grpc:
-	protoc token.proto --proto_path=../../internal/proto \
+	protoc token.proto --proto_path=../../internal/api \
 	--go_out=../../internal/service/token --go_opt=paths=source_relative \
 	--go-grpc_out=../../internal/service/token --go-grpc_opt=paths=source_relative

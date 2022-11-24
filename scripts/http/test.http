@@ -1,3 +1,5 @@
-### temp
-GET {{url}}/temp
-Accept: application/json
+### test-setup
+POST {{url}}/test-setup
+
+### test
+POST {{url}}/test

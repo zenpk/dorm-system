@@ -6,13 +6,16 @@ import (
 )
 
 // getOwnerAndMembers from team, return
-func (s *Server) getOwnerAndMembers(ctx context.Context, team *dal.Team) (owner *UserInfo, members []*UserInfo, err error) {
+func (s Server) getOwnerAndMembers(ctx context.Context, team *dal.Team) (owner *UserInfo, members []*UserInfo, err error) {
 	ownerUser, err := dal.Table.User.FindById(ctx, team.OwnerId)
 	if err != nil {
 		return nil, nil, err
 	}
-	owner.StudentNum = ownerUser.StudentNum
-	owner.Name = ownerUser.Name
+	owner = &UserInfo{
+		Id:         ownerUser.Id,
+		StudentNum: ownerUser.StudentNum,
+		Name:       ownerUser.Name,
+	}
 	ids, err := dal.Table.TeamUser.PluckAllUserIdsByTeamId(ctx, team.Id)
 	if err != nil {
 		return nil, nil, err
@@ -23,6 +26,7 @@ func (s *Server) getOwnerAndMembers(ctx context.Context, team *dal.Team) (owner 
 	}
 	for _, mu := range memberUsers {
 		member := &UserInfo{
+			Id:         mu.Id,
 			StudentNum: mu.StudentNum,
 			Name:       mu.Name,
 		}

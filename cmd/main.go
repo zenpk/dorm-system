@@ -20,40 +20,62 @@ func main() {
 	flag.Parse()
 	// Viper
 	if err := viperpkg.InitGlobalConfig(*mode); err != nil {
-		log.Fatalf("failed to initialize Viper: %v", err)
+		log.Fatalf("failed to initialize Viper, error: %v", err)
 	}
 	// zap
 	if err := zap.InitLogger(*mode); err != nil {
-		log.Fatalf("failed to initialize zap: %v", err)
+		log.Fatalf("failed to initialize zap, error: %v", err)
 	}
-	defer zap.Logger.Sync()
+	defer func() {
+		if err := zap.Logger.Sync(); err != nil {
+			log.Fatalf("failed to close zap, error: %v", err)
+		}
+	}()
 	// GORM
 	if err := dal.InitDB(); err != nil {
-		log.Fatalf("failed to initialize database: %v", err)
+		log.Fatalf("failed to initialize database, error: %v", err)
 	}
 	// Redis
 	if err := cache.InitRedis(); err != nil {
-		log.Fatalf("failed to initialize Redis: %v", err)
+		log.Fatalf("failed to initialize Redis, error, error: %v", err)
 	}
-	defer cache.Redis.Close()
+	defer func() {
+		if err := cache.Redis.Close(); err != nil {
+			log.Fatalf("failed to close Redis connection, error, error: %v", err)
+		}
+	}()
 	if err := cache.Warming(); err != nil {
-		log.Fatalf("failed to warming Redis: %v", err)
+		log.Fatalf("failed to warming Redis, error, error: %v", err)
 	}
 	// RPC connections
 	connList, err := rpc.InitClients()
 	if err != nil {
-		log.Fatalf("failed to initialize RPC clients: %v", err)
+		log.Fatalf("failed to initialize RPC clients, error, error: %v", err)
 	}
-	for _, conn := range connList {
-		defer conn.Close()
-	}
+	defer func() {
+		for _, conn := range connList {
+			if err := conn.Close(); err != nil {
+				log.Fatalf("failed to close RPC connections, error, error: %v", err)
+			}
+		}
+	}()
 	// Kafka
-	if err := mq.InitMQ(); err != nil {
-		log.Fatalf("failed to init Kafka: %v", err)
+	producers, err := mq.InitMQ()
+	if err != nil {
+		log.Fatalf("failed to init Kafka, error, error: %v", err)
 	}
-	defer mq.ClusterAdmin.Close()
+	defer func() {
+		if err := mq.ClusterAdmin.Close(); err != nil {
+			log.Fatalf("failed to close Kafka connection, error, error: %v", err)
+		}
+		for _, p := range producers {
+			if err := p.Close(); err != nil {
+				log.Fatalf("failed to close Kafka producer, error: %v, error, error: %v", p, err)
+			}
+		}
+	}()
 	// Gin
 	if err := controller.InitGin(); err != nil {
-		log.Fatalf("failed to initialize Gin: %v", err)
+		log.Fatalf("failed to initialize Gin, error, error: %v", err)
 	}
 }

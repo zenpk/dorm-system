@@ -18,7 +18,7 @@ type Dorm struct {
 	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
-func (d *Dorm) SumRemainCntByBuildingId(ctx context.Context, id uint64) (sum int64, err error) {
+func (d Dorm) SumRemainCntByBuildingId(ctx context.Context, id uint64) (sum int64, err error) {
 	building, err := Table.Building.FindById(ctx, id)
 	if err != nil {
 		return 0, err
@@ -29,7 +29,7 @@ func (d *Dorm) SumRemainCntByBuildingId(ctx context.Context, id uint64) (sum int
 	return sum, DB.WithContext(ctx).Model(&Dorm{}).Select("SUM(remain_cnt)").Where("building_id = ?", id).Scan(&sum).Error
 }
 
-func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gender string) (*Dorm, error) {
+func (d Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gender string) (*Dorm, error) {
 	dorm := new(Dorm)
 	// TODO: unable buildings
 	err := DB.WithContext(ctx).Where("building_id = ? AND remain_cnt > ? AND gender = ?", buildingId, num, gender).Take(&dorm).Error
@@ -40,6 +40,6 @@ func (d *Dorm) Allocate(ctx context.Context, buildingId uint64, num uint64, gend
 	return dorm, d.Update(ctx, dorm)
 }
 
-func (d *Dorm) Update(ctx context.Context, dorm *Dorm) error {
+func (d Dorm) Update(ctx context.Context, dorm *Dorm) error {
 	return DB.WithContext(ctx).Save(&dorm).Error
 }

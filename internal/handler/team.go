@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/cookie"
-	"github.com/zenpk/dorm-system/internal/dto"
 	"github.com/zenpk/dorm-system/internal/rpc"
 	pb "github.com/zenpk/dorm-system/internal/service/team"
 	"github.com/zenpk/dorm-system/internal/util"
@@ -12,12 +11,12 @@ import (
 
 type Team struct{}
 
-func (t *Team) Create(c *gin.Context) {
-	packer := ep.Packer{V: dto.CommonResp{}}
+func (t Team) Create(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
 	if userId <= 0 { // userId shouldn't be 0
 		response(c, packer.Pack(ep.ErrInputHeader))
+		return
 	}
 	req := &pb.CreateGetRequest{UserId: userId}
 	resp, err := rpc.Client.Team.Create(req)
@@ -28,12 +27,12 @@ func (t *Team) Create(c *gin.Context) {
 	response(c, resp)
 }
 
-func (t *Team) Get(c *gin.Context) {
-	packer := ep.Packer{V: dto.CommonResp{}}
+func (t Team) Get(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
 	if userId <= 0 { // userId shouldn't be 0
 		response(c, packer.Pack(ep.ErrInputHeader))
+		return
 	}
 	req := &pb.CreateGetRequest{UserId: userId}
 	resp, err := rpc.Client.Team.Get(req)
@@ -44,16 +43,17 @@ func (t *Team) Get(c *gin.Context) {
 	response(c, resp)
 }
 
-func (t *Team) Join(c *gin.Context) {
-	packer := ep.Packer{V: dto.CommonResp{}}
+func (t Team) Join(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
 	if userId <= 0 { // userId shouldn't be 0
 		response(c, packer.Pack(ep.ErrInputHeader))
+		return
 	}
 	var req pb.JoinRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.Pack(ep.ErrInputBody))
+		return
 	}
 	req.UserId = userId
 	resp, err := rpc.Client.Team.Join(&req)

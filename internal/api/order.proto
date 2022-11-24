@@ -3,6 +3,7 @@ package order;
 option go_package = "github.com/zenpk/dorm-system/internal/service/order";
 
 import "common.proto";
+import "team.proto";
 
 service Order{
   rpc Submit (SubmitRequest) returns(SubmitReply){}
@@ -11,11 +12,11 @@ service Order{
 
 message SubmitRequest{
   string buildingNum = 1;
-  uint64 teamId = 2;
+  team.GetReply team = 2;
 }
 
 message SubmitReply{
-  common.CommonResponse resp = 1;
+  common.CommonResponse err = 1;
 }
 
 message GetRequest{
@@ -23,7 +24,7 @@ message GetRequest{
 }
 
 message GetReply{
-  common.CommonResponse resp = 1;
+  common.CommonResponse err = 1;
   repeated OrderInfo orders = 2;
 }
 

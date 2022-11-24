@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/token"
+	"github.com/zenpk/dorm-system/internal/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -25,7 +26,7 @@ func (t *Token) init(config *viper.Viper) (*grpc.ClientConn, error) {
 }
 
 func (t *Token) GenAllToken(req *pb.GenAllTokenRequest) (*pb.TokenReply, error) {
-	ctx, cancel := createCtx(t.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.GenAllToken(ctx, req)
 	if err != nil {
@@ -35,7 +36,7 @@ func (t *Token) GenAllToken(req *pb.GenAllTokenRequest) (*pb.TokenReply, error) 
 }
 
 func (t *Token) GenAccessToken(req *pb.GenAccessTokenRequest) (*pb.TokenReply, error) {
-	ctx, cancel := createCtx(t.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.GenAccessToken(ctx, req)
 	if err != nil {

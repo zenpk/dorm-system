@@ -1,0 +1,14 @@
+### create
+POST {{url}}/team-create
+
+### join
+POST {{url}}/team-join
+Content-Type: application/json
+
+{
+  "code": "MTU5NTY3ODQ1NzQ3MDEyODEyOA=="
+}
+
+### get
+GET {{url}}/team
+Accept: application/json

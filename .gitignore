@@ -16,6 +16,7 @@
 
 # My
 .idea/
+.vscode/
 myfile/
 local.yml
 *.log

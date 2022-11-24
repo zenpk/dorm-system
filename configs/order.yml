@@ -2,3 +2,5 @@ kafka:
   brokers:
     - "101.43.179.27:19092"
   topic: "order"
+timeout: 8
+mutex_prefix: "mutex_building:"

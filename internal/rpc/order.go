@@ -25,7 +25,7 @@ package rpc
 //}
 //
 //func (o *Order) Submit(req *pb.OrderRequest) (*pb.OrderReply, error) {
-//	ctx, cancel := createCtx(o.config.GetInt("timeout"))
+//	ctx, cancel := ContextWithTimeout(o.config.GetInt("timeout"))
 //	defer cancel()
 //	resp, err := o.client.Submit(ctx, req)
 //	if err != nil {

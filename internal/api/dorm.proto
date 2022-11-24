@@ -12,6 +12,6 @@ message EmptyRequest{
 }
 
 message MapReply{
-  common.CommonResponse resp = 1;
+  common.CommonResponse err = 1;
   map<string, string> remainCnt = 2;
 }

@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/internal/cookie"
-	"github.com/zenpk/dorm-system/internal/dto"
 	"github.com/zenpk/dorm-system/internal/rpc"
 	tokenpb "github.com/zenpk/dorm-system/internal/service/token"
 	userpb "github.com/zenpk/dorm-system/internal/service/user"
@@ -13,9 +12,8 @@ import (
 
 type User struct{}
 
-func (u *User) Register(c *gin.Context) {
+func (u User) Register(c *gin.Context) {
 	var userReq userpb.RegisterLoginRequest
-	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&userReq); err != nil {
 		response(c, packer.PackWithError(err))
 		return
@@ -40,12 +38,11 @@ func (u *User) Register(c *gin.Context) {
 		response(c, packer.PackWithError(err))
 		return
 	}
-	response(c, tokenResp.Resp)
+	response(c, packer.Pack(ep.ErrOK))
 }
 
-func (u *User) Login(c *gin.Context) {
+func (u User) Login(c *gin.Context) {
 	var userReq userpb.RegisterLoginRequest
-	packer := ep.Packer{V: dto.CommonResp{}}
 	if err := c.ShouldBindJSON(&userReq); err != nil {
 		response(c, packer.PackWithError(err))
 		return
@@ -70,17 +67,14 @@ func (u *User) Login(c *gin.Context) {
 		response(c, packer.PackWithError(err))
 		return
 	}
-	response(c, tokenResp.Resp)
+	response(c, packer.Pack(ep.ErrOK))
 }
 
-func (u *User) Logout(c *gin.Context) {
+func (u User) Logout(c *gin.Context) {
 	cookie.ClearAllUserInfos(c)
-	response(c, dto.CommonResp{
-		Code: ep.ErrOK.Code,
-		Msg:  "successfully logged out",
+	errPack := ep.ErrOK
+	errPack.Msg = "successfully logged out"
+	response(c, CommonResp{
+		Err: errPack,
 	})
-}
-
-func (u *User) UpdatePassword(c *gin.Context) {
-
 }

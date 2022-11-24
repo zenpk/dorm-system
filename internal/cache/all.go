@@ -1,7 +1,10 @@
 package cache
 
 type AllCache struct {
-	Dorm Dorm
+	RedSync  RedSync
+	Building Building
+	Dorm     Dorm
+	Token    Token
 }
 
 var All AllCache

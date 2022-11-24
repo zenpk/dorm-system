@@ -19,5 +19,5 @@ def create(cursor):
         name = fake.name()
         cursor.execute(sql, [student_num, name, gender])
         user_id = cursor.lastrowid
-        account.create(cursor, user_id)
+        account.create(cursor, user_id, 'stu' + str(i))
     print('users finished')

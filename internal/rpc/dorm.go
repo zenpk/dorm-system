@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/dorm"
+	"github.com/zenpk/dorm-system/internal/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -25,7 +26,7 @@ func (d *Dorm) init(config *viper.Viper) (*grpc.ClientConn, error) {
 }
 
 func (d *Dorm) GetRemainCnt(req *pb.EmptyRequest) (*pb.MapReply, error) {
-	ctx, cancel := createCtx(d.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(d.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := d.client.GetRemainCnt(ctx, req)
 	if err != nil {

@@ -46,11 +46,11 @@ func warmRemainCnt() error {
 		if err != nil {
 			return err
 		}
-		err = Redis.HSet(ctx, "available", id, num).Err()
+		err = Redis.HSet(ctx, "remain", id, num).Err()
 		if err != nil {
 			return err
 		}
 		all += num
 	}
-	return Redis.HSet(ctx, "available", "all", all).Err()
+	return Redis.HSet(ctx, "remain", "all", all).Err()
 }

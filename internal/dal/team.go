@@ -16,21 +16,21 @@ type Team struct {
 	Deleted gorm.DeletedAt `gorm:"index"`
 }
 
-func (t *Team) FindByOwnerId(ctx context.Context, id uint64) (*Team, error) {
+func (t Team) FindByOwnerId(ctx context.Context, id uint64) (*Team, error) {
 	team := new(Team)
 	return team, DB.WithContext(ctx).Where("owner_id = ?", id).Take(&team).Error
 }
 
 // FindByInnerJoinUserId only finds team member, for owner please use FindByOwnerId
-func (t *Team) FindByInnerJoinUserId(ctx context.Context, id uint64) (*Team, error) {
+func (t Team) FindByInnerJoinUserId(ctx context.Context, id uint64) (*Team, error) {
 	team := new(Team)
 	// alternative: use Raw, cons: have to explicitly set WHERE `deleted` IS NULL for `teams`
 	//DB.WithContext(ctx).Raw("SELECT t.* FROM `teams` t INNER JOIN `team_users` tu ON tu.`team_id` = t.`id` WHERE t.`deleted` IS NULL AND tu.`deleted` IS NULL AND tu.`user_id` = ?", id).Take(&team)
-	return team, DB.WithContext(ctx).Select("`teams`.*").Joins("INNER JOIN (SELECT * FROM `team_users` WHERE `deleted` = NULL AND `user_id` = ?) tu ON tu.`team_id` = `teams`.`id`", id).Take(&team).Error
+	return team, DB.WithContext(ctx).Select("`teams`.*").Joins("INNER JOIN (SELECT * FROM `team_users` WHERE `deleted` IS NULL AND `user_id` = ?) tu ON tu.`team_id` = `teams`.`id`", id).Take(&team).Error
 }
 
 // CheckIfHasTeam checks if a user is a team owner OR a team member
-func (t *Team) CheckIfHasTeam(ctx context.Context, userId uint64) (*Team, error) {
+func (t Team) CheckIfHasTeam(ctx context.Context, userId uint64) (*Team, error) {
 	team := new(Team)
 	if err := DB.WithContext(ctx).Where("owner_id = ?", userId).Take(&team).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { // not owner, but can be a member
@@ -45,11 +45,11 @@ func (t *Team) CheckIfHasTeam(ctx context.Context, userId uint64) (*Team, error)
 	return team, nil
 }
 
-func (t *Team) FindByCode(ctx context.Context, code string) (team *Team, err error) {
+func (t Team) FindByCode(ctx context.Context, code string) (team *Team, err error) {
 	return team, DB.WithContext(ctx).Where("code = ?", code).Take(&team).Error
 }
 
-func (t *Team) GenNew(ctx context.Context, owner *User) (team *Team, err error) {
+func (t Team) GenNew(ctx context.Context, owner *User) (team *Team, err error) {
 	node, err := snowflake.NewNode(viper.GetInt64("snowflake.node"))
 	if err != nil {
 		return nil, err

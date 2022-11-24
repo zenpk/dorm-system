@@ -1,12 +1,12 @@
 package mq
 
-type ProducerSet struct {
+type AllProducer struct {
 	Order OrderProducer
 }
 
-type ConsumerSet struct {
+type AllConsumer struct {
 	Order OrderConsumer
 }
 
-var Producer ProducerSet
-var Consumer ConsumerSet
+var Producer AllProducer
+var Consumer AllConsumer

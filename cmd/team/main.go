@@ -20,33 +20,37 @@ func main() {
 	flag.Parse()
 	// Viper
 	if err := viperpkg.InitGlobalConfig(*mode); err != nil {
-		log.Fatalf("failed to initialize Viper: %v", err)
+		log.Fatalf("failed to initialize Viper, error: %v", err)
 	}
 	// specified config
 	server := new(pb.Server)
 	var err error
 	server.Config, err = viperpkg.InitConfig("team")
 	if err != nil {
-		log.Fatalf("failed to initialize specified config: %v", err)
+		log.Fatalf("failed to initialize specified config, error: %v", err)
 	}
 	// zap
 	if err := zap.InitLogger("team"); err != nil {
-		log.Fatalf("failed to initialize zap: %v", err)
+		log.Fatalf("failed to initialize zap, error: %v", err)
 	}
-	defer zap.Logger.Sync()
+	defer func() {
+		if err := zap.Logger.Sync(); err != nil {
+			log.Fatalf("failed to close zap, error: %v", err)
+		}
+	}()
 	// GORM
 	if err := dal.InitDB(); err != nil {
-		log.Fatalf("failed to initialize database: %v", err)
+		log.Fatalf("failed to initialize database, error: %v", err)
 	}
 	addr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Fatalf("failed to initialize TCP listener: %v", err)
+		log.Fatalf("failed to initialize TCP listener, error: %v", err)
 	}
 	grpcServer := grpc.NewServer()
 	pb.RegisterTeamServer(grpcServer, server)
 	zap.Logger.Infof("server listening at %v", addr)
 	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatalf("failed to serve, error: %v", err)
 	}
 }

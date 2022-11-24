@@ -7,25 +7,29 @@ import (
 
 var ClusterAdmin sarama.ClusterAdmin
 
-func InitMQ() error {
+// InitMQ initialize cluster admin and all producers, return all producers
+func InitMQ() ([]sarama.AsyncProducer, error) {
 	// initialize cluster
 	// read all configs
 	brokers := make([]string, 0)
+	allProducers := make([]sarama.AsyncProducer, 0)
 	orderConfig, err := viperpkg.InitConfig("order")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	brokers = append(brokers, orderConfig.GetStringSlice("kafka.brokers")...)
 	config := sarama.NewConfig()
 	ClusterAdmin, err = sarama.NewClusterAdmin(brokers, config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// initialize producers
 	// order
-	if err := Producer.Order.init(orderConfig); err != nil {
-		return err
+	orderProducer, err := Producer.Order.init(orderConfig)
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	allProducers = append(allProducers, orderProducer)
+	return allProducers, nil
 }

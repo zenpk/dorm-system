@@ -15,7 +15,7 @@ type Server struct {
 	UnimplementedTeamServer
 }
 
-func (s *Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateReply, error) {
+func (s Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateReply, error) {
 	// check if user already has a team
 	team, err := dal.Table.Team.CheckIfHasTeam(ctx, req.UserId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -29,7 +29,7 @@ func (s *Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateRepl
 			return nil, err
 		}
 		resp := &CreateReply{
-			Resp: &common.CommonResponse{
+			Err: &common.CommonResponse{
 				Code: ep.ErrOK.Code,
 				Msg:  ep.ErrOK.Msg,
 			},
@@ -41,7 +41,7 @@ func (s *Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateRepl
 	}
 	// user already has a team
 	resp := &CreateReply{
-		Resp: &common.CommonResponse{
+		Err: &common.CommonResponse{
 			Code: ep.ErrDuplicatedRecord.Code,
 			Msg:  "user already has a team",
 		},
@@ -50,7 +50,7 @@ func (s *Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateRepl
 	return resp, nil
 }
 
-func (s *Server) Get(ctx context.Context, req *CreateGetRequest) (*GetReply, error) {
+func (s Server) Get(ctx context.Context, req *CreateGetRequest) (*GetReply, error) {
 	team, err := dal.Table.Team.CheckIfHasTeam(ctx, req.UserId)
 	if err != nil { // include ErrRecordNotFound
 		return nil, err
@@ -60,7 +60,7 @@ func (s *Server) Get(ctx context.Context, req *CreateGetRequest) (*GetReply, err
 		return nil, err
 	}
 	resp := &GetReply{
-		Resp: &common.CommonResponse{
+		Err: &common.CommonResponse{
 			Code: ep.ErrOK.Code,
 			Msg:  ep.ErrOK.Msg,
 		},
@@ -73,7 +73,7 @@ func (s *Server) Get(ctx context.Context, req *CreateGetRequest) (*GetReply, err
 	return resp, nil
 }
 
-func (s *Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error) {
+func (s Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error) {
 	// check if user already has a team
 	_, err := dal.Table.Team.CheckIfHasTeam(ctx, req.UserId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -85,7 +85,7 @@ func (s *Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error)
 		targetTeam, err := dal.Table.Team.FindByCode(ctx, req.Code)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			resp := &JoinReply{
-				Resp: &common.CommonResponse{
+				Err: &common.CommonResponse{
 					Code: ep.ErrInputBody.Code,
 					Msg:  "cannot find a team with given code",
 				},
@@ -97,7 +97,7 @@ func (s *Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error)
 		// check gender
 		if user.Gender != targetTeam.Gender {
 			resp := &JoinReply{
-				Resp: &common.CommonResponse{
+				Err: &common.CommonResponse{
 					Code: ep.ErrLogic.Code,
 					Msg:  "cannot join a team with a different gender",
 				},
@@ -108,7 +108,7 @@ func (s *Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error)
 		nowCnt, err := dal.Table.TeamUser.CntTeamMember(ctx, targetTeam.Id)
 		if nowCnt >= s.Config.GetUint64("max_member_lim") {
 			resp := &JoinReply{
-				Resp: &common.CommonResponse{
+				Err: &common.CommonResponse{
 					Code: ep.ErrLogic.Code,
 					Msg:  "target team is already full",
 				},
@@ -124,7 +124,7 @@ func (s *Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error)
 			return nil, err
 		}
 		resp := &JoinReply{
-			Resp: &common.CommonResponse{
+			Err: &common.CommonResponse{
 				Code: ep.ErrOK.Code,
 				Msg:  ep.ErrOK.Msg,
 			},
@@ -135,7 +135,7 @@ func (s *Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error)
 	}
 	// user already has a team
 	resp := &JoinReply{
-		Resp: &common.CommonResponse{
+		Err: &common.CommonResponse{
 			Code: ep.ErrDuplicatedRecord.Code,
 			Msg:  "user already has a team",
 		},

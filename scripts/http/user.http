@@ -1,4 +1,4 @@
-### login
+### login temp
 POST {{url}}/login
 Content-Type: application/json
 
@@ -6,9 +6,12 @@ Content-Type: application/json
   "username": "temp",
   "password": "temp"
 }
-###
-GET {{url}}/aaa
 
-###
+### login stu1
+POST {{url}}/login
+Content-Type: application/json
 
-GET {{url}}/bbb
+{
+  "username": "stu1",
+  "password": "stu1"
+}

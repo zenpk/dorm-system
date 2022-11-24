@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/user"
+	"github.com/zenpk/dorm-system/internal/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -25,7 +26,7 @@ func (u *User) init(config *viper.Viper) (*grpc.ClientConn, error) {
 }
 
 func (u *User) Register(req *pb.RegisterLoginRequest) (*pb.UserReply, error) {
-	ctx, cancel := createCtx(u.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(u.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := u.client.Register(ctx, req)
 	if err != nil {
@@ -35,7 +36,7 @@ func (u *User) Register(req *pb.RegisterLoginRequest) (*pb.UserReply, error) {
 }
 
 func (u *User) Login(req *pb.RegisterLoginRequest) (*pb.UserReply, error) {
-	ctx, cancel := createCtx(u.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(u.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := u.client.Login(ctx, req)
 	if err != nil {

@@ -1,19 +1,12 @@
 package order
 
 import (
-	"fmt"
+	"context"
 	"github.com/Shopify/sarama"
 	"github.com/zenpk/dorm-system/internal/dal"
-	"google.golang.org/protobuf/proto"
 )
 
-func Submit(message *sarama.ConsumerMessage) error {
-	var req SubmitRequest
-	if err := proto.Unmarshal(message.Value, &req); err != nil {
-		return err
-	}
-	fmt.Println(req.BuildingNum)
-	fmt.Println(req.TeamId)
+func Submit(ctx context.Context, message *sarama.ConsumerMessage) error {
 	return nil
 }
 

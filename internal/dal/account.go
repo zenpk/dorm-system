@@ -13,24 +13,24 @@ type Account struct {
 	Deleted  gorm.DeletedAt `gorm:"index"`
 }
 
-func (a *Account) FindById(ctx context.Context, id uint64) (account *Account, err error) {
+func (a Account) FindById(ctx context.Context, id uint64) (account *Account, err error) {
 	return account, DB.WithContext(ctx).Take(&account, id).Error
 }
 
-func (a *Account) FindByUserId(ctx context.Context, id uint64) (account *Account, err error) {
+func (a Account) FindByUserId(ctx context.Context, id uint64) (account *Account, err error) {
 	return account, DB.WithContext(ctx).Where("user_id = ?", id).Take(&account).Error
 }
 
-func (a *Account) FindByUsername(ctx context.Context, username string) (account *Account, err error) {
+func (a Account) FindByUsername(ctx context.Context, username string) (account *Account, err error) {
 	return account, DB.WithContext(ctx).Where("username = ?", username).Take(&account).Error
 }
 
-func (a *Account) Update(ctx context.Context, account *Account) error {
+func (a Account) Update(ctx context.Context, account *Account) error {
 	return DB.WithContext(ctx).Save(&account).Error
 }
 
 // RegisterNewUser register a new Account along with a linked User, using transaction
-func (a *Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (user *User, err error) {
+func (a Account) RegisterNewUser(ctx context.Context, username, passwordHash string) (user *User, err error) {
 	err = DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// create User and get uid
 		if err := tx.WithContext(ctx).Create(&user).Error; err != nil {

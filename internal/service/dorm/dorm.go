@@ -13,15 +13,15 @@ type Server struct {
 	UnimplementedDormServer
 }
 
-func (s *Server) GetRemainCnt(ctx context.Context, req *EmptyRequest) (*MapReply, error) {
-	res, err := cache.All.Dorm.GetAvailableNum(ctx)
+func (s Server) GetRemainCnt(ctx context.Context, req *EmptyRequest) (*MapReply, error) {
+	res, err := cache.All.Dorm.GetRemainNum(ctx)
 	if err != nil {
 		return nil, err
 	}
 	reply := &MapReply{
-		Resp: &common.CommonResponse{
+		Err: &common.CommonResponse{
 			Code: ep.ErrOK.Code,
-			Msg:  ep.ErrOK.Msg,
+			Msg:  "remaining bed counts got successfully",
 		},
 		RemainCnt: res,
 	}

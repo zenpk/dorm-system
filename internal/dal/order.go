@@ -16,6 +16,14 @@ type Order struct {
 	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 
-func (o *Order) Create(ctx context.Context, order *Order) error {
+func (o Order) FindById(ctx context.Context, id uint64) (order *Order, err error) {
+	return order, DB.WithContext(ctx).Take(&order, id).Error
+}
+
+func (o Order) FindSuccessByTeamId(ctx context.Context, id uint64) (order *Order, err error) {
+	return order, DB.WithContext(ctx).Where("success = true AND id = ?", id).Take(&order).Error
+}
+
+func (o Order) Create(ctx context.Context, order *Order) error {
 	return DB.WithContext(ctx).Create(&order).Error
 }

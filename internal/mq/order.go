@@ -4,6 +4,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/internal/service/order"
+	"github.com/zenpk/dorm-system/internal/util"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"google.golang.org/protobuf/proto"
 	"log"
@@ -18,12 +19,12 @@ type OrderProducer struct {
 }
 
 // init create topic and producer
-func (o *OrderProducer) init(c *viper.Viper) error {
+func (o *OrderProducer) init(c *viper.Viper) (sarama.AsyncProducer, error) {
 	o.config = c
 	// check if topic exists
 	topicMap, err := ClusterAdmin.ListTopics()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	topic := o.config.GetString("kafka.topic")
 	if _, ok := topicMap[topic]; !ok { // topic doesn't exist
@@ -33,7 +34,7 @@ func (o *OrderProducer) init(c *viper.Viper) error {
 			ReplicationFactor: 1,
 		}
 		if err := ClusterAdmin.CreateTopic(topic, detail, false); err != nil {
-			return err
+			return nil, err
 		}
 	}
 	// create producer
@@ -42,7 +43,7 @@ func (o *OrderProducer) init(c *viper.Viper) error {
 	config.Producer.Compression = sarama.CompressionSnappy   // Compress messages
 	config.Producer.Flush.Frequency = 500 * time.Millisecond // Flush batches every 500ms
 	o.producer, err = sarama.NewAsyncProducer(o.config.GetStringSlice("kafka.brokers"), config)
-	return err
+	return o.producer, err
 }
 
 func (o *OrderProducer) Send(req *order.SubmitRequest) error {
@@ -76,10 +77,11 @@ func (o *OrderConsumer) Init(c *viper.Viper) error {
 	return o.subscribe()
 }
 
+// subscribe to message queue to handle submitted orders
 func (o *OrderConsumer) subscribe() error {
 	defer func() {
 		if err := o.consumer.Close(); err != nil {
-			log.Fatalf("failed to close consumer: %v", err)
+			log.Fatalf("failed to close consumer, error: %v", err)
 		}
 	}()
 	partitionList, err := o.consumer.Partitions(o.config.GetString("kafka.topic"))
@@ -91,26 +93,34 @@ func (o *OrderConsumer) subscribe() error {
 		if err != nil {
 			return err
 		}
-		defer func() {
-			if err := partitionConsumer.Close(); err != nil {
-				log.Fatalf("failed to close partitionConsumer: %v", err)
-			}
-		}()
 		// Trap SIGINT to trigger a shutdown.
 		signals := make(chan os.Signal, 1)
 		signal.Notify(signals, os.Interrupt)
-	ConsumerLoop:
-		for {
-			select {
-			case msg := <-partitionConsumer.Messages():
-				zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
-				if err := order.Submit(msg); err != nil {
-					zap.Logger.Error(err)
+		// start a go routine for every partitionConsumer
+		go func() {
+			defer func() {
+				if err := partitionConsumer.Close(); err != nil {
+					log.Fatalf("failed to close partitionConsumer, error: %v", err)
 				}
-			case <-signals:
-				break ConsumerLoop
+			}()
+		ConsumerLoop:
+			for {
+				select {
+				case msg := <-partitionConsumer.Messages():
+					// start a go routine to handle order
+					go func() {
+						ctx, cancel := util.ContextWithTimeout(o.config.GetInt("timeout"))
+						defer cancel()
+						zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
+						if err := order.Submit(ctx, msg); err != nil {
+							zap.Logger.Error(err)
+						}
+					}()
+				case <-signals:
+					break ConsumerLoop
+				}
 			}
-		}
+		}()
 	}
 	return nil
 }

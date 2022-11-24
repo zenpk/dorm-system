@@ -24,8 +24,8 @@ CREATE TABLE `buildings`
 (
     `id`        bigint unsigned PRIMARY KEY AUTO_INCREMENT,
     `num`       varchar(10) UNIQUE NOT NULL,
-    `image_url` varchar(200),
     `info`      varchar(200),
+    `image_url` varchar(200),
     `enabled`   tinyint            NOT NULL DEFAULT 1,
     `deleted`   datetime(3)
 );

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/team"
+	"github.com/zenpk/dorm-system/internal/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -25,7 +26,7 @@ func (t *Team) init(config *viper.Viper) (*grpc.ClientConn, error) {
 }
 
 func (t *Team) Create(req *pb.CreateGetRequest) (*pb.CreateReply, error) {
-	ctx, cancel := createCtx(t.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.Create(ctx, req)
 	if err != nil {
@@ -35,7 +36,7 @@ func (t *Team) Create(req *pb.CreateGetRequest) (*pb.CreateReply, error) {
 }
 
 func (t *Team) Get(req *pb.CreateGetRequest) (*pb.GetReply, error) {
-	ctx, cancel := createCtx(t.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.Get(ctx, req)
 	if err != nil {
@@ -45,7 +46,7 @@ func (t *Team) Get(req *pb.CreateGetRequest) (*pb.GetReply, error) {
 }
 
 func (t *Team) Join(req *pb.JoinRequest) (*pb.JoinReply, error) {
-	ctx, cancel := createCtx(t.config.GetInt("timeout"))
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.Join(ctx, req)
 	if err != nil {

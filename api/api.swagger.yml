@@ -1,0 +1,10 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Dorm System API
+  description: Concurrent dorm selecting system written in Go
+
+servers:
+  - url: https://localhost:8080/
+
+paths: {}

@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/cookie"
-	"github.com/zenpk/dorm-system/internal/dto"
+	"github.com/zenpk/dorm-system/internal/handler"
 	"github.com/zenpk/dorm-system/internal/rpc"
 	pb "github.com/zenpk/dorm-system/internal/service/token"
 	"github.com/zenpk/dorm-system/internal/util"
@@ -14,7 +14,7 @@ import (
 // CheckAuthInfo extract user infos from the JWT token in Cookie, won't abort if not logged in
 func CheckAuthInfo() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		packer := ep.Packer{V: dto.CommonResp{}}
+		packer := ep.Packer{V: handler.CommonResp{}}
 		token := cookie.GetAccessToken(c)
 		if token == "" { // no access_token
 			refreshToken := cookie.GetRefreshToken(c)
@@ -47,7 +47,7 @@ func CheckAuthInfo() gin.HandlerFunc {
 func RequireLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := cookie.GetAccessToken(c)
-		packer := ep.Packer{V: dto.CommonResp{}}
+		packer := ep.Packer{V: handler.CommonResp{}}
 		if token == "" { // no access_token
 			refreshToken := cookie.GetRefreshToken(c)
 			if refreshToken == "" { // no refresh_token
@@ -82,7 +82,7 @@ func RequireLogin() gin.HandlerFunc {
 func RequireAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := cookie.GetAccessToken(c)
-		packer := ep.Packer{V: dto.CommonResp{}}
+		packer := ep.Packer{V: handler.CommonResp{}}
 		if token == "" { // no access_token
 			refreshToken := cookie.GetRefreshToken(c)
 			if refreshToken == "" { // no refresh_token

@@ -3,12 +3,15 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zenpk/dorm-system/internal/middleware"
+	"github.com/zenpk/dorm-system/test"
 )
 
 func InitRouter(router *gin.Engine) {
-	//router.Static("/static", "./assets/public") // static resources
-	router.Use(middleware.CORSFilter()) // CORS
-	router.GET("/temp", tempHandler)    // for testing
+	router.Static("/static", "./assets/public") // static resources
+	router.Use(middleware.CORSFilter())         // CORS
+	// for temporary testing
+	router.POST("/test-setup", test.SetupHandler)
+	router.POST("/test", test.Handler)
 
 	// no middleware URL
 	router.POST("/login", ginHandler.user.Login)
@@ -19,8 +22,6 @@ func InitRouter(router *gin.Engine) {
 	routerAuth := router.Group("/")
 	routerAuth.Use(middleware.RequireLogin())
 	{
-		//router.GET("/my-info", ginHandler.userInfo.GetMyInfo)
-		//router.PATCH("/change-password", ginHandler.user.UpdatePassword)
 		routerAuth.GET("/logout", ginHandler.user.Logout)
 		routerAuth.POST("/team-create", ginHandler.team.Create)
 		routerAuth.GET("/team", ginHandler.team.Get) // get one's team info
