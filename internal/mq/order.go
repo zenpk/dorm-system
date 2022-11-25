@@ -3,7 +3,7 @@ package mq
 import (
 	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
-	"github.com/zenpk/dorm-system/internal/service/order"
+	pb "github.com/zenpk/dorm-system/internal/service/order"
 	"github.com/zenpk/dorm-system/internal/util"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"google.golang.org/protobuf/proto"
@@ -47,7 +47,7 @@ func (o *OrderProducer) init(c *viper.Viper) (sarama.AsyncProducer, error) {
 	return o.producer, err
 }
 
-func (o *OrderProducer) Send(req *order.SubmitRequest) error {
+func (o *OrderProducer) Send(req *pb.SubmitRequest) error {
 	reqByte, err := proto.Marshal(req)
 	if err != nil {
 		return err
@@ -63,10 +63,11 @@ func (o *OrderProducer) Send(req *order.SubmitRequest) error {
 type OrderConsumer struct {
 	config   *viper.Viper
 	consumer sarama.Consumer
+	server   *pb.Server
 }
 
 // Init consumer and subscribe
-func (o *OrderConsumer) Init(c *viper.Viper) error {
+func (o *OrderConsumer) Init(c *viper.Viper, server *pb.Server) error {
 	o.config = c
 	// init consumer
 	config := sarama.NewConfig()
@@ -110,19 +111,24 @@ func (o *OrderConsumer) subscribe() error {
 				case msg := <-partitionConsumer.Messages():
 					// start a go routine to handle order
 					go func() {
+						var req pb.SubmitRequest
+						if err := proto.Unmarshal(msg.Value, &req); err != nil {
+							zap.Logger.Error(err)
+							return
+						}
 						timeout := o.config.GetInt("timeout.submit")
 						ctx, cancel := util.ContextWithTimeout(timeout)
 						defer cancel()
 						zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
-						if err := order.Submit(ctx, msg); err != nil {
+						if _, err := o.server.Submit(ctx, &req); err != nil {
 							zap.Logger.Errorf("consume message failed, offset: %v, error: %v", msg.Offset, err)
 							// wait random time to retry
 							waitTime := time.Duration(rand.Intn(timeout)+1) * time.Second
 							time.Sleep(waitTime)
-							if err := order.Submit(ctx, msg); err != nil {
+							if _, err := o.server.Submit(ctx, &req); err != nil {
 								zap.Logger.Errorf("consume message failed for the 2nd time, offset: %v, error: %v", msg.Offset, err)
 								// still failed, mark the order as failed in database
-								if err := order.Fail(ctx, msg); err != nil {
+								if err := o.server.Fail(ctx, &req, "retried too many times"); err != nil {
 									zap.Logger.Errorf("message completely failed! offset: %v, error: %v", msg.Offset, err)
 								}
 							}

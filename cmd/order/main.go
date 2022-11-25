@@ -41,23 +41,23 @@ func main() {
 		log.Fatalf("failed to initialize database, error: %v", err)
 	}
 	// RPC
+	server := &pb.Server{Config: orderConfig}
+	addr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Fatalf("failed to initialize TCP listener, error: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterOrderServer(grpcServer, server)
+	zap.Logger.Infof("server listening at %v", addr)
 	go func() {
-		server := &pb.Server{Config: orderConfig}
-		addr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
-		lis, err := net.Listen("tcp", addr)
-		if err != nil {
-			log.Fatalf("failed to initialize TCP listener, error: %v", err)
-		}
-		grpcServer := grpc.NewServer()
-		pb.RegisterOrderServer(grpcServer, server)
-		zap.Logger.Infof("server listening at %v", addr)
 		if err := grpcServer.Serve(lis); err != nil {
 			log.Fatalf("failed to serve, error: %v", err)
 		}
 	}()
 	// Kafka
 	zap.Logger.Infof("order consumer is subscribed")
-	if err := mq.Consumer.Order.Init(orderConfig); err != nil { // defer Close() is inside Init()
+	if err := mq.Consumer.Order.Init(orderConfig, server); err != nil { // defer Close() is inside Init()
 		log.Fatalf("failed to initialize consumer, error: %v", err)
 	}
 }

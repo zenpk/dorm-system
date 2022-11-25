@@ -12,6 +12,13 @@ service Team{
   rpc Leave (LeaveRequest) returns (LeaveReply){}
 }
 
+message TeamInfo{
+  uint64 id = 1;
+  string code = 2;
+  string gender = 3;
+  user.UserInfo owner = 4;
+  repeated user.UserInfo members = 5;
+}
 
 message CreateRequest{
   uint64 userId = 1;
@@ -32,11 +39,7 @@ message GetRequest{
 
 message GetReply{
   common.CommonResponse err = 1;
-  uint64 id = 2;
-  string code = 3;
-  string gender = 4;
-  user.UserInfo owner = 5;
-  repeated user.UserInfo members = 6;
+  TeamInfo team = 2;
 }
 
 message JoinRequest{

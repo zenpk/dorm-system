@@ -33,13 +33,13 @@ func (o Order) Submit(c *gin.Context) {
 		return
 	}
 	// Second: check if user is the owner
-	if teamResp.Owner.Id != userId {
+	if teamResp.Team.Owner.Id != userId {
 		errPack := ep.ErrNoPermission
 		errPack.Msg = "you're not the team owner"
 		response(c, packer.Pack(errPack))
 		return
 	}
-	req.Team = teamResp
+	req.Team = teamResp.Team
 	// Third: generate a unique code
 	code, err := util.GenSnowflakeString()
 	if err != nil {
@@ -57,9 +57,57 @@ func (o Order) Submit(c *gin.Context) {
 }
 
 func (o Order) Get(c *gin.Context) {
-	return
+	userIdStr := cookie.GetUserId(c)
+	userId := util.ParseU64(userIdStr)
+	if userId <= 0 { // userId shouldn't be 0
+		response(c, packer.Pack(ep.ErrInputHeader))
+		return
+	}
+	teamReq := &team.GetRequest{UserId: userId}
+	teamResp, err := rpc.Client.Team.Get(teamReq)
+	if err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	req := &pb.GetRequest{TeamId: teamResp.Team.Id}
+	resp, err := rpc.Client.Order.Get(req)
+	if err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	response(c, resp)
 }
 
 func (o Order) Delete(c *gin.Context) {
-	return
+	userIdStr := cookie.GetUserId(c)
+	userId := util.ParseU64(userIdStr)
+	if userId <= 0 { // userId shouldn't be 0
+		response(c, packer.Pack(ep.ErrInputHeader))
+		return
+	}
+	var req pb.DeleteRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	teamReq := &team.GetRequest{UserId: userId}
+	teamResp, err := rpc.Client.Team.Get(teamReq)
+	if err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	// check if user is the owner
+	if teamResp.Team.Owner.Id != userId {
+		errPack := ep.ErrNoPermission
+		errPack.Msg = "you're not the team owner"
+		response(c, packer.Pack(errPack))
+		return
+	}
+	req.Team = teamResp.Team
+	resp, err := rpc.Client.Order.Delete(&req)
+	if err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	response(c, resp)
 }

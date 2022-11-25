@@ -22,7 +22,7 @@ message OrderInfo{
 
 message SubmitRequest{
   string buildingNum = 1;
-  team.GetReply team = 2;
+  team.TeamInfo team = 2;
   string code = 3;
 }
 
@@ -40,7 +40,8 @@ message GetReply{
 }
 
 message DeleteRequest{
-  uint64 teamId = 1;
+  uint64 orderId = 1;
+  team.TeamInfo team = 2;
 }
 
 message DeleteReply{

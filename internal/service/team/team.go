@@ -64,11 +64,12 @@ func (s Server) Get(ctx context.Context, req *GetRequest) (*GetReply, error) {
 			Code: ep.ErrOK.Code,
 			Msg:  ep.ErrOK.Msg,
 		},
-		Id:      team.Id,
-		Code:    team.Code,
-		Gender:  team.Gender,
-		Owner:   owner,
-		Members: members,
+		Team: &TeamInfo{Id: team.Id,
+			Code:    team.Code,
+			Gender:  team.Gender,
+			Owner:   owner,
+			Members: members,
+		},
 	}
 	return resp, nil
 }
