@@ -15,7 +15,7 @@ type Server struct {
 	UnimplementedTeamServer
 }
 
-func (s Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateReply, error) {
+func (s Server) Create(ctx context.Context, req *CreateRequest) (*CreateReply, error) {
 	// check if user already has a team
 	team, err := dal.Table.Team.CheckIfHasTeam(ctx, req.UserId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -50,7 +50,7 @@ func (s Server) Create(ctx context.Context, req *CreateGetRequest) (*CreateReply
 	return resp, nil
 }
 
-func (s Server) Get(ctx context.Context, req *CreateGetRequest) (*GetReply, error) {
+func (s Server) Get(ctx context.Context, req *GetRequest) (*GetReply, error) {
 	team, err := dal.Table.Team.CheckIfHasTeam(ctx, req.UserId)
 	if err != nil { // include ErrRecordNotFound
 		return nil, err
@@ -138,6 +138,65 @@ func (s Server) Join(ctx context.Context, req *JoinRequest) (*JoinReply, error) 
 		Err: &common.CommonResponse{
 			Code: ep.ErrDuplicatedRecord.Code,
 			Msg:  "user already has a team",
+		},
+	}
+	return resp, nil
+}
+
+func (s Server) Leave(ctx context.Context, req *LeaveRequest) (*LeaveReply, error) {
+	// check if user already has a team
+	team, err := dal.Table.Team.CheckIfHasTeam(ctx, req.UserId)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		resp := &LeaveReply{
+			Err: &common.CommonResponse{
+				Code: ep.ErrNoRecord.Code,
+				Msg:  "user don't have a team",
+			},
+		}
+		return resp, nil
+	} else if err != nil { // other errors
+		return nil, err
+	}
+	if team.OwnerId != req.UserId { // not the owner
+		rel := &dal.TeamUser{
+			TeamId: team.Id,
+			UserId: req.UserId,
+		}
+		if err := dal.Table.TeamUser.Delete(ctx, rel); err != nil {
+			return nil, err
+		}
+		resp := &LeaveReply{
+			Err: &common.CommonResponse{
+				Code: ep.ErrOK.Code,
+				Msg:  "successfully left the team",
+			},
+		}
+		return resp, nil
+	}
+	// user is the owner, find the new owner or delete the whole team
+	memberIds, err := dal.Table.TeamUser.PluckAllUserIdsByTeamId(ctx, team.Id)
+	if len(memberIds) <= 0 { // no other members, delete the team
+		if err := dal.Table.Team.Delete(ctx, team); err != nil {
+			return nil, err
+		}
+		resp := &LeaveReply{
+			Err: &common.CommonResponse{
+				Code: ep.ErrOK.Code,
+				Msg:  "successfully left the team, the team is deleted",
+			},
+		}
+		return resp, nil
+	}
+	// has other members, pick up the first one to be the new owner
+	rel, err := dal.Table.TeamUser.FindByTeamIdAndUserId(ctx, team.Id, memberIds[0])
+	// start a transaction to do the operation
+	if err := dal.Table.Team.TransSetNewOwner(ctx, team, rel); err != nil {
+		return nil, err
+	}
+	resp := &LeaveReply{
+		Err: &common.CommonResponse{
+			Code: ep.ErrOK.Code,
+			Msg:  "successfully left the team, a member is now the new owner",
 		},
 	}
 	return resp, nil

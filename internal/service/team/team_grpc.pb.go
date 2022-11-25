@@ -22,9 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TeamClient interface {
-	Create(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*CreateReply, error)
-	Get(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*GetReply, error)
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateReply, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error)
 	Join(ctx context.Context, in *JoinRequest, opts ...grpc.CallOption) (*JoinReply, error)
+	Leave(ctx context.Context, in *LeaveRequest, opts ...grpc.CallOption) (*LeaveReply, error)
 }
 
 type teamClient struct {
@@ -35,7 +36,7 @@ func NewTeamClient(cc grpc.ClientConnInterface) TeamClient {
 	return &teamClient{cc}
 }
 
-func (c *teamClient) Create(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*CreateReply, error) {
+func (c *teamClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateReply, error) {
 	out := new(CreateReply)
 	err := c.cc.Invoke(ctx, "/team.Team/Create", in, out, opts...)
 	if err != nil {
@@ -44,7 +45,7 @@ func (c *teamClient) Create(ctx context.Context, in *CreateGetRequest, opts ...g
 	return out, nil
 }
 
-func (c *teamClient) Get(ctx context.Context, in *CreateGetRequest, opts ...grpc.CallOption) (*GetReply, error) {
+func (c *teamClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error) {
 	out := new(GetReply)
 	err := c.cc.Invoke(ctx, "/team.Team/Get", in, out, opts...)
 	if err != nil {
@@ -62,13 +63,23 @@ func (c *teamClient) Join(ctx context.Context, in *JoinRequest, opts ...grpc.Cal
 	return out, nil
 }
 
+func (c *teamClient) Leave(ctx context.Context, in *LeaveRequest, opts ...grpc.CallOption) (*LeaveReply, error) {
+	out := new(LeaveReply)
+	err := c.cc.Invoke(ctx, "/team.Team/Leave", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TeamServer is the server API for Team service.
 // All implementations must embed UnimplementedTeamServer
 // for forward compatibility
 type TeamServer interface {
-	Create(context.Context, *CreateGetRequest) (*CreateReply, error)
-	Get(context.Context, *CreateGetRequest) (*GetReply, error)
+	Create(context.Context, *CreateRequest) (*CreateReply, error)
+	Get(context.Context, *GetRequest) (*GetReply, error)
 	Join(context.Context, *JoinRequest) (*JoinReply, error)
+	Leave(context.Context, *LeaveRequest) (*LeaveReply, error)
 	mustEmbedUnimplementedTeamServer()
 }
 
@@ -76,14 +87,17 @@ type TeamServer interface {
 type UnimplementedTeamServer struct {
 }
 
-func (UnimplementedTeamServer) Create(context.Context, *CreateGetRequest) (*CreateReply, error) {
+func (UnimplementedTeamServer) Create(context.Context, *CreateRequest) (*CreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedTeamServer) Get(context.Context, *CreateGetRequest) (*GetReply, error) {
+func (UnimplementedTeamServer) Get(context.Context, *GetRequest) (*GetReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedTeamServer) Join(context.Context, *JoinRequest) (*JoinReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Join not implemented")
+}
+func (UnimplementedTeamServer) Leave(context.Context, *LeaveRequest) (*LeaveReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Leave not implemented")
 }
 func (UnimplementedTeamServer) mustEmbedUnimplementedTeamServer() {}
 
@@ -99,7 +113,7 @@ func RegisterTeamServer(s grpc.ServiceRegistrar, srv TeamServer) {
 }
 
 func _Team_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGetRequest)
+	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,13 +125,13 @@ func _Team_Create_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/team.Team/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TeamServer).Create(ctx, req.(*CreateGetRequest))
+		return srv.(TeamServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Team_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGetRequest)
+	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,7 +143,7 @@ func _Team_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{
 		FullMethod: "/team.Team/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TeamServer).Get(ctx, req.(*CreateGetRequest))
+		return srv.(TeamServer).Get(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -152,6 +166,24 @@ func _Team_Join_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Team_Leave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LeaveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeamServer).Leave(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/team.Team/Leave",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeamServer).Leave(ctx, req.(*LeaveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Team_ServiceDesc is the grpc.ServiceDesc for Team service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var Team_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Join",
 			Handler:    _Team_Join_Handler,
+		},
+		{
+			MethodName: "Leave",
+			Handler:    _Team_Leave_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

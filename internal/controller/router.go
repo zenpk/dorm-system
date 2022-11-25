@@ -19,17 +19,36 @@ func InitRouter(router *gin.Engine) {
 	router.GET("/remain-cnt", ginHandler.dorm.GetRemainCnt) // get the number of remaining beds count in each building
 
 	// login required URL
-	routerAuth := router.Group("/")
-	routerAuth.Use(middleware.RequireLogin())
+	auth := router.Group("/")
+	auth.Use(middleware.RequireLogin())
 	{
-		routerAuth.GET("/logout", ginHandler.user.Logout)
-		routerAuth.POST("/team-create", ginHandler.team.Create)
-		routerAuth.GET("/team", ginHandler.team.Get) // get one's team info
-		routerAuth.POST("/team-join", ginHandler.team.Join)
-		routerAuth.POST("/order-create", ginHandler.order.Submit)
-		routerAuth.GET("/order", ginHandler.order.Get) // get one's team's order info
+		user := auth.Group("/user")
+		{
+			//user.GET("/info", ginHandler.user.Get)
+			user.GET("/logout", ginHandler.user.Logout)
+			user.Use(middleware.CheckUserTeamTime())
+			{
+				//user.PUT("/info", ginHandler.user.Edit)
+			}
+		}
+		team := auth.Group("/team")
+		{
+			team.GET("/", ginHandler.team.Get) // get one's team info
+			team.Use(middleware.CheckUserTeamTime())
+			{
+				team.POST("/create", ginHandler.team.Create)
+				team.POST("/join", ginHandler.team.Join)
+				team.DELETE("/leave", ginHandler.team.Leave)
+			}
+		}
+		order := auth.Group("/order")
+		{
+			order.GET("/", ginHandler.order.Get) // get one's team's order info
+			order.Use(middleware.CheckOrderTime())
+			{
+				order.POST("/create", ginHandler.order.Submit)
+			}
+		}
 	}
-
-	// admin required URL
-
+	// admin required URL ...
 }

@@ -25,7 +25,7 @@ func (t *Team) init(config *viper.Viper) (*grpc.ClientConn, error) {
 	return conn, nil
 }
 
-func (t *Team) Create(req *pb.CreateGetRequest) (*pb.CreateReply, error) {
+func (t *Team) Create(req *pb.CreateRequest) (*pb.CreateReply, error) {
 	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.Create(ctx, req)
@@ -35,7 +35,7 @@ func (t *Team) Create(req *pb.CreateGetRequest) (*pb.CreateReply, error) {
 	return resp, nil
 }
 
-func (t *Team) Get(req *pb.CreateGetRequest) (*pb.GetReply, error) {
+func (t *Team) Get(req *pb.GetRequest) (*pb.GetReply, error) {
 	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.Get(ctx, req)
@@ -49,6 +49,16 @@ func (t *Team) Join(req *pb.JoinRequest) (*pb.JoinReply, error) {
 	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
 	defer cancel()
 	resp, err := t.client.Join(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (t *Team) Leave(req *pb.LeaveRequest) (*pb.LeaveReply, error) {
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
+	defer cancel()
+	resp, err := t.client.Leave(ctx, req)
 	if err != nil {
 		return nil, err
 	}

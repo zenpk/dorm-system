@@ -31,6 +31,10 @@ datetime:
     date: "2006-01-02"
     time: "2006-01-02 15:04:05"
   timezone: 8 # GMT/UTC+8
+  user_team_start_time: "2000-01-01 00:00:00"
+  user_team_deadline: "2099-12-31 00:00:00"
+  order_start_time: "2000-01-01 00:00:00"
+  order_deadline: "2099-12-31 00:00:00"
 auth:
   password_length: 4 # minimal password length
 snowflake:

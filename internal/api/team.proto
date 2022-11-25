@@ -5,9 +5,10 @@ option go_package = "github.com/zenpk/dorm-system/internal/service/team";
 import "common.proto";
 
 service Team{
-  rpc Create (CreateGetRequest) returns(CreateReply){}
-  rpc Get (CreateGetRequest) returns(GetReply){}
+  rpc Create (CreateRequest) returns(CreateReply){}
+  rpc Get (GetRequest) returns(GetReply){}
   rpc Join (JoinRequest) returns(JoinReply){}
+  rpc Leave (LeaveRequest) returns(LeaveReply){}
 }
 
 message UserInfo{
@@ -16,7 +17,7 @@ message UserInfo{
   string name = 3;
 }
 
-message CreateGetRequest{
+message CreateRequest{
   uint64 userId = 1;
 }
 
@@ -27,6 +28,10 @@ message CreateReply{
 
 message JoinReply{
   common.CommonResponse err = 1;
+}
+
+message GetRequest{
+  uint64 userId = 1;
 }
 
 message GetReply{
@@ -41,4 +46,13 @@ message GetReply{
 message JoinRequest{
   uint64 userId = 1;
   string code = 2;
+}
+
+message LeaveRequest{
+  uint64 userId = 1;
+}
+
+message LeaveReply{
+  common.CommonResponse err = 1;
+  UserInfo newOwner = 2;
 }
