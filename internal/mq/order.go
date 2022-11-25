@@ -8,6 +8,7 @@ import (
 	"github.com/zenpk/dorm-system/pkg/zap"
 	"google.golang.org/protobuf/proto"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"time"
@@ -109,11 +110,22 @@ func (o *OrderConsumer) subscribe() error {
 				case msg := <-partitionConsumer.Messages():
 					// start a go routine to handle order
 					go func() {
-						ctx, cancel := util.ContextWithTimeout(o.config.GetInt("timeout.submit"))
+						timeout := o.config.GetInt("timeout.submit")
+						ctx, cancel := util.ContextWithTimeout(timeout)
 						defer cancel()
 						zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
 						if err := order.Submit(ctx, msg); err != nil {
-							zap.Logger.Error(err)
+							zap.Logger.Errorf("consume message failed, offset: %v, error: %v", msg.Offset, err)
+							// wait random time to retry
+							waitTime := time.Duration(rand.Intn(timeout)+1) * time.Second
+							time.Sleep(waitTime)
+							if err := order.Submit(ctx, msg); err != nil {
+								zap.Logger.Errorf("consume message failed for the 2nd time, offset: %v, error: %v", msg.Offset, err)
+								// still failed, mark the order as failed in database
+								if err := order.Fail(ctx, msg); err != nil {
+									zap.Logger.Errorf("message completely failed! offset: %v, error: %v", msg.Offset, err)
+								}
+							}
 						}
 					}()
 				case <-signals:

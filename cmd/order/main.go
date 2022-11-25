@@ -2,11 +2,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/mq"
+	pb "github.com/zenpk/dorm-system/internal/service/order"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 )
 
 var (
@@ -36,6 +40,22 @@ func main() {
 	if err := dal.InitDB(); err != nil {
 		log.Fatalf("failed to initialize database, error: %v", err)
 	}
+	// RPC
+	go func() {
+		server := &pb.Server{Config: orderConfig}
+		addr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
+		lis, err := net.Listen("tcp", addr)
+		if err != nil {
+			log.Fatalf("failed to initialize TCP listener, error: %v", err)
+		}
+		grpcServer := grpc.NewServer()
+		pb.RegisterOrderServer(grpcServer, server)
+		zap.Logger.Infof("server listening at %v", addr)
+		if err := grpcServer.Serve(lis); err != nil {
+			log.Fatalf("failed to serve, error: %v", err)
+		}
+	}()
+	// Kafka
 	zap.Logger.Infof("order consumer is subscribed")
 	if err := mq.Consumer.Order.Init(orderConfig); err != nil { // defer Close() is inside Init()
 		log.Fatalf("failed to initialize consumer, error: %v", err)

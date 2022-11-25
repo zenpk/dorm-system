@@ -52,6 +52,7 @@ func main() {
 			log.Fatalf("failed to close Redis connection: %v", err)
 		}
 	}()
+	// RPC
 	addr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {

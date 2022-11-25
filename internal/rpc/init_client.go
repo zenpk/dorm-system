@@ -26,16 +26,27 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	}
 	connList = append(connList, dormConn)
 
-	// user
-	userConfig, err := viperpkg.InitConfig("user")
+	// order
+	orderConfig, err := viperpkg.InitConfig("order")
 	if err != nil {
 		return nil, err
 	}
-	userConn, err := Client.User.init(userConfig)
+	orderConn, err := Client.Order.init(orderConfig)
 	if err != nil {
 		return nil, err
 	}
-	connList = append(connList, userConn)
+	connList = append(connList, orderConn)
+
+	// team
+	teamConfig, err := viperpkg.InitConfig("team")
+	if err != nil {
+		return nil, err
+	}
+	teamConn, err := Client.Team.init(teamConfig)
+	if err != nil {
+		return nil, err
+	}
+	connList = append(connList, teamConn)
 
 	// token
 	tokenConfig, err := viperpkg.InitConfig("token")
@@ -48,16 +59,16 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	}
 	connList = append(connList, tokenConn)
 
-	// team
-	teamConfig, err := viperpkg.InitConfig("team")
+	// user
+	userConfig, err := viperpkg.InitConfig("user")
 	if err != nil {
 		return nil, err
 	}
-	teamConn, err := Client.Team.init(teamConfig)
+	userConn, err := Client.User.init(userConfig)
 	if err != nil {
 		return nil, err
 	}
-	connList = append(connList, teamConn)
+	connList = append(connList, userConn)
 
 	return connList, nil
 }

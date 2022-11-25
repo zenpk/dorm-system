@@ -18,6 +18,10 @@ func (b Building) FindById(ctx context.Context, id uint64) (building *Building, 
 	return building, DB.WithContext(ctx).Take(&building, id).Error
 }
 
+func (b Building) FindByNum(ctx context.Context, num string) (building *Building, err error) {
+	return building, DB.WithContext(ctx).Where("num = ?", num).Take(&building).Error
+}
+
 func (b Building) FindAllEnabled(ctx context.Context) (buildings []*Building, err error) {
 	return buildings, DB.WithContext(ctx).Where("enabled = true").Find(&buildings).Error
 }

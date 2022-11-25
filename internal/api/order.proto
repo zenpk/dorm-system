@@ -21,7 +21,7 @@ message OrderInfo{
 }
 
 message SubmitRequest{
-  uint64 buildingId = 1;
+  string buildingNum = 1;
   team.GetReply team = 2;
   string code = 3;
 }
