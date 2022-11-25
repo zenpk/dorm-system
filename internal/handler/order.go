@@ -26,7 +26,7 @@ func (o Order) Submit(c *gin.Context) {
 		response(c, packer.Pack(ep.ErrInputHeader))
 		return
 	}
-	teamReq := &team.CreateGetRequest{UserId: userId}
+	teamReq := &team.GetRequest{UserId: userId}
 	teamResp, err := rpc.Client.Team.Get(teamReq)
 	if err != nil {
 		response(c, packer.PackWithError(err))
@@ -39,8 +39,14 @@ func (o Order) Submit(c *gin.Context) {
 		response(c, packer.Pack(errPack))
 		return
 	}
-	// Third: submit order
 	req.Team = teamResp
+	// Third: generate a unique code
+	code, err := util.GenSnowflakeString()
+	if err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	req.Code = code
 	if err := mq.Producer.Order.Send(&req); err != nil {
 		response(c, packer.PackWithError(err))
 		return
@@ -51,5 +57,9 @@ func (o Order) Submit(c *gin.Context) {
 }
 
 func (o Order) Get(c *gin.Context) {
+	return
+}
+
+func (o Order) Delete(c *gin.Context) {
 	return
 }

@@ -6,13 +6,24 @@ import "common.proto";
 import "team.proto";
 
 service Order{
-  rpc Submit (SubmitRequest) returns(SubmitReply){}
-  rpc Get(GetRequest) returns (GetReply){}
+  rpc Submit (SubmitRequest) returns (SubmitReply){}
+  rpc Get (GetRequest) returns (GetReply){}
+  rpc Delete (DeleteRequest) returns (DeleteReply){}
+}
+
+message OrderInfo{
+  uint64 id = 1;
+  string buildingNum = 2;
+  string dormNum = 3;
+  string info = 4;
+  bool success = 5;
+  bool deleted = 6;
 }
 
 message SubmitRequest{
-  string buildingNum = 1;
+  uint64 buildingId = 1;
   team.GetReply team = 2;
+  string code = 3;
 }
 
 message SubmitReply{
@@ -28,11 +39,10 @@ message GetReply{
   repeated OrderInfo orders = 2;
 }
 
-message OrderInfo{
-  uint64 id = 1;
-  string buildingNum = 2;
-  string dormNum = 3;
-  string info = 4;
-  bool success = 5;
-  bool deleted = 6;
+message DeleteRequest{
+  uint64 teamId = 1;
+}
+
+message DeleteReply{
+  common.CommonResponse err = 1;
 }

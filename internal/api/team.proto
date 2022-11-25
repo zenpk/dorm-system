@@ -3,19 +3,15 @@ package team;
 option go_package = "github.com/zenpk/dorm-system/internal/service/team";
 
 import "common.proto";
+import "user.proto";
 
 service Team{
-  rpc Create (CreateRequest) returns(CreateReply){}
-  rpc Get (GetRequest) returns(GetReply){}
-  rpc Join (JoinRequest) returns(JoinReply){}
-  rpc Leave (LeaveRequest) returns(LeaveReply){}
+  rpc Create (CreateRequest) returns (CreateReply){}
+  rpc Get (GetRequest) returns (GetReply){}
+  rpc Join (JoinRequest) returns (JoinReply){}
+  rpc Leave (LeaveRequest) returns (LeaveReply){}
 }
 
-message UserInfo{
-  uint64 id = 1;
-  string studentNum = 2;
-  string name = 3;
-}
 
 message CreateRequest{
   uint64 userId = 1;
@@ -39,8 +35,8 @@ message GetReply{
   uint64 id = 2;
   string code = 3;
   string gender = 4;
-  UserInfo owner = 5;
-  repeated UserInfo members = 6;
+  user.UserInfo owner = 5;
+  repeated user.UserInfo members = 6;
 }
 
 message JoinRequest{
@@ -54,5 +50,5 @@ message LeaveRequest{
 
 message LeaveReply{
   common.CommonResponse err = 1;
-  UserInfo newOwner = 2;
+  user.UserInfo newOwner = 2;
 }

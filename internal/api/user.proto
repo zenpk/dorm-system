@@ -5,8 +5,17 @@ option go_package = "github.com/zenpk/dorm-system/internal/service/user";
 import "common.proto";
 
 service User{
-  rpc Register (RegisterLoginRequest) returns(UserReply){}
-  rpc Login (RegisterLoginRequest) returns(UserReply){}
+  rpc Register (RegisterLoginRequest) returns (UserReply){}
+  rpc Login (RegisterLoginRequest) returns (UserReply){}
+  rpc Get (GetRequest) returns (GetReply){}
+  rpc Edit (EditRequest) returns (EditReply){}
+}
+
+message UserInfo{
+  uint64 id = 1;
+  string studentNum = 2;
+  string name = 3;
+  string gender = 4;
 }
 
 message RegisterLoginRequest{
@@ -17,4 +26,21 @@ message RegisterLoginRequest{
 message UserReply{
   common.CommonResponse err = 1;
   uint64 userId = 2;
+}
+
+message GetRequest{
+  uint64 userId = 1;
+}
+
+message GetReply{
+  common.CommonResponse err = 1;
+  UserInfo user = 2;
+}
+
+message EditRequest{
+  UserInfo user = 1;
+}
+
+message EditReply{
+  common.CommonResponse err = 1;
 }

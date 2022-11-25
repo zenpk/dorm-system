@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type UserClient interface {
 	Register(ctx context.Context, in *RegisterLoginRequest, opts ...grpc.CallOption) (*UserReply, error)
 	Login(ctx context.Context, in *RegisterLoginRequest, opts ...grpc.CallOption) (*UserReply, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error)
+	Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditReply, error)
 }
 
 type userClient struct {
@@ -52,12 +54,32 @@ func (c *userClient) Login(ctx context.Context, in *RegisterLoginRequest, opts .
 	return out, nil
 }
 
+func (c *userClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error) {
+	out := new(GetReply)
+	err := c.cc.Invoke(ctx, "/user.User/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditReply, error) {
+	out := new(EditReply)
+	err := c.cc.Invoke(ctx, "/user.User/Edit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	Register(context.Context, *RegisterLoginRequest) (*UserReply, error)
 	Login(context.Context, *RegisterLoginRequest) (*UserReply, error)
+	Get(context.Context, *GetRequest) (*GetReply, error)
+	Edit(context.Context, *EditRequest) (*EditReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -70,6 +92,12 @@ func (UnimplementedUserServer) Register(context.Context, *RegisterLoginRequest) 
 }
 func (UnimplementedUserServer) Login(context.Context, *RegisterLoginRequest) (*UserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServer) Get(context.Context, *GetRequest) (*GetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedUserServer) Edit(context.Context, *EditRequest) (*EditReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Edit not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -120,6 +148,42 @@ func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Get(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_Edit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Edit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/Edit",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Edit(ctx, req.(*EditRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +198,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _User_Login_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _User_Get_Handler,
+		},
+		{
+			MethodName: "Edit",
+			Handler:    _User_Edit_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

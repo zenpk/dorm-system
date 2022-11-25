@@ -5,7 +5,7 @@ option go_package = "github.com/zenpk/dorm-system/internal/service/dorm";
 import "common.proto";
 
 service Dorm{
-  rpc GetRemainCnt(EmptyRequest) returns(MapReply){}
+  rpc GetRemainCnt (EmptyRequest) returns (MapReply){}
 }
 
 message EmptyRequest{

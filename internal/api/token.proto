@@ -5,8 +5,8 @@ option go_package = "github.com/zenpk/dorm-system/internal/service/token";
 import "common.proto";
 
 service Token{
-  rpc GenAllToken (GenAllTokenRequest) returns(TokenReply){}
-  rpc GenAccessToken (GenAccessTokenRequest) returns(TokenReply){}
+  rpc GenAllToken (GenAllTokenRequest) returns (TokenReply){}
+  rpc GenAccessToken (GenAccessTokenRequest) returns (TokenReply){}
 }
 
 message GenAllTokenRequest{

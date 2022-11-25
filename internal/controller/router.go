@@ -24,11 +24,11 @@ func InitRouter(router *gin.Engine) {
 	{
 		user := auth.Group("/user")
 		{
-			//user.GET("/info", ginHandler.user.Get)
+			user.GET("/info", ginHandler.user.Get)
 			user.GET("/logout", ginHandler.user.Logout)
 			user.Use(middleware.CheckUserTeamTime())
 			{
-				//user.PUT("/info", ginHandler.user.Edit)
+				user.PUT("/info", ginHandler.user.Edit)
 			}
 		}
 		team := auth.Group("/team")
@@ -47,6 +47,7 @@ func InitRouter(router *gin.Engine) {
 			order.Use(middleware.CheckOrderTime())
 			{
 				order.POST("/create", ginHandler.order.Submit)
+				order.DELETE("/delete", ginHandler.order.Delete)
 			}
 		}
 	}

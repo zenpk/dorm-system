@@ -109,7 +109,7 @@ func (o *OrderConsumer) subscribe() error {
 				case msg := <-partitionConsumer.Messages():
 					// start a go routine to handle order
 					go func() {
-						ctx, cancel := util.ContextWithTimeout(o.config.GetInt("timeout"))
+						ctx, cancel := util.ContextWithTimeout(o.config.GetInt("timeout.submit"))
 						defer cancel()
 						zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
 						if err := order.Submit(ctx, msg); err != nil {

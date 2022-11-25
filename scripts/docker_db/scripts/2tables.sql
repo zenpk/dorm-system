@@ -39,12 +39,12 @@ ALTER TABLE `buildings`
 CREATE TABLE `orders`
 (
     `id`          bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `building_id` bigint unsigned NOT NULL,
-    `dorm_id`     bigint unsigned NOT NULL DEFAULT 0,
-    `team_id`     bigint unsigned NOT NULL,
-    `code`        varchar(200)    NOT NULL,
+    `building_id` bigint unsigned     NOT NULL,
+    `dorm_id`     bigint unsigned     NOT NULL DEFAULT 0,
+    `team_id`     bigint unsigned     NOT NULL,
+    `code`        varchar(200) UNIQUE NOT NULL,
     `info`        varchar(200),
-    `success`     tinyint         NOT NULL DEFAULT 0,
+    `success`     tinyint             NOT NULL DEFAULT 0,
     `deleted`     datetime(3)
 );
 ALTER TABLE `orders`

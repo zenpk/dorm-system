@@ -3,8 +3,7 @@ package dal
 import (
 	"context"
 	"errors"
-	"github.com/bwmarrin/snowflake"
-	"github.com/spf13/viper"
+	"github.com/zenpk/dorm-system/internal/util"
 	"gorm.io/gorm"
 )
 
@@ -50,13 +49,12 @@ func (t Team) FindByCode(ctx context.Context, code string) (team *Team, err erro
 }
 
 func (t Team) GenNew(ctx context.Context, owner *User) (team *Team, err error) {
-	node, err := snowflake.NewNode(viper.GetInt64("snowflake.node"))
+	code, err := util.GenSnowflakeString()
 	if err != nil {
 		return nil, err
 	}
-	snowflakeId := node.Generate()
 	team = &Team{
-		Code:    snowflakeId.Base64(),
+		Code:    code,
 		Gender:  owner.Gender,
 		OwnerId: owner.Id,
 	}

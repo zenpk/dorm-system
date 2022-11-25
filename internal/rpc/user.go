@@ -44,3 +44,23 @@ func (u *User) Login(req *pb.RegisterLoginRequest) (*pb.UserReply, error) {
 	}
 	return resp, nil
 }
+
+func (u *User) Get(req *pb.GetRequest) (*pb.GetReply, error) {
+	ctx, cancel := util.ContextWithTimeout(u.config.GetInt("timeout"))
+	defer cancel()
+	resp, err := u.client.Get(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (u *User) Edit(req *pb.EditRequest) (*pb.EditReply, error) {
+	ctx, cancel := util.ContextWithTimeout(u.config.GetInt("timeout"))
+	defer cancel()
+	resp, err := u.client.Edit(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
