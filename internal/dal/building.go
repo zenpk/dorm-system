@@ -6,12 +6,12 @@ import (
 )
 
 type Building struct {
-	Id       uint64         `gorm:"primaryKey" json:"-"`
-	Num      string         `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
-	Info     string         `json:"info,omitempty"`
-	ImageUrl string         `json:"imageUrl,omitempty"`
-	Enabled  bool           `gorm:"not null; default:1; index" json:"enabled,omitempty"`
-	Deleted  gorm.DeletedAt `gorm:"index"`
+	Id      uint64         `gorm:"primaryKey" json:"-"`
+	Num     string         `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
+	Info    string         `json:"info,omitempty"`
+	ImgUrl  string         `json:"imgUrl,omitempty"`
+	Enabled bool           `gorm:"not null; default:1; index" json:"enabled,omitempty"`
+	Deleted gorm.DeletedAt `gorm:"index"`
 }
 
 func (b Building) FindById(ctx context.Context, id uint64) (building *Building, err error) {

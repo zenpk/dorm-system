@@ -9,7 +9,7 @@ def create(cursor):
         "VALUE (%s,%s,%s);"
     )
     fake = Faker("zh_CN")
-    for i in range(1, 1001):
+    for i in range(5, 1001):
         student_num = str(i)
         odd = random.random()
         if odd < 0.5:

@@ -1,5 +1,6 @@
 import building
 import dorm
+import team
 import temp
 import user
 import util
@@ -8,7 +9,8 @@ import util
 def main():
     cnx = util.connect_db()
     cursor = cnx.cursor()
-    temp.create(cursor)
+    temp.create_all(cursor)
+    team.create(cursor)
     building.create(cursor)
     dorm.create(cursor)
     user.create(cursor)

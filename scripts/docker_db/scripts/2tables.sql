@@ -22,12 +22,12 @@ ALTER TABLE `dorms`
 
 CREATE TABLE `buildings`
 (
-    `id`        bigint unsigned PRIMARY KEY AUTO_INCREMENT,
-    `num`       varchar(10) UNIQUE NOT NULL,
-    `info`      varchar(200),
-    `image_url` varchar(200),
-    `enabled`   tinyint            NOT NULL DEFAULT 1,
-    `deleted`   datetime(3)
+    `id`      bigint unsigned PRIMARY KEY AUTO_INCREMENT,
+    `num`     varchar(10) UNIQUE NOT NULL,
+    `info`    varchar(200),
+    `img_url` varchar(200),
+    `enabled` tinyint            NOT NULL DEFAULT 1,
+    `deleted` datetime(3)
 );
 ALTER TABLE `buildings`
     ADD INDEX (`num`);
