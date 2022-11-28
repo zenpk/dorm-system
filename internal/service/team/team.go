@@ -159,9 +159,9 @@ func (s Server) Leave(ctx context.Context, req *LeaveRequest) (*LeaveReply, erro
 		return nil, err
 	}
 	if team.OwnerId != req.UserId { // not the owner
-		rel := &dal.TeamUser{
-			TeamId: team.Id,
-			UserId: req.UserId,
+		rel, err := dal.Table.TeamUser.FindByTeamIdAndUserId(ctx, team.Id, req.UserId)
+		if err != nil {
+			return nil, err
 		}
 		if err := dal.Table.TeamUser.Delete(ctx, rel); err != nil {
 			return nil, err

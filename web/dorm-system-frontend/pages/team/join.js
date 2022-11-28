@@ -9,17 +9,18 @@ export default function Join() {
     const {register, handleSubmit} = useForm();
 
     function onSubmit(data) {
-        fetchWrapper.post("/join", data)
-        router.push("/team/")
+        fetchWrapper.post("/team/join", data)
+        router.push("/team/info")
     }
 
     function create() {
-        fetchWrapper.post("/create")
-        router.push("/team/")
+        fetchWrapper.post("/team/create")
+        router.push("/team/info")
     }
 
     return <Layout>
-        <h1>Please enter a team code</h1>
+        <h1>Join a Team</h1>
+        <h2>Please enter a team code</h2>
         <div className="row">
             <div className="col-4">
                 <form onSubmit={handleSubmit(onSubmit)}>

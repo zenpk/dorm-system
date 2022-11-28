@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 )
 
@@ -69,6 +70,7 @@ type OrderConsumer struct {
 // Init consumer and subscribe
 func (o *OrderConsumer) Init(c *viper.Viper, server *pb.Server) error {
 	o.config = c
+	o.server = server
 	// init consumer
 	config := sarama.NewConfig()
 	var err error
@@ -90,6 +92,7 @@ func (o *OrderConsumer) subscribe() error {
 	if err != nil {
 		return err
 	}
+	wg := &sync.WaitGroup{}
 	for _, partition := range partitionList {
 		partitionConsumer, err := o.consumer.ConsumePartition(o.config.GetString("kafka.topic"), partition, sarama.OffsetOldest)
 		if err != nil {
@@ -99,46 +102,46 @@ func (o *OrderConsumer) subscribe() error {
 		signals := make(chan os.Signal, 1)
 		signal.Notify(signals, os.Interrupt)
 		// start a go routine for every partitionConsumer
-		go func() {
+		wg.Add(1)
+		go func(pc sarama.PartitionConsumer) {
 			defer func() {
-				if err := partitionConsumer.Close(); err != nil {
+				defer wg.Done()
+				if err := pc.Close(); err != nil {
 					log.Fatalf("failed to close partitionConsumer, error: %v", err)
 				}
 			}()
 		ConsumerLoop:
 			for {
 				select {
-				case msg := <-partitionConsumer.Messages():
-					// start a go routine to handle order
-					go func() {
-						var req pb.SubmitRequest
-						if err := proto.Unmarshal(msg.Value, &req); err != nil {
-							zap.Logger.Error(err)
-							return
-						}
-						timeout := o.config.GetInt("timeout.submit")
-						ctx, cancel := util.ContextWithTimeout(timeout)
-						defer cancel()
-						zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
+				case msg := <-pc.Messages():
+					var req pb.SubmitRequest
+					if err := proto.Unmarshal(msg.Value, &req); err != nil {
+						zap.Logger.Error(err)
+						continue
+					}
+					timeout := o.config.GetInt("timeout.submit")
+					ctx, cancel := util.ContextWithTimeout(timeout)
+					zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
+					if _, err := o.server.Submit(ctx, &req); err != nil {
+						zap.Logger.Errorf("consume message failed, offset: %v, error: %v", msg.Offset, err)
+						// wait random time to retry
+						waitTime := time.Duration(rand.Intn(timeout)+1) * time.Second
+						time.Sleep(waitTime)
 						if _, err := o.server.Submit(ctx, &req); err != nil {
-							zap.Logger.Errorf("consume message failed, offset: %v, error: %v", msg.Offset, err)
-							// wait random time to retry
-							waitTime := time.Duration(rand.Intn(timeout)+1) * time.Second
-							time.Sleep(waitTime)
-							if _, err := o.server.Submit(ctx, &req); err != nil {
-								zap.Logger.Errorf("consume message failed for the 2nd time, offset: %v, error: %v", msg.Offset, err)
-								// still failed, mark the order as failed in database
-								if err := o.server.Fail(ctx, &req, "retried too many times"); err != nil {
-									zap.Logger.Errorf("message completely failed! offset: %v, error: %v", msg.Offset, err)
-								}
+							zap.Logger.Errorf("consume message failed for the 2nd time, offset: %v, error: %v", msg.Offset, err)
+							// still failed, mark the order as failed in database
+							if err := o.server.Fail(ctx, &req, "retried too many times"); err != nil {
+								zap.Logger.Errorf("message completely failed! offset: %v, error: %v", msg.Offset, err)
 							}
 						}
-					}()
+					}
+					cancel()
 				case <-signals:
 					break ConsumerLoop
 				}
 			}
-		}()
+		}(partitionConsumer)
 	}
+	wg.Wait()
 	return nil
 }

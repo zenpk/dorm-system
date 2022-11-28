@@ -12,7 +12,8 @@ export default function Info() {
         fetchWrapper.get("/team/")
             .then(resp => resp.json())
             .then(data => {
-                    if (data.err.code === process.env.errNoRecord) {
+                    console.log(data);
+                    if (data.err.code !== process.env.errOK) {
                         setAlert("You haven't joined any team");
                     } else {
                         setTeam(data.team);
@@ -24,7 +25,9 @@ export default function Info() {
     const router = useRouter();
 
     function leave() {
-        fetchWrapper.delete("/team/leave");
+        fetchWrapper.delete("/team/leave")
+            .then(resp => resp.json())
+            .then(data => console.log(data));
         router.reload();
     }
 

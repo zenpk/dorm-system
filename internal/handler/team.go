@@ -72,10 +72,6 @@ func (t Team) Leave(c *gin.Context) {
 		return
 	}
 	var req pb.LeaveRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response(c, packer.Pack(ep.ErrInputBody))
-		return
-	}
 	req.UserId = userId
 	resp, err := rpc.Client.Team.Leave(&req)
 	if err != nil {

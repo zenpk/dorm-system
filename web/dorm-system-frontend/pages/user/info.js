@@ -56,7 +56,10 @@ export default function Info() {
                 </tr>
                 </tbody>
             </table>
-            <Link href="/user/login" className="my-button-big fw-bold">
+            <Link href={{
+                pathname: "/user/edit",
+                query: info,
+            }} className="my-button-big fw-bold">
                 Edit
             </Link>
             &nbsp;&nbsp;

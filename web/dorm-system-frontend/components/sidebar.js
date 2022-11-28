@@ -24,13 +24,13 @@ export function Sidebar() {
                     <button
                         className="btn btn-toggle align-items-center collapsed sidebar-button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#menu-project-collapse"
+                        data-bs-target="#menu-team-collapse"
                         aria-expanded="false"
                     >
                         Team
                     </button>
                 </li>
-                <div className="collapse" id="menu-project-collapse">
+                <div className="collapse" id="menu-team-collapse">
                     <ul className="list-unstyled">
                         <li>
                             <Link href="/team/info" className="sidebar-subitem">
@@ -45,10 +45,29 @@ export function Sidebar() {
                     </ul>
                 </div>
                 <li>
-                    <Link href="/order" className="link-dark sidebar-item">
+                    <button
+                        className="btn btn-toggle align-items-center collapsed sidebar-button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#menu-order-collapse"
+                        aria-expanded="false"
+                    >
                         Order
-                    </Link>
+                    </button>
                 </li>
+                <div className="collapse" id="menu-order-collapse">
+                    <ul className="list-unstyled">
+                        <li>
+                            <Link href="/order/info" className="sidebar-subitem">
+                                - My Order
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/order/create" className="sidebar-subitem">
+                                - Create an Order
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
             </ul>
             <div className="sidebar-line"></div>
         </div>

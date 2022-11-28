@@ -22,6 +22,7 @@ func InitRedis() error {
 	if err := Redis.FlushAll(ctx).Err(); err != nil { // flush all caches, comment this line in production
 		return err
 	}
+	All.RedSync.Init(Redis) // initialize redsync (mutex)
 	return nil
 }
 
