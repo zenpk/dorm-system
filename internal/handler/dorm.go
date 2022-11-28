@@ -17,3 +17,13 @@ func (d Dorm) GetRemainCnt(c *gin.Context) {
 	}
 	response(c, resp)
 }
+
+func (d Dorm) GetAll(c *gin.Context) {
+	req := new(pb.EmptyRequest)
+	resp, err := rpc.Client.Dorm.GetAll(req)
+	if err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
+	response(c, resp)
+}

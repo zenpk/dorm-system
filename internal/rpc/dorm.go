@@ -34,3 +34,13 @@ func (d *Dorm) GetRemainCnt(req *pb.EmptyRequest) (*pb.MapReply, error) {
 	}
 	return resp, nil
 }
+
+func (d *Dorm) GetAll(req *pb.EmptyRequest) (*pb.GetAllReply, error) {
+	ctx, cancel := util.ContextWithTimeout(d.config.GetInt("timeout"))
+	defer cancel()
+	resp, err := d.client.GetAll(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

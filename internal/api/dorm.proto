@@ -6,6 +6,13 @@ import "common.proto";
 
 service Dorm{
   rpc GetRemainCnt (EmptyRequest) returns (MapReply){}
+  rpc GetAll (EmptyRequest) returns (GetAllReply){}
+}
+
+message BuildingInfo{
+  string num = 1;
+  string info = 2;
+  string imgUrl = 3;
 }
 
 message EmptyRequest{
@@ -14,4 +21,9 @@ message EmptyRequest{
 message MapReply{
   common.CommonResponse err = 1;
   map<string, string> remainCnt = 2;
+}
+
+message GetAllReply{
+  common.CommonResponse err = 1;
+  repeated BuildingInfo infos = 2;
 }

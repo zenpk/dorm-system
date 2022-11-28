@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DormClient interface {
 	GetRemainCnt(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*MapReply, error)
+	GetAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*GetAllReply, error)
 }
 
 type dormClient struct {
@@ -42,11 +43,21 @@ func (c *dormClient) GetRemainCnt(ctx context.Context, in *EmptyRequest, opts ..
 	return out, nil
 }
 
+func (c *dormClient) GetAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*GetAllReply, error) {
+	out := new(GetAllReply)
+	err := c.cc.Invoke(ctx, "/dorm.Dorm/GetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DormServer is the server API for Dorm service.
 // All implementations must embed UnimplementedDormServer
 // for forward compatibility
 type DormServer interface {
 	GetRemainCnt(context.Context, *EmptyRequest) (*MapReply, error)
+	GetAll(context.Context, *EmptyRequest) (*GetAllReply, error)
 	mustEmbedUnimplementedDormServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedDormServer struct {
 
 func (UnimplementedDormServer) GetRemainCnt(context.Context, *EmptyRequest) (*MapReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRemainCnt not implemented")
+}
+func (UnimplementedDormServer) GetAll(context.Context, *EmptyRequest) (*GetAllReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedDormServer) mustEmbedUnimplementedDormServer() {}
 
@@ -88,6 +102,24 @@ func _Dorm_GetRemainCnt_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Dorm_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DormServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dorm.Dorm/GetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DormServer).GetAll(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Dorm_ServiceDesc is the grpc.ServiceDesc for Dorm service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Dorm_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRemainCnt",
 			Handler:    _Dorm_GetRemainCnt_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _Dorm_GetAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

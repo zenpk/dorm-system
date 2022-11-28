@@ -4,12 +4,12 @@ def create(cursor):
         "VALUES (%s,%s,%s,%s);"
     )
     datas = [
-        ['1', True, 'good', 'https://imgur.com/gallery/BxBNP59'],
-        ['2', True, 'big', 'https://imgur.com/gallery/RwmqDBX'],
-        ['3', True, 'very big', 'https://imgur.com/gallery/9QHb2P0'],
-        ['4', True, 'small', 'https://imgur.com/gallery/O7Km8nH'],
-        ['5', True, 'medium', 'https://imgur.com/gallery/NBX3r'],
-        ['6', False, 'very small', 'https://imgur.com/gallery/FJvcZ']
+        ['1', True, 'good', 'https://i.imgur.com/WDmvSab.jpeg'],
+        ['2', True, 'big', 'https://i.imgur.com/RqoqseF.jpeg'],
+        ['3', True, 'very big', 'https://i.imgur.com/fCM0iN2.jpeg'],
+        ['4', True, 'small', 'https://i.imgur.com/NLfHBMS.jpeg'],
+        ['5', True, 'medium', 'https://i.imgur.com/AzHs6II.jpeg'],
+        ['6', False, 'very small', 'https://i.imgur.com/Uc8FNVB.jpeg']
     ]
     cursor.executemany(sql, datas)
     print("building finished")

@@ -22,6 +22,10 @@ func (d Dorm) FindById(ctx context.Context, id uint64) (dorm *Dorm, err error) {
 	return dorm, DB.WithContext(ctx).Take(&dorm, id).Error
 }
 
+func (d Dorm) FindAllEnabled(ctx context.Context) (dorms []*Dorm, err error) {
+	return dorms, DB.WithContext(ctx).Where("enabled = true").Find(&dorms).Error
+}
+
 func (d Dorm) SumRemainCntByBuildingId(ctx context.Context, id uint64) (sum int64, err error) {
 	building, err := Table.Building.FindById(ctx, id)
 	if err != nil {

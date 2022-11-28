@@ -13,7 +13,7 @@ func CORSFilter() gin.HandlerFunc {
 	return cors.New(cors.Config{
 		//AllowOrigins:     []string{"https://localhost:5173", "http://localhost:5173"}, // ignored because of AllowOriginFunc
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"*"},
+		AllowHeaders:     []string{"Content-Type", "Origin", "x-requested-with"},
 		ExposeHeaders:    []string{},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {

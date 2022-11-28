@@ -17,6 +17,7 @@ func InitRouter(router *gin.Engine) {
 	router.POST("/login", ginHandler.user.Login)
 	router.POST("/register", ginHandler.user.Register)
 	router.GET("/remain-cnt", ginHandler.dorm.GetRemainCnt) // get the number of remaining beds count in each building
+	router.GET("/buildings", ginHandler.dorm.GetAll)
 
 	// login required URL
 	auth := router.Group("/")

@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Kalam&family=Noto+Sans+SC:wght@400;700&display=swap");
+
+:root {
+    --my-color: #99bbdd;
+    --my-color-darker: #7799bb;
+    --my-grey: #f0f0f0;
+    --my-grey-darker: #bbbbbb;
+    --my-black: #111111;
+    --my-trans-speed: 0.2s;
+    --my-margin-bottom: 2rem;
+    --my-font-size-7: calc(0.6rem + 0.3vw);
+    --my-font-size-6: calc(0.8rem + 0.3vw);
+    --my-font-size-5: calc(1rem + 0.3vw);
+    --my-font-size-4: calc(0.8rem + 0.6vw);
+    --my-font-size-3: calc(1.3rem + 0.6vw); /* bootstrap */
+    --my-font-size-2: calc(1.325rem + 0.9vw); /* bootstrap */
+    --my-font-size-1: calc(1.375rem + 1.5vw); /* bootstrap */
+}
+
+body {
+    font-family: "Noto Sans SC", sans-serif !important;
+    font-weight: normal !important;
+    font-size: var(--my-font-size-6) !important;
+    line-height: 2.2rem !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: bold !important;
+}
+
+h1 {
+    margin-bottom: 2.2rem !important;
+}
+
+h2 {
+    margin: 1.2rem 0 1.2rem 0 !important;
+    font-size: var(--my-font-size-3);
+}
+
+h3 {
+    margin: 1rem 0 1rem 0 !important;
+    font-size: var(--my-font-size-4);
+}
+
+h4 {
+    margin: 1rem 0 1rem 0 !important;
+    font-size: var(--my-font-size-5);
+}
+
+h5 {
+    margin: 1rem 0 1rem 0 !important;
+    font-size: var(--my-font-size-6);
+}
+
+img {
+    object-fit: scale-down;
+    width: 100%;
+}
+
+dialog {
+    z-index: 9000;
+    border: 0;
+    padding: 0;
+    cursor: zoom-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 80%;
+    background-color: transparent;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.font-normal {
+    font-family: "Noto Sans SC", sans-serif !important;
+}
+
+.font-art {
+    font-family: "Kalam", "Noto Sans SC", sans-serif !important;
+}
+
+.font-code {
+    font-family: "JetBrains Mono", "Noto Sans SC", sans-serif !important;
+}
+
+.my-color {
+    color: var(--my-color) !important;
+}
+
+.mfs-7 {
+    font-size: var(--my-font-size-7) !important;
+}
+
+.mfs-6 {
+    font-size: var(--my-font-size-6) !important;
+}
+
+.mfs-5 {
+    font-size: var(--my-font-size-5) !important;
+}
+
+.mfs-4 {
+    font-size: var(--my-font-size-4) !important;
+}
+
+.mfs-3 {
+    font-size: var(--my-font-size-3) !important;
+}
+
+.mfs-2 {
+    font-size: var(--my-font-size-2) !important;
+}
+
+.mfs-1 {
+    font-size: var(--my-font-size-1) !important;
+}
+
+.mm-6 {
+    margin: var(--my-font-size-6) !important;
+}
+
+.mm-5 {
+    margin: var(--my-font-size-5) !important;
+}
+
+.mm-4 {
+    margin: var(--my-font-size-4) !important;
+}
+
+.mm-3 {
+    margin: var(--my-font-size-3) !important;
+}
+
+.mm-2 {
+    margin: var(--my-font-size-2) !important;
+}
+
+.mm-1 {
+    margin: var(--my-font-size-1) !important;
+}
+
+.mp-7 {
+    padding: var(--my-font-size-7) !important;
+}
+
+.mp-6 {
+    padding: var(--my-font-size-6) !important;
+}
+
+.mp-5 {
+    padding: var(--my-font-size-5) !important;
+}
+
+.mp-4 {
+    padding: var(--my-font-size-4) !important;
+}
+
+.mp-3 {
+    padding: var(--my-font-size-3) !important;
+}
+
+.mp-2 {
+    padding: var(--my-font-size-2) !important;
+}
+
+.mp-1 {
+    padding: var(--my-font-size-1) !important;
+}
+
+.no-pre {
+    white-space: normal !important;
+}
+
+.transparent {
+    background-color: transparent !important;
+}

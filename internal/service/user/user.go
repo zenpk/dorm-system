@@ -86,6 +86,7 @@ func (s Server) Get(ctx context.Context, req *GetRequest) (*GetReply, error) {
 			Id:         user.Id,
 			StudentNum: user.StudentNum,
 			Name:       user.Name,
+			Gender:     user.Gender,
 		},
 	}
 	return resp, nil
