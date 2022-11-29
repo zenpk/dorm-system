@@ -58,16 +58,16 @@ export default function Info() {
                         <table className={"table table-striped table-bordered m-0"}>
                             <tbody>
                             <tr>
-                                <th>Id</th>
-                                <td>{team?.owner?.id}</td>
+                                <th className={"w-50"}>Id</th>
+                                <td className={"w-50"}>{team?.owner?.id}</td>
                             </tr>
                             <tr>
-                                <th>Name</th>
-                                <td>{team?.owner?.name}</td>
+                                <th className={"w-50"}>Name</th>
+                                <td className={"w-50"}>{team?.owner?.name}</td>
                             </tr>
                             <tr>
-                                <th>Student number</th>
-                                <td>{team?.owner?.studentNum}</td>
+                                <th className={"w-50"}>Student number</th>
+                                <td className={"w-50"}>{team?.owner?.studentNum}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -78,19 +78,19 @@ export default function Info() {
                     <td className={"p-0"}>
                         {
                             team?.members?.map((m, i) => {
-                                return <table className={"table table-striped table-bordered"} key={i}>
+                                return <table className={"table table-striped table-bordered my-3"} key={i}>
                                     <tbody>
                                     <tr>
-                                        <th>Id</th>
-                                        <td>{m?.id}</td>
+                                        <th className={"w-50"}>Id</th>
+                                        <td className={"w-50"}>{m?.id}</td>
                                     </tr>
                                     <tr>
-                                        <th>Name</th>
-                                        <td>{m?.name}</td>
+                                        <th className={"w-50"}>Name</th>
+                                        <td className={"w-50"}>{m?.name}</td>
                                     </tr>
                                     <tr>
-                                        <th>Student number</th>
-                                        <td>{m?.studentNum}</td>
+                                        <th className={"w-50"}>Student number</th>
+                                        <td className={"w-50"} >{m?.studentNum}</td>
                                     </tr>
                                     </tbody>
                                 </table>;
