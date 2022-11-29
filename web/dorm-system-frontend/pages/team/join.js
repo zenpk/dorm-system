@@ -10,6 +10,8 @@ export default function Join() {
 
     function onSubmit(data) {
         fetchWrapper.post("/team/join", data)
+            .then(resp => resp.json())
+            .then(data => console.log(data));
         router.push("/team/info")
     }
 

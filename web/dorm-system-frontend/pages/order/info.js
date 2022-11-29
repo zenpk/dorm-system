@@ -15,6 +15,7 @@ export default function Info() {
                     if (data.orders === undefined) {
                         setAlert("You haven't submitted any order");
                     } else {
+                        console.log(data);
                         setOrders(data.orders);
                     }
                 }
@@ -23,8 +24,12 @@ export default function Info() {
 
     const router = useRouter();
 
-    function _delete() {
-        fetchWrapper.delete("/order/delete");
+    function _delete(id) {
+        let data = {};
+        data.orderId = parseInt(id);
+        fetchWrapper.delete("/order/delete", data)
+            .then(resp => resp.json())
+            .then(data => console.log(data));
         router.reload();
     }
 
@@ -37,35 +42,37 @@ export default function Info() {
             <h1>My order information</h1>
             {
                 orders?.map((o, i) => {
-                    return <table className={"table table-striped table-bordered"} key={i}>
-                        <tbody>
-                        <tr>
-                            <th>Id</th>
-                            <td>{o?.id}</td>
-                        </tr>
-                        <tr>
-                            <th>Building number</th>
-                            <td>{o?.buildingNum}</td>
-                        </tr>
-                        <tr>
-                            <th>Dormitory number</th>
-                            <td>{o?.dormNum}</td>
-                        </tr>
-                        <tr>
-                            <th>Information</th>
-                            <td>{o?.info}</td>
-                        </tr>
-                        <tr>
-                            <th>Success</th>
-                            <td>{o?.success}</td>
-                        </tr>
-                        </tbody>
-                    </table>;
+                    return <div className={"mb-3"} key={i}>
+                        <table className={"table table-striped table-bordered"}>
+                            <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <td>{o?.id}</td>
+                            </tr>
+                            <tr>
+                                <th>Building number</th>
+                                <td>{o?.buildingNum}</td>
+                            </tr>
+                            <tr>
+                                <th>Dormitory number</th>
+                                <td>{o?.dormNum}</td>
+                            </tr>
+                            <tr>
+                                <th>Information</th>
+                                <td>{o?.info}</td>
+                            </tr>
+                            <tr>
+                                <th>Success</th>
+                                <td>{o?.success.toString()}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <a href="#" onClick={() => _delete(o?.id)} className="my-button-big fw-bold">
+                            Delete
+                        </a>
+                    </div>;
                 })
             }
-            <a href="#" onClick={_delete} className="my-button-big fw-bold">
-                Delete Successful Order
-            </a>
         </Layout>
     }
 }

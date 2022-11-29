@@ -117,7 +117,7 @@ func (s Server) Get(ctx context.Context, req *GetRequest) (*GetReply, error) {
 }
 
 func (s Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteReply, error) {
-	order, err := dal.Table.Order.FindById(ctx, req.OrderId)
+	order, err := dal.Table.Order.FindByIdWithDeleted(ctx, req.OrderId)
 	if err != nil {
 		return nil, err
 	}
@@ -157,5 +157,11 @@ func (s Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteReply, e
 	if _, err := mutex.Unlock(); err != nil {
 		return nil, err
 	}
-	return nil, nil
+	reply := &DeleteReply{
+		Err: &common.CommonResponse{
+			Code: ep.ErrOK.Code,
+			Msg:  "successfully deleted the order",
+		},
+	}
+	return reply, nil
 }

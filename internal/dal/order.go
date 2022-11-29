@@ -20,6 +20,10 @@ func (o Order) FindById(ctx context.Context, id uint64) (order *Order, err error
 	return order, DB.WithContext(ctx).Take(&order, id).Error
 }
 
+func (o Order) FindByIdWithDeleted(ctx context.Context, id uint64) (order *Order, err error) {
+	return order, DB.WithContext(ctx).Unscoped().Take(&order, id).Error
+}
+
 // FindByCodeWithDeleted is to make sure code is unique, this will include deleted records
 func (o Order) FindByCodeWithDeleted(ctx context.Context, code string) (order *Order, err error) {
 	return order, DB.WithContext(ctx).Unscoped().Where("code = ?", code).Take(&order).Error
@@ -51,7 +55,11 @@ func (o Order) TransCreateAndDecreaseDormRemainCnt(ctx context.Context, order *O
 func (o Order) TransDeleteAndIncreaseDormRemainCnt(ctx context.Context, order *Order, dorm *Dorm, memberCnt uint64) error {
 	return DB.Transaction(func(tx *gorm.DB) error {
 		dorm.RemainCnt += memberCnt
-		if err := dorm.Update(ctx, dorm); err != nil {
+		if err := Table.Dorm.Update(ctx, dorm); err != nil {
+			return err
+		}
+		order.Info += " (deleted)"
+		if err := DB.WithContext(ctx).Unscoped().Save(&order).Error; err != nil {
 			return err
 		}
 		if err := o.Delete(ctx, order); err != nil {
@@ -59,6 +67,10 @@ func (o Order) TransDeleteAndIncreaseDormRemainCnt(ctx context.Context, order *O
 		}
 		return nil
 	})
+}
+
+func (o Order) Update(ctx context.Context, order *Order) error {
+	return DB.WithContext(ctx).Save(&order).Error
 }
 
 func (o Order) Create(ctx context.Context, order *Order) error {

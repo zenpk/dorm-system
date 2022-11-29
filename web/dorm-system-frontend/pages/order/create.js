@@ -12,7 +12,7 @@ export default function Create() {
         fetchWrapper.post("/order/create", data)
             .then(resp => resp.json())
             .then(data => console.log(data));
-        // router.push("/order/info")
+        router.push("/order/info")
     }
 
     return <Layout>

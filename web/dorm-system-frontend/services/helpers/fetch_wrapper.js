@@ -38,10 +38,13 @@ function put(url, body) {
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
-function _delete(url) {
+function _delete(url, body) {
     const options = {
         method: "DELETE",
         credentials: "include"
     };
+    if (body !== undefined) {
+        options.body = JSON.stringify(body);
+    }
     return fetch(publicRuntimeConfig.url + url, options);
 }
