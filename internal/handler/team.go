@@ -14,10 +14,6 @@ type Team struct{}
 func (t Team) Create(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	req := &pb.CreateRequest{UserId: userId}
 	resp, err := rpc.Client.Team.Create(req)
 	if err != nil {
@@ -30,10 +26,6 @@ func (t Team) Create(c *gin.Context) {
 func (t Team) Get(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	req := &pb.GetRequest{UserId: userId}
 	resp, err := rpc.Client.Team.Get(req)
 	if err != nil {
@@ -46,10 +38,6 @@ func (t Team) Get(c *gin.Context) {
 func (t Team) Join(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	var req pb.JoinRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.Pack(ep.ErrInputBody))
@@ -67,10 +55,6 @@ func (t Team) Join(c *gin.Context) {
 func (t Team) Leave(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	var req pb.LeaveRequest
 	req.UserId = userId
 	resp, err := rpc.Client.Team.Leave(&req)

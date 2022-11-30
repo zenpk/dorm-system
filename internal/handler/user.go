@@ -83,10 +83,6 @@ func (u User) Logout(c *gin.Context) {
 func (u User) Get(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	req := &userpb.GetRequest{UserId: userId}
 	resp, err := rpc.Client.User.Get(req)
 	if err != nil {
@@ -99,10 +95,6 @@ func (u User) Get(c *gin.Context) {
 func (u User) Edit(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	var req userpb.EditRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response(c, packer.PackWithError(err))

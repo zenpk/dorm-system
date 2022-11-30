@@ -22,10 +22,6 @@ func (o Order) Submit(c *gin.Context) {
 	// First: get teamId
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	teamReq := &team.GetRequest{UserId: userId}
 	teamResp, err := rpc.Client.Team.Get(teamReq)
 	if err != nil {
@@ -59,10 +55,6 @@ func (o Order) Submit(c *gin.Context) {
 func (o Order) Get(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	teamReq := &team.GetRequest{UserId: userId}
 	teamResp, err := rpc.Client.Team.Get(teamReq)
 	if err != nil {
@@ -81,10 +73,6 @@ func (o Order) Get(c *gin.Context) {
 func (o Order) Delete(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
-	if userId <= 0 { // userId shouldn't be 0
-		response(c, packer.Pack(ep.ErrInputHeader))
-		return
-	}
 	orderId := util.QueryU64(c, "orderId")
 	if orderId <= 0 { // orderId shouldn't be 0
 		response(c, packer.Pack(ep.ErrInputBody))

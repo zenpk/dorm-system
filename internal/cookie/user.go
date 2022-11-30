@@ -107,8 +107,9 @@ func SetAllFromAccessToken(c *gin.Context, token string, urls ...string) error {
 	claims, err := jwt.ParseToken(token)
 	if err != nil {
 		return err
-	} else if claims.UserId == 0 {
-		return errors.New("user_id cannot be 0")
+	}
+	if claims.UserId <= 0 {
+		return errors.New("userId cannot be 0")
 	}
 	SetUserId(c, strconv.FormatUint(claims.UserId, 10))
 	SetUsername(c, claims.Username)
