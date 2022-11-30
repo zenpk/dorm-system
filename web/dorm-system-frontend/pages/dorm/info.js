@@ -8,7 +8,6 @@ export default function Info() {
 
     useEffect(() => {
         fetchWrapper.get("/buildings")
-            .then(resp => resp.json())
             .then(data => {
                 setInfo(data.infos);
             })
@@ -16,7 +15,6 @@ export default function Info() {
 
     useEffect(() => {
         fetchWrapper.get("/remain-cnt")
-            .then(resp => resp.json())
             .then(data => {
                 setRem(data.remainCnt);
             })

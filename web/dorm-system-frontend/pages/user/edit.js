@@ -9,17 +9,13 @@ export default function Edit() {
     const router = useRouter();
     const {register, handleSubmit} = useForm();
 
-    async function onSubmit(data) {
+    function onSubmit(data) {
         let postBody = {};
         postBody.user = data;
         postBody.user.id = parseInt(data.id);
-        let resp = await fetchWrapper.put("/user/info", postBody);
-        let body = resp.json();
-        if (resp.status !== 200) {
-            alert(body);
-        } else {
-            router.push("/user/info")
-        }
+        fetchWrapper.put("/user/info", postBody)
+            .then(data => console.log(data))
+        router.push("/user/info")
     }
 
     const info = router.query;

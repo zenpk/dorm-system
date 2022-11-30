@@ -9,8 +9,7 @@ export default function Info() {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
-        fetchWrapper.get("/order/")
-            .then(resp => resp.json())
+        fetchWrapper.get("/order")
             .then(data => {
                     if (data.orders === undefined) {
                         setAlert("You haven't submitted any order");
@@ -25,10 +24,7 @@ export default function Info() {
     const router = useRouter();
 
     function _delete(id) {
-        let data = {};
-        data.orderId = parseInt(id);
-        fetchWrapper.delete("/order/delete", data)
-            .then(resp => resp.json())
+        fetchWrapper.delete(`/order/delete?orderId=${parseInt(id)}`)
             .then(data => console.log(data));
         router.reload();
     }

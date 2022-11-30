@@ -8,14 +8,10 @@ export default function Login() {
     const router = useRouter();
     const {register, handleSubmit} = useForm();
 
-    async function onSubmit(data) {
-        let resp = await fetchWrapper.post("/login", data);
-        let body = resp.json();
-        if (resp.status !== 200) {
-            alert(body);
-        } else {
-            router.push("/user/info")
-        }
+    function onSubmit(data) {
+        fetchWrapper.post("/login", data)
+            .then(data => console.log(data));
+        router.push("/user/info")
     }
 
     return <Layout>

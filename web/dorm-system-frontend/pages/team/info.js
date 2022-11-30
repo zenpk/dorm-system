@@ -9,8 +9,7 @@ export default function Info() {
     const [team, setTeam] = useState({});
 
     useEffect(() => {
-        fetchWrapper.get("/team/")
-            .then(resp => resp.json())
+        fetchWrapper.get("/team")
             .then(data => {
                     console.log(data);
                     if (data.err.code !== process.env.errOK) {
@@ -26,7 +25,6 @@ export default function Info() {
 
     function leave() {
         fetchWrapper.delete("/team/leave")
-            .then(resp => resp.json())
             .then(data => console.log(data));
         router.reload();
     }

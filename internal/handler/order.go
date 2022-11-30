@@ -85,9 +85,9 @@ func (o Order) Delete(c *gin.Context) {
 		response(c, packer.Pack(ep.ErrInputHeader))
 		return
 	}
-	var req pb.DeleteRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response(c, packer.PackWithError(err))
+	orderId := util.QueryU64(c, "orderId")
+	if orderId <= 0 { // orderId shouldn't be 0
+		response(c, packer.Pack(ep.ErrInputBody))
 		return
 	}
 	teamReq := &team.GetRequest{UserId: userId}
@@ -103,6 +103,8 @@ func (o Order) Delete(c *gin.Context) {
 		response(c, packer.Pack(errPack))
 		return
 	}
+	var req pb.DeleteRequest
+	req.OrderId = orderId
 	req.Team = teamResp.Team
 	resp, err := rpc.Client.Order.Delete(&req)
 	if err != nil {

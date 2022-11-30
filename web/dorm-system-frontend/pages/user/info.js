@@ -11,7 +11,6 @@ export default function Info() {
 
     useEffect(() => {
         fetchWrapper.get("/user/info")
-            .then(resp => resp.json())
             .then(data => {
                     if (data.err.code === process.env.errNotLogin) {
                         setAlert("You need to login first");

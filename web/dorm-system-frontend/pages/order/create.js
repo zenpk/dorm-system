@@ -10,7 +10,6 @@ export default function Create() {
 
     function onSubmit(data) {
         fetchWrapper.post("/order/create", data)
-            .then(resp => resp.json())
             .then(data => console.log(data));
         router.push("/order/info")
     }

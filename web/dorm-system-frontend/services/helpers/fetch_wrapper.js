@@ -3,9 +3,9 @@ import getConfig from "next/config";
 const {publicRuntimeConfig} = getConfig();
 
 export const fetchWrapper = {
-    get,
-    post,
-    put,
+    get: get,
+    post: post,
+    put: put,
     delete: _delete
 };
 
@@ -14,7 +14,7 @@ function get(url) {
         method: "GET",
         credentials: "include"
     };
-    return fetch(publicRuntimeConfig.url + url, options);
+    return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
 function post(url, body) {
@@ -24,7 +24,7 @@ function post(url, body) {
         credentials: "include",
         body: JSON.stringify(body)
     };
-    return fetch(publicRuntimeConfig.url + url, options);
+    return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
 function put(url, body) {
@@ -34,17 +34,18 @@ function put(url, body) {
         credentials: "include",
         body: JSON.stringify(body)
     };
-    return fetch(publicRuntimeConfig.url + url, options);
+    return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
-function _delete(url, body) {
+function _delete(url) {
     const options = {
         method: "DELETE",
         credentials: "include"
     };
-    if (body !== undefined) {
-        options.body = JSON.stringify(body);
-    }
-    return fetch(publicRuntimeConfig.url + url, options);
+    return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
+}
+
+function handleResponse(resp) {
+    return resp.json().catch(err => console.log(err));
 }
