@@ -14,7 +14,7 @@ type Dorm struct {
 	RemainCnt  uint64         `gorm:"not null" json:"remainCnt,omitempty"`
 	BedCnt     uint64         `gorm:"not null" json:"bedCnt,omitempty"`
 	Info       string         `json:"info,omitempty"`
-	Enabled    bool           `gorm:"not null; default:1; index" json:"enabled,omitempty"`
+	Enabled    bool           `gorm:"not null; index" json:"enabled,omitempty"`
 	Deleted    gorm.DeletedAt `gorm:"index"`
 }
 

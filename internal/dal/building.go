@@ -10,7 +10,7 @@ type Building struct {
 	Num     string         `gorm:"size:10; not null; unique; index" json:"num,omitempty"`
 	Info    string         `json:"info,omitempty"`
 	ImgUrl  string         `json:"imgUrl,omitempty"`
-	Enabled bool           `gorm:"not null; default:1; index" json:"enabled,omitempty"`
+	Enabled bool           `gorm:"not null; index" json:"enabled,omitempty"`
 	Deleted gorm.DeletedAt `gorm:"index"`
 }
 

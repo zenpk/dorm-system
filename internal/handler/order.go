@@ -19,6 +19,12 @@ func (o Order) Submit(c *gin.Context) {
 		response(c, packer.PackWithError(err))
 		return
 	}
+	if len(req.BuildingNum) <= 0 {
+		errPack := ep.ErrInputBody
+		errPack.Msg = "wrong building number"
+		response(c, packer.Pack(errPack))
+		return
+	}
 	// First: get teamId
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
