@@ -1,11 +1,19 @@
 import {useEffect, useState} from "react";
 import Link from "next/link";
+import {fetchWrapper} from "../services/fetch_wrapper";
+import {alertWrapper} from "../services/alert_wrapper";
 
 export function Header() {
     const [name, setName] = useState("");
     useEffect(() => {
-        let allCookie = document.cookie;
-        console.log(allCookie);
+        fetchWrapper.get("/user/info")
+            .then(data => {
+                    if (data.err.code === process.env.errOK) {
+                        setName(data.user.name);
+                    }
+                }
+            )
+            .catch(err => console.log(err));
     }, [])
 
     return <>
@@ -19,7 +27,7 @@ export function Header() {
                     </span>
                 </div>
                 <div className="col-auto">
-                    {name.length > 0 ?
+                    {name?.length > 0 ?
                         <span className="mfs-6">Welcome: <Link href="/user/info" className="a-dec">{name}</Link></span>
                         : <span className="mfs-6"> <Link href="/user/login" className="a-dec">Login</Link></span>
                     }

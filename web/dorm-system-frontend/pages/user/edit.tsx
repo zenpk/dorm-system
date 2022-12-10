@@ -3,18 +3,19 @@ import {Layout} from "../../components";
 import {fetchWrapper} from "../../services/fetch_wrapper";
 import React, {useState} from "react";
 import {alertWrapper} from "../../services/alert_wrapper";
+import {UserInfo} from "./info";
 
 
 export default function Edit() {
     const router = useRouter();
 
-    type UserInfoNoId = {
-        name: string,
-        studentNum: string,
-        gender: string
-    }
-
-    function submit(data: UserInfoNoId) {
+    function submit(info: UserInfo) {
+        type PostData = {
+            user: UserInfo
+        }
+        const data: PostData = {
+            user: info
+        }
         fetchWrapper.put("/user/info", data)
             .then(data => {
                 if (data.err.code !== process.env.errOK) {
@@ -41,7 +42,8 @@ export default function Edit() {
                             studentNum: { value: string };
                             gender: { value: string };
                         };
-                        const data: UserInfoNoId = {
+                        const data: UserInfo = {
+                            id: parseInt(info.id as string, 10),
                             name: target.name.value,
                             studentNum: target.studentNum.value,
                             gender: target.gender.value

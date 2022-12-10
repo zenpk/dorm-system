@@ -27,6 +27,7 @@ function login(username: string, password: string) {
 
 function register(username: string, password: string) {
     const cred = genCredential(username, password);
-
-
+    fetchWrapper.post("/register", cred)
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
 }
