@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import Head from "next/head"
-
+import type { AppProps } from 'next/app'
 import "bootstrap/dist/css/bootstrap.css"
 
 import "../styles/sidebar.css"
@@ -22,7 +22,7 @@ import "../styles/my.css"
 import "../styles/mysidebar.css"
 import Script from "next/script";
 
-export default function MyApp({Component, pageProps}) {
+export default function MyApp({ Component, pageProps }: AppProps) {
     return (
         <>
             <Head>

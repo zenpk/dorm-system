@@ -9,16 +9,16 @@ export const fetchWrapper = {
     delete: _delete
 };
 
-function get(url) {
-    const options = {
+function get(url: string) {
+    const options: RequestInit = {
         method: "GET",
         credentials: "include"
     };
     return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
-function post(url, body) {
-    const options = {
+function post(url: string, body: any) {
+    const options: RequestInit = {
         method: "POST",
         headers: {"Content-Type": "application/json;charset=UTF-8"},
         credentials: "include",
@@ -27,8 +27,8 @@ function post(url, body) {
     return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
-function put(url, body) {
-    const options = {
+function put(url: string, body: any) {
+    const options: RequestInit = {
         method: "PUT",
         headers: {"Content-Type": "application/json;charset=UTF-8"},
         credentials: "include",
@@ -38,14 +38,14 @@ function put(url, body) {
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
-function _delete(url) {
-    const options = {
+function _delete(url: string) {
+    const options: RequestInit = {
         method: "DELETE",
         credentials: "include"
     };
     return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
-function handleResponse(resp) {
+function handleResponse(resp: Response) {
     return resp.json().catch(err => console.log(err));
 }

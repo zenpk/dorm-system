@@ -2,7 +2,7 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import {useForm} from "react-hook-form"
 import {Layout} from "../../components";
-import {fetchWrapper} from "../../services/helpers/fetch_wrapper";
+import {fetchWrapper} from "../../services/fetch_wrapper";
 
 export default function Join() {
     const router = useRouter();

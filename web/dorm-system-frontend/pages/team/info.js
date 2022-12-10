@@ -1,6 +1,6 @@
 import {Layout} from "../../components"
 import {useEffect, useState} from "react";
-import {fetchWrapper} from "../../services/helpers/fetch_wrapper";
+import {fetchWrapper} from "../../services/fetch_wrapper";
 import {useRouter} from "next/router";
 
 export default function Info() {
