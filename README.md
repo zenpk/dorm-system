@@ -9,6 +9,7 @@ A dormitory selecting system in microservice architecture which supports high co
 ## Dependencies
 
 ### Backend (Go)
+
 | Name   | Usage           | URL                          |
 | :----- | --------------- | ---------------------------- |
 | Gin    | HTTP Framework  | github.com/gin-gonic/gin     |
@@ -23,9 +24,9 @@ A dormitory selecting system in microservice architecture which supports high co
 
 | Name      | Usage           | URL                               |
 | --------- | --------------- | --------------------------------- |
-| Next.js   | React Framework | https://github.com/vercel/next.js |
-| React     | React           | https://github.com/facebook/react |
-| Bootstrap | CSS             | https://github.com/twbs/bootstrap |
+| Next.js   | React Framework | <https://github.com/vercel/next.js> |
+| React     | React           | <https://github.com/facebook/react> |
+| Bootstrap | CSS             | <https://github.com/twbs/bootstrap> |
 
 ## Getting started
 
