@@ -1,3 +1,4 @@
+# This is only for the main service, for other services please use docker-compose.yml
 FROM golang:1.19
 
 # Set the Current Working Directory inside the container
@@ -7,15 +8,14 @@ WORKDIR $GOPATH/src/github.com/zenpk/dorm-system
 COPY . .
 
 # Download all the dependencies
-RUN go get -d -v ./...
+RUN go mod download
 
 # Install the package
 RUN go install -v ./...
+RUN make -C cmd build
 
 # This container exposes port 8080 to the outside world
-EXPOSE 9080
-
-
+EXPOSE 8080
 
 # Run the executable
-CMD [""]
+CMD ["bin/main"]
