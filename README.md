@@ -104,3 +104,11 @@ The mode decides which configuration file to read
 
 ### Run frontend
 
+```shell
+cd web/dorm-system-frontend
+npm run start
+```
+
+Change any configuration you need in `next.config.js`
+
+Now you should be able to explore the whole system in your browser at `localhost:3000`, enjoy!
