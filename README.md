@@ -69,7 +69,7 @@ This will create the data below:
 
 ### Setup the message queue
 
-Kafka and ZooKeeper also run in Docker containers
+Kafka and ZooKeeper also run in Docker containers:
 
 ```shell
 cd scripts/docker_kafka
@@ -85,7 +85,7 @@ Default configurations are as below, change them in `docker-compose.yml`
 
 ### Build the microservices
 
-Use Makefile to build all executable files in one command
+Use Makefile to build all executable files in one command:
 
 ```shell
 make -C cmd build-all
@@ -98,10 +98,10 @@ The program read configuration files at runtime, modify them in `configs/`
 ### Run microservices
 
 ```shell
-sudo bin/main -mode=[development|production|testing]
+sudo bin/[main|dorm|order|team|token|user] -mode=[development|production|testing]
 ```
 
-The mode decides which configuration file to read
+The mode decides which configuration file to read.
 
 ### Run frontend
 
