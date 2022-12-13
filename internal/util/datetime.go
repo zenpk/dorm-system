@@ -21,7 +21,18 @@ func StringToTime(str string) (time.Time, error) {
 	if err != nil {
 		// if time format not working, try date format
 		t, err = time.Parse(viper.GetString("datetime.format.date"), str)
-		return time.Time{}, err
+		if err != nil { // still not working, try all possible formats
+			t, err = time.Parse("2006-01-02T15:04:05", str) // ISO local
+			if err != nil {
+				t, err = time.Parse("2006-01-02T15:04:05Z", str) // ISO global
+				if err != nil {
+					t, err = time.Parse("2006-01-02T15:04:05-0700", str) // ISO region
+					if err != nil {
+						return time.Time{}, err
+					}
+				}
+			}
+		}
 	}
 	newT := FormatUTCTime(t, offset)
 	return newT, nil
