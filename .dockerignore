@@ -1,0 +1,14 @@
+assets/*.pptx
+assets/img
+bin/**
+logs/**
+scripts
+web
+.dockerignore
+Dockerfile-dorm
+Dockerfile-main
+Dockerfile-order
+Dockerfile-team
+Dockerfile-token
+Dockerfile-user
+docker-compose.yml

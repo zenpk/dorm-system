@@ -19,7 +19,7 @@ var (
 func main() {
 	flag.Parse()
 	// Viper
-	if err := viperpkg.InitGlobalConfig(*mode); err != nil {
+	if err := viperpkg.InitGlobalConfig("global-" + *mode); err != nil {
 		log.Fatalf("failed to initialize Viper, error: %v", err)
 	}
 	// zap

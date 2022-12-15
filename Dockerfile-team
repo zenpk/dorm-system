@@ -1,0 +1,13 @@
+FROM golang:1.19
+
+WORKDIR $GOPATH/src/github.com/zenpk/dorm-system
+
+COPY . .
+
+RUN go mod download
+
+RUN make -C cmd/team build
+
+EXPOSE 9082
+
+ENTRYPOINT ["bin/team", "-mode", "production"]

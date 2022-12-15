@@ -2,6 +2,8 @@
 
 A dormitory selecting system in microservice architecture which supports high concurrency, written in Go.
 
+[English](./README.md) | [中文](./README-cn.md)
+
 ## Architecture
 
 ![architecture](./assets/img/architecture.png)
@@ -65,7 +67,7 @@ This will create the data below:
 | dorms     | 100 dorms with random gender and bed counts                  |
 | users     | ~1000 users with random gender and name, along with the correspondent account |
 | test user | username: temp; password: temp                               |
-| teams     | 1 team: test user + first four users                         |
+| teams     | 1 team: test user + first four users (temp1 ~ temp4)         |
 
 ### Setup the message queue
 

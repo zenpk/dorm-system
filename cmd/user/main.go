@@ -19,13 +19,13 @@ var (
 func main() {
 	flag.Parse()
 	// Viper
-	if err := viperpkg.InitGlobalConfig(*mode); err != nil {
+	if err := viperpkg.InitGlobalConfig("global-" + *mode); err != nil {
 		log.Fatalf("failed to initialize Viper, error: %v", err)
 	}
 	// specified config
 	server := new(pb.Server)
 	var err error
-	server.Config, err = viperpkg.InitConfig("user")
+	server.Config, err = viperpkg.InitConfig("user-" + *mode)
 	if err != nil {
 		log.Fatalf("failed to initialize specified config, error: %v", err)
 	}

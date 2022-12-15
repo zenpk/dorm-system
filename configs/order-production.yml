@@ -1,0 +1,12 @@
+server:
+  host: "0.0.0.0"
+  target: "host.docker.internal"
+  port: 9081
+kafka:
+  brokers:
+    - "101.43.179.27:19092"
+  topic: "order"
+timeout:
+  rpc: 3
+  submit: 8
+mutex_prefix: "mutex_building:"
