@@ -26,6 +26,7 @@ type TeamClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetReply, error)
 	Join(ctx context.Context, in *JoinRequest, opts ...grpc.CallOption) (*JoinReply, error)
 	Leave(ctx context.Context, in *LeaveRequest, opts ...grpc.CallOption) (*LeaveReply, error)
+	Transfer(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*TransferReply, error)
 }
 
 type teamClient struct {
@@ -72,6 +73,15 @@ func (c *teamClient) Leave(ctx context.Context, in *LeaveRequest, opts ...grpc.C
 	return out, nil
 }
 
+func (c *teamClient) Transfer(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*TransferReply, error) {
+	out := new(TransferReply)
+	err := c.cc.Invoke(ctx, "/team.Team/Transfer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TeamServer is the server API for Team service.
 // All implementations must embed UnimplementedTeamServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type TeamServer interface {
 	Get(context.Context, *GetRequest) (*GetReply, error)
 	Join(context.Context, *JoinRequest) (*JoinReply, error)
 	Leave(context.Context, *LeaveRequest) (*LeaveReply, error)
+	Transfer(context.Context, *TransferRequest) (*TransferReply, error)
 	mustEmbedUnimplementedTeamServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedTeamServer) Join(context.Context, *JoinRequest) (*JoinReply, 
 }
 func (UnimplementedTeamServer) Leave(context.Context, *LeaveRequest) (*LeaveReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Leave not implemented")
+}
+func (UnimplementedTeamServer) Transfer(context.Context, *TransferRequest) (*TransferReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Transfer not implemented")
 }
 func (UnimplementedTeamServer) mustEmbedUnimplementedTeamServer() {}
 
@@ -184,6 +198,24 @@ func _Team_Leave_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Team_Transfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeamServer).Transfer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/team.Team/Transfer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeamServer).Transfer(ctx, req.(*TransferRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Team_ServiceDesc is the grpc.ServiceDesc for Team service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var Team_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Leave",
 			Handler:    _Team_Leave_Handler,
+		},
+		{
+			MethodName: "Transfer",
+			Handler:    _Team_Transfer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

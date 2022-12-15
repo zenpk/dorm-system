@@ -174,30 +174,75 @@ func (s Server) Leave(ctx context.Context, req *LeaveRequest) (*LeaveReply, erro
 		}
 		return resp, nil
 	}
-	// user is the owner, find the new owner or delete the whole team
+	// user is the owner, if user is the only one in the team
+	// then delete the whole team
 	memberIds, err := dal.Table.TeamUser.PluckAllUserIdsByTeamId(ctx, team.Id)
-	if len(memberIds) <= 0 { // no other members, delete the team
-		if err := dal.Table.Team.Delete(ctx, team); err != nil {
-			return nil, err
-		}
+	if len(memberIds) > 0 { // if the team contains other users
 		resp := &LeaveReply{
 			Err: &common.CommonResponse{
 				Code: ep.ErrOK.Code,
-				Msg:  "successfully left the team, the team is deleted",
+				Msg:  "you need to transfer the ownership before leaving",
 			},
 		}
 		return resp, nil
 	}
-	// has other members, pick up the first one to be the new owner
-	rel, err := dal.Table.TeamUser.FindByTeamIdAndUserId(ctx, team.Id, memberIds[0])
-	// start a transaction to do the operation
-	if err := dal.Table.Team.TransSetNewOwner(ctx, team, rel); err != nil {
+	if err := dal.Table.Team.Delete(ctx, team); err != nil {
 		return nil, err
 	}
 	resp := &LeaveReply{
 		Err: &common.CommonResponse{
 			Code: ep.ErrOK.Code,
-			Msg:  "successfully left the team, a member is now the new owner",
+			Msg:  "successfully left the team, the team is deleted",
+		},
+	}
+	return resp, nil
+}
+
+func (s Server) Transfer(ctx context.Context, req *TransferRequest) (*TransferReply, error) {
+	// check if user already has a team
+	team, err := dal.Table.Team.CheckIfHasTeam(ctx, req.OldOwnerId)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		resp := &TransferReply{
+			Err: &common.CommonResponse{
+				Code: ep.ErrNoRecord.Code,
+				Msg:  "user don't have a team",
+			},
+		}
+		return resp, nil
+	} else if err != nil { // other errors
+		return nil, err
+	}
+	if team.OwnerId != req.OldOwnerId { // not the owner
+		resp := &TransferReply{
+			Err: &common.CommonResponse{
+				Code: ep.ErrNoPermission.Code,
+				Msg:  "you're not the team's owner",
+			},
+		}
+		return resp, nil
+	}
+	// check if new owner is a member of the team
+	rel, err := dal.Table.TeamUser.FindByTeamIdAndUserId(ctx, team.Id, req.NewOwnerId)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		resp := &TransferReply{
+			Err: &common.CommonResponse{
+				Code: ep.ErrNoRecord.Code,
+				Msg:  "new owner doesn't belong to the team",
+			},
+		}
+		return resp, nil
+	} else if err != nil {
+		return nil, err
+	}
+	// transfer the ownership
+	// start a transaction to do the operation
+	if err := dal.Table.Team.TransSetNewOwner(ctx, team, rel); err != nil {
+		return nil, err
+	}
+	resp := &TransferReply{
+		Err: &common.CommonResponse{
+			Code: ep.ErrOK.Code,
+			Msg:  "successfully transferred the ownership",
 		},
 	}
 	return resp, nil

@@ -10,6 +10,7 @@ service Team{
   rpc Get (GetRequest) returns (GetReply){}
   rpc Join (JoinRequest) returns (JoinReply){}
   rpc Leave (LeaveRequest) returns (LeaveReply){}
+  rpc Transfer (TransferRequest) returns (TransferReply){}
 }
 
 message TeamInfo{
@@ -53,5 +54,13 @@ message LeaveRequest{
 
 message LeaveReply{
   common.CommonResponse err = 1;
-  user.UserInfo newOwner = 2;
+}
+
+message TransferRequest{
+  uint64 oldOwnerId = 1;
+  uint64 newOwnerId = 2;
+}
+
+message TransferReply{
+  common.CommonResponse err = 1;
 }

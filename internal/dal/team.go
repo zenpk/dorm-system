@@ -61,15 +61,23 @@ func (t Team) GenNew(ctx context.Context, owner *User) (team *Team, err error) {
 	return team, DB.WithContext(ctx).Create(&team).Error
 }
 
-func (t Team) TransSetNewOwner(ctx context.Context, team *Team, rel *TeamUser) error {
+func (t Team) TransSetNewOwner(ctx context.Context, team *Team, memberRel *TeamUser) error {
 	return DB.Transaction(func(tx *gorm.DB) error {
+		// create member record for the old owner
+		newRel := &TeamUser{
+			TeamId: team.Id,
+			UserId: team.OwnerId,
+		}
+		if err := Table.TeamUser.Create(ctx, newRel); err != nil {
+			return err
+		}
 		// update owner id
-		team.OwnerId = rel.UserId
+		team.OwnerId = memberRel.UserId
 		if err := t.Update(ctx, team); err != nil {
 			return err
 		}
-		// delete member record
-		if err := Table.TeamUser.Delete(ctx, rel); err != nil {
+		// delete member record for the new owner
+		if err := Table.TeamUser.Delete(ctx, memberRel); err != nil {
 			return err
 		}
 		return nil

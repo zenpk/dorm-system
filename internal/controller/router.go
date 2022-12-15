@@ -40,6 +40,7 @@ func InitRouter(router *gin.Engine) {
 				team.POST("/create", ginHandler.team.Create)
 				team.POST("/join", ginHandler.team.Join)
 				team.DELETE("/leave", ginHandler.team.Leave)
+				team.POST("/transfer", ginHandler.team.Transfer)
 			}
 		}
 		order := auth.Group("/order")

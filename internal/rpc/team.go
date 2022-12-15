@@ -64,3 +64,13 @@ func (t *Team) Leave(req *pb.LeaveRequest) (*pb.LeaveReply, error) {
 	}
 	return resp, nil
 }
+
+func (t *Team) Transfer(req *pb.TransferRequest) (*pb.TransferReply, error) {
+	ctx, cancel := util.ContextWithTimeout(t.config.GetInt("timeout"))
+	defer cancel()
+	resp, err := t.client.Transfer(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
