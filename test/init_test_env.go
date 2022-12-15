@@ -18,7 +18,7 @@ func initTestEnv() {
 	}
 	defer zap.Logger.Sync()
 	// RPC connections
-	connList, err := rpc.InitClients()
+	connList, err := rpc.InitClients("development")
 	if err != nil {
 		log.Fatalf("failed to initialize RPC clients, error: %v", err)
 	}

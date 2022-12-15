@@ -8,12 +8,12 @@ import (
 var ClusterAdmin sarama.ClusterAdmin
 
 // InitMQ initialize cluster admin and all producers, return all producers
-func InitMQ() ([]sarama.AsyncProducer, error) {
+func InitMQ(mode string) ([]sarama.AsyncProducer, error) {
 	// initialize cluster
 	// read all configs
 	brokers := make([]string, 0)
 	allProducers := make([]sarama.AsyncProducer, 0)
-	orderConfig, err := viperpkg.InitConfig("order")
+	orderConfig, err := viperpkg.InitConfig("order-" + mode)
 	if err != nil {
 		return nil, err
 	}

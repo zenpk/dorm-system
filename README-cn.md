@@ -90,8 +90,10 @@ sudo docker compose up -d
 使用 Docker 部署微服务（共计 6 个：main, dorm, order, team, token, user）
 
 ```shell
-make -C cmd build-all
+docker compose up -d
 ```
+
+此操作会以单节点形式部署全部服务，如需分布式部署请 build 单独的 `Dockerfile`
 
 请在 `configs/` 目录下修改配置文件
 
@@ -99,9 +101,8 @@ make -C cmd build-all
 
 ```shell
 cd web/dorm-system-frontend
-npm run start
+docker build -t dorm-system-frontend .
+docker run -dp 3000:3000 --name dorm-system-frontend dorm-system-frontend
 ```
 
-Change any configuration you need in `next.config.js`
-
-Now you should be able to explore the whole system in your browser at `localhost:3000`, enjoy!
+完成上述全部步骤后即可通过端口 3000 访问整个系统

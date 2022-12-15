@@ -48,7 +48,7 @@ func main() {
 		log.Fatalf("failed to warming Redis, error, error: %v", err)
 	}
 	// RPC connections
-	connList, err := rpc.InitClients()
+	connList, err := rpc.InitClients(*mode)
 	if err != nil {
 		log.Fatalf("failed to initialize RPC clients, error, error: %v", err)
 	}
@@ -60,7 +60,7 @@ func main() {
 		}
 	}()
 	// Kafka
-	producers, err := mq.InitMQ()
+	producers, err := mq.InitMQ(*mode)
 	if err != nil {
 		log.Fatalf("failed to init Kafka, error, error: %v", err)
 	}

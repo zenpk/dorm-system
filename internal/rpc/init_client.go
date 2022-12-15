@@ -7,7 +7,7 @@ import (
 )
 
 // InitClients initialize RPC clients and return all connections
-func InitClients() ([]*grpc.ClientConn, error) {
+func InitClients(mode string) ([]*grpc.ClientConn, error) {
 	connList := make([]*grpc.ClientConn, 0)
 	path, err := gmp.GetModPath()
 	if err != nil {
@@ -16,7 +16,7 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	path += "configs"
 
 	// dorm
-	dormConfig, err := viperpkg.InitConfig("dorm")
+	dormConfig, err := viperpkg.InitConfig("dorm-" + mode)
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	connList = append(connList, dormConn)
 
 	// order
-	orderConfig, err := viperpkg.InitConfig("order")
+	orderConfig, err := viperpkg.InitConfig("order-" + mode)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	connList = append(connList, orderConn)
 
 	// team
-	teamConfig, err := viperpkg.InitConfig("team")
+	teamConfig, err := viperpkg.InitConfig("team-" + mode)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	connList = append(connList, teamConn)
 
 	// token
-	tokenConfig, err := viperpkg.InitConfig("token")
+	tokenConfig, err := viperpkg.InitConfig("token-" + mode)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func InitClients() ([]*grpc.ClientConn, error) {
 	connList = append(connList, tokenConn)
 
 	// user
-	userConfig, err := viperpkg.InitConfig("user")
+	userConfig, err := viperpkg.InitConfig("user-" + mode)
 	if err != nil {
 		return nil, err
 	}
