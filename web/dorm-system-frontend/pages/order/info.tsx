@@ -5,12 +5,12 @@ import {useRouter} from "next/router";
 import {alertWrapper} from "../../services/alert_wrapper";
 
 type OrderInfo = {
-    id: number,
-    buildingNum: string,
-    dormNum: string,
-    info: string,
-    success: boolean,
-    deleted: boolean,
+    id: number
+    buildingNum: string
+    dormNum: string
+    info: string
+    success: boolean
+    deleted: boolean
 }
 
 export default function Info() {

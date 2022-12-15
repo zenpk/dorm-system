@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import Link from "next/link";
 import {fetchWrapper} from "../services/fetch_wrapper";
 import {alertWrapper} from "../services/alert_wrapper";
+import {user} from "../services/user";
 
 export function Header() {
     const [name, setName] = useState("");
@@ -10,11 +11,12 @@ export function Header() {
             .then(data => {
                     if (data.err.code === process.env.errOK) {
                         setName(data.user.name);
+                        user.setInfo(data.user);
                     }
                 }
             )
             .catch(err => console.log(err));
-    }, [])
+    }, []);
 
     return <>
         <div className="page-header">

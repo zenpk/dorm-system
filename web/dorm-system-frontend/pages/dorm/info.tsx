@@ -4,13 +4,13 @@ import {fetchWrapper} from "../../services/fetch_wrapper";
 import {alertWrapper} from "../../services/alert_wrapper";
 
 type BuildingInfo = {
-    num: string,
-    info: string,
+    num: string
+    info: string
     imgUrl: string
 }
 
 type RemainCnt = {
-    all: string,
+    all: string
     [key: string]: string
 }
 

@@ -180,7 +180,7 @@ func (s Server) Leave(ctx context.Context, req *LeaveRequest) (*LeaveReply, erro
 	if len(memberIds) > 0 { // if the team contains other users
 		resp := &LeaveReply{
 			Err: &common.CommonResponse{
-				Code: ep.ErrOK.Code,
+				Code: ep.ErrLogic.Code,
 				Msg:  "you need to transfer the ownership before leaving",
 			},
 		}

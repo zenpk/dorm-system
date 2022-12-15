@@ -46,6 +46,12 @@ function _delete(url: string) {
     return fetch(publicRuntimeConfig.url + url, options).then(handleResponse);
 }
 
-function handleResponse(resp: Response) {
-    return resp.json().catch(err => console.log(err));
+async function handleResponse(resp: Response) {
+    try {
+        let respJSON = await resp.json();
+        console.log(respJSON);
+        return respJSON;
+    } catch (err) {
+        console.log(err);
+    }
 }

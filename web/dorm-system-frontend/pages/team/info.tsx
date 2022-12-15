@@ -1,20 +1,21 @@
-import {Layout} from "../../components"
+import {Layout} from "../../components";
 import {useEffect, useState} from "react";
 import {fetchWrapper} from "../../services/fetch_wrapper";
 import {useRouter} from "next/router";
 import {alertWrapper} from "../../services/alert_wrapper";
+import {user} from "../../services/user";
 
 type Member = {
-    id: number,
-    name: string,
+    id: number
+    name: string
     studentNum: string
 }
 
 type Team = {
-    id: number,
-    code: string,
-    gender: string,
-    owner: Member,
+    id: number
+    code: string
+    gender: string
+    owner: Member
     members: Member[]
 }
 
@@ -31,13 +32,26 @@ export default function Info() {
                         setTeam(data.team);
                     }
                 }
-            )
+            );
     }, []);
 
     const router = useRouter();
 
     function leave() {
         fetchWrapper.delete("/team/leave")
+            .then(data => {
+                if (data.err.code !== process.env.errOK) {
+                    alertWrapper.write(data.err.msg);
+                }
+            });
+        router.reload();
+    }
+
+    function transfer(newId: number) {
+        const postData = {
+            newOwnerId: newId
+        };
+        fetchWrapper.post("/team/transfer", postData)
             .then(data => {
                 if (data.err.code !== process.env.errOK) {
                     alertWrapper.write(data.err.msg);
@@ -68,16 +82,16 @@ export default function Info() {
                     <table className={"table table-striped table-bordered m-0"}>
                         <tbody>
                         <tr>
-                            <th className={"w-50"}>Id</th>
-                            <td className={"w-50"}>{team?.owner?.id}</td>
+                            <th className="w-50">Id</th>
+                            <td className="w-50">{team?.owner?.id}</td>
                         </tr>
                         <tr>
-                            <th className={"w-50"}>Name</th>
-                            <td className={"w-50"}>{team?.owner?.name}</td>
+                            <th className="w-50">Name</th>
+                            <td className="w-50">{team?.owner?.name}</td>
                         </tr>
                         <tr>
-                            <th className={"w-50"}>Student number</th>
-                            <td className={"w-50"}>{team?.owner?.studentNum}</td>
+                            <th className="w-50">Student number</th>
+                            <td className="w-50">{team?.owner?.studentNum}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -91,17 +105,27 @@ export default function Info() {
                             return <table className={"table table-striped table-bordered my-3"} key={i}>
                                 <tbody>
                                 <tr>
-                                    <th className={"w-50"}>Id</th>
-                                    <td className={"w-50"}>{m?.id}</td>
+                                    <th className="w-50">Id</th>
+                                    <td className="w-50">{m?.id}</td>
                                 </tr>
                                 <tr>
-                                    <th className={"w-50"}>Name</th>
-                                    <td className={"w-50"}>{m?.name}</td>
+                                    <th className="w-50">Name</th>
+                                    <td className="w-50">{m?.name}</td>
                                 </tr>
                                 <tr>
-                                    <th className={"w-50"}>Student number</th>
-                                    <td className={"w-50"}>{m?.studentNum}</td>
+                                    <th className="w-50">Student number</th>
+                                    <td className="w-50">{m?.studentNum}</td>
                                 </tr>
+                                {user.getInfo().id == team?.owner?.id ?
+                                    <tr>
+                                        <th className="w-50">Ownership</th>
+                                        <td className="w-50">
+                                            <button className="my-button" onClick={() => transfer(m?.id)}>transfer to
+                                                                                                          this user
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    : null}
                                 </tbody>
                             </table>;
                         })
@@ -113,5 +137,5 @@ export default function Info() {
         <a href="#" onClick={leave} className="my-button-big fw-bold">
             Leave
         </a>
-    </Layout>
+    </Layout>;
 }

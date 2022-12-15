@@ -9,11 +9,11 @@ export default function Join() {
 
     function submit(code: string) {
         type PostData = {
-            code: string
-        }
+            code: string;
+        };
         const data: PostData = {
             code: code
-        }
+        };
         fetchWrapper.post("/team/join", data)
             .then(data => {
                 if (data.err.code !== process.env.errOK) {

@@ -3,7 +3,7 @@ import {Layout} from "../../components";
 import {fetchWrapper} from "../../services/fetch_wrapper";
 import React, {useState} from "react";
 import {alertWrapper} from "../../services/alert_wrapper";
-import {UserInfo} from "./info";
+import {UserInfo} from "../../services/user";
 
 
 export default function Edit() {
@@ -15,14 +15,14 @@ export default function Edit() {
         }
         const data: PostData = {
             user: info
-        }
+        };
         fetchWrapper.put("/user/info", data)
             .then(data => {
                 if (data.err.code !== process.env.errOK) {
                     alertWrapper.write(data.err.msg);
                 }
-            })
-        router.push("/user/info")
+            });
+        router.push("/user/info");
     }
 
     const info = router.query;
@@ -47,7 +47,7 @@ export default function Edit() {
                             name: target.name.value,
                             studentNum: target.studentNum.value,
                             gender: target.gender.value
-                        }
+                        };
                         await submit(data);
                     }}
                 >

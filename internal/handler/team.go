@@ -69,6 +69,10 @@ func (t Team) Transfer(c *gin.Context) {
 	userIdStr := cookie.GetUserId(c)
 	userId := util.ParseU64(userIdStr)
 	var req pb.TransferRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response(c, packer.PackWithError(err))
+		return
+	}
 	req.OldOwnerId = userId
 	resp, err := rpc.Client.Team.Transfer(&req)
 	if err != nil {

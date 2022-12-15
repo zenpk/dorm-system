@@ -4,14 +4,9 @@ import {fetchWrapper} from "../../services/fetch_wrapper";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import {alertWrapper} from "../../services/alert_wrapper";
+import {UserInfo} from "../../services/user";
 
 
-export type UserInfo = {
-    id: number,
-    name: string,
-    studentNum: string,
-    gender: string
-};
 
 export default function Info() {
 
