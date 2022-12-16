@@ -9,9 +9,9 @@ services:
     volumes:
       - mq:/var/lib/zookeeper
 
-  broker:
+  kafka:
     image: confluentinc/cp-kafka:7.0.1
-    container_name: broker
+    container_name: kafka
     ports:
       # To learn about configuring Kafka for access across networks see
       # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
