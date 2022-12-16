@@ -43,11 +43,11 @@ func main() {
 	}
 	// Redis
 	if err := cache.InitRedis(); err != nil {
-		log.Fatalf("failed to initialize Redis, error, error: %v", err)
+		log.Fatalf("failed to initialize Redis, error: %v", err)
 	}
 	defer func() {
 		if err := cache.Redis.Close(); err != nil {
-			log.Fatalf("failed to close Redis connection, error, error: %v", err)
+			log.Fatalf("failed to close Redis connection, error: %v", err)
 		}
 	}()
 	// RPC

@@ -14,7 +14,7 @@ type User struct {
 	client pb.UserClient
 }
 
-func (u *User) init(config *viper.Viper) (*grpc.ClientConn, error) {
+func (u *User) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	u.config = config
 	addr := fmt.Sprintf("%s:%d", config.GetString("server.target"), config.GetInt("server.port"))
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))

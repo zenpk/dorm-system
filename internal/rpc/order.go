@@ -14,7 +14,7 @@ type Order struct {
 	config *viper.Viper
 }
 
-func (o *Order) init(config *viper.Viper) (*grpc.ClientConn, error) {
+func (o *Order) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	o.config = config
 	addr := fmt.Sprintf("%s:%d", config.GetString("server.target"), config.GetInt("server.port"))
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))

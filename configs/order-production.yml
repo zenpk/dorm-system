@@ -4,7 +4,7 @@ server:
   port: 9081
 kafka:
   brokers:
-    - "101.43.179.27:19092"
+    - "host.docker.internal:19092"
   topic: "order"
 timeout:
   rpc: 3

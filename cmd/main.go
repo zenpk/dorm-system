@@ -37,45 +37,54 @@ func main() {
 	}
 	// Redis
 	if err := cache.InitRedis(); err != nil {
-		log.Fatalf("failed to initialize Redis, error, error: %v", err)
+		log.Fatalf("failed to initialize Redis, error: %v", err)
 	}
 	defer func() {
 		if err := cache.Redis.Close(); err != nil {
-			log.Fatalf("failed to close Redis connection, error, error: %v", err)
+			log.Fatalf("failed to close Redis connection, error: %v", err)
 		}
 	}()
 	if err := cache.Warming(); err != nil {
-		log.Fatalf("failed to warming Redis, error, error: %v", err)
+		log.Fatalf("failed to warming Redis, error: %v", err)
 	}
+	// ETCD
+	if err := rpc.InitETCD(); err != nil {
+		log.Fatalf("failed to initialize ETCD client, error: %v", err)
+	}
+	defer func() {
+		if err := rpc.EtcdClient.Close(); err != nil {
+			log.Fatalf("failed to close ETCD client, error: %v", err)
+		}
+	}()
 	// RPC connections
 	connList, err := rpc.InitClients(*mode)
 	if err != nil {
-		log.Fatalf("failed to initialize RPC clients, error, error: %v", err)
+		log.Fatalf("failed to initialize RPC clients, error: %v", err)
 	}
 	defer func() {
 		for _, conn := range connList {
 			if err := conn.Close(); err != nil {
-				log.Fatalf("failed to close RPC connections, error, error: %v", err)
+				log.Fatalf("failed to close RPC connections, error: %v", err)
 			}
 		}
 	}()
 	// Kafka
 	producers, err := mq.InitMQ(*mode)
 	if err != nil {
-		log.Fatalf("failed to init Kafka, error, error: %v", err)
+		log.Fatalf("failed to init Kafka, error: %v", err)
 	}
 	defer func() {
 		if err := mq.ClusterAdmin.Close(); err != nil {
-			log.Fatalf("failed to close Kafka connection, error, error: %v", err)
+			log.Fatalf("failed to close Kafka connection, error: %v", err)
 		}
 		for _, p := range producers {
 			if err := p.Close(); err != nil {
-				log.Fatalf("failed to close Kafka producer, error: %v, error, error: %v", p, err)
+				log.Fatalf("failed to close Kafka producer: %v, error: %v", p, err)
 			}
 		}
 	}()
 	// Gin
 	if err := controller.InitGin(); err != nil {
-		log.Fatalf("failed to initialize Gin, error, error: %v", err)
+		log.Fatalf("failed to initialize Gin, error: %v", err)
 	}
 }

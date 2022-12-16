@@ -14,7 +14,7 @@ type Token struct {
 	client pb.TokenClient
 }
 
-func (t *Token) init(config *viper.Viper) (*grpc.ClientConn, error) {
+func (t *Token) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	t.config = config
 	addr := fmt.Sprintf("%s:%d", config.GetString("server.target"), config.GetInt("server.port"))
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))

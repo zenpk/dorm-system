@@ -14,7 +14,7 @@ type Team struct {
 	client pb.TeamClient
 }
 
-func (t *Team) init(config *viper.Viper) (*grpc.ClientConn, error) {
+func (t *Team) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	t.config = config
 	addr := fmt.Sprintf("%s:%d", config.GetString("server.target"), config.GetInt("server.port"))
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
