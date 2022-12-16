@@ -1,6 +1,6 @@
 # dorm-system
 
-基于微服务架构且支持高并发的抢宿舍系统
+基于微服务架构的高并发宿舍秒杀系统
 
 [English](./README.md) | [中文](./README-cn.md)
 
