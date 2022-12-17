@@ -32,7 +32,8 @@ func (r ResolverBuilder) Scheme() string {
 }
 
 func (r ResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	res, err := r.etcdClient.Get(context.Background(), target.URL.Scheme, clientv3.WithPrefix())
+	url := target.URL.Scheme + "://" + target.URL.Host + target.URL.Path
+	res, err := r.etcdClient.Get(context.Background(), url)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,6 @@ type etcdResolver struct {
 }
 
 func (e *etcdResolver) ResolveNow(resolver.ResolveNowOptions) {
-	zap.Logger.Info("ETCD resolver is resolving")
 }
 
 func (e *etcdResolver) Close() {
@@ -109,11 +109,15 @@ func (e *etcdResolver) del(key []byte) {
 func (e *etcdResolver) updateState() error {
 	var addrList resolver.State
 	e.ipPool.Range(func(k, v interface{}) bool {
-		tA, ok := v.(string)
+		name, ok := k.(string)
 		if !ok {
 			return false
 		}
-		addrList.Addresses = append(addrList.Addresses, resolver.Address{Addr: tA})
+		addr, ok := v.(string)
+		if !ok {
+			return false
+		}
+		addrList.Addresses = append(addrList.Addresses, resolver.Address{Addr: addr, ServerName: name})
 		return true
 	})
 	return e.cc.UpdateState(addrList)
