@@ -54,9 +54,6 @@ func main() {
 		}
 	}()
 	// ETCD
-	if err := rpc.InitETCD(); err != nil {
-		log.Fatalf("failed to initialize ETCD, error: %v", err)
-	}
 	if err := rpc.Client.Dorm.ServiceRegistry(server.Config); err != nil {
 		log.Fatalf("failed to register service to ETCD, error: %v", err)
 	}

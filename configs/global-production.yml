@@ -29,6 +29,7 @@ etcd:
   host: "host.docker.internal"
   port: 2379
   dial_timeout: 3 # seconds
+  scheme: "etcd"
 jwt:
   secret: "my_secret"
 cookie:

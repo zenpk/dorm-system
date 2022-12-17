@@ -29,6 +29,7 @@ etcd:
   host: "101.43.179.27"
   port: 2379
   dial_timeout: 3 # seconds
+  scheme: "etcd"
 jwt:
   secret: "my_secret"
   age_hour: 24 # 24 hours

@@ -26,6 +26,7 @@ etcd:
   host: "127.0.0.1"
   port: 2379
   dial_timeout: 3 # seconds
+  scheme: "etcd"
 jwt:
   secret: "my_secret"
 cookie:

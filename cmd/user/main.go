@@ -44,9 +44,6 @@ func main() {
 		log.Fatalf("failed to initialize database, error: %v", err)
 	}
 	// ETCD
-	if err := rpc.InitETCD(); err != nil {
-		log.Fatalf("failed to initialize ETCD, error: %v", err)
-	}
 	if err := rpc.Client.User.ServiceRegistry(server.Config); err != nil {
 		log.Fatalf("failed to register service to ETCD, error: %v", err)
 	}

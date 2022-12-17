@@ -13,14 +13,15 @@ import (
 )
 
 type User struct {
-	config  *viper.Viper
-	client  pb.UserClient
-	leaseId clientv3.LeaseID
+	config     *viper.Viper
+	client     pb.UserClient
+	leaseID    clientv3.LeaseID
+	etcdClient *clientv3.Client
 }
 
 func (u *User) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	u.config = config
-	conn, err := grpc.Dial(u.config.GetString("etcd.target"), grpc.WithResolvers(EtcdResolver), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(u.config.GetString("etcd.target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
@@ -30,19 +31,24 @@ func (u *User) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 
 func (u *User) ServiceRegistry(config *viper.Viper) error {
 	u.config = config
-	// create a new lease
-	resp, err := EtcdClient.Grant(context.TODO(), u.config.GetInt64("etcd.ttl"))
+	var err error
+	u.etcdClient, err = initETCDClient()
 	if err != nil {
 		return err
 	}
-	u.leaseId = resp.ID
+	// create a new lease
+	resp, err := u.etcdClient.Grant(context.Background(), u.config.GetInt64("etcd.ttl"))
+	if err != nil {
+		return err
+	}
+	u.leaseID = resp.ID
 	// register
 	target := u.config.GetString("etcd.target")
 	addr := fmt.Sprintf("%s:%d", u.config.GetString("server.target"), u.config.GetInt("server.port"))
-	if _, err = EtcdClient.Put(context.TODO(), target, addr, clientv3.WithLease(u.leaseId)); err != nil {
+	if _, err = u.etcdClient.Put(context.Background(), target, addr, clientv3.WithLease(u.leaseID)); err != nil {
 		return err
 	}
-	chanKeepAlive, err := EtcdClient.KeepAlive(context.TODO(), u.leaseId)
+	chanKeepAlive, err := u.etcdClient.KeepAlive(context.Background(), u.leaseID)
 	if err != nil {
 		return err
 	}
@@ -63,8 +69,10 @@ func (u *User) ServiceRegistry(config *viper.Viper) error {
 }
 
 func (u *User) ServiceRevoke() error {
-	_, err := EtcdClient.Revoke(context.TODO(), u.leaseId)
-	return err
+	if _, err := u.etcdClient.Revoke(context.Background(), u.leaseID); err != nil {
+		return err
+	}
+	return u.etcdClient.Close()
 }
 
 func (u *User) Register(req *pb.RegisterLoginRequest) (*pb.UserReply, error) {

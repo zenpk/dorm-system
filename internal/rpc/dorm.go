@@ -13,16 +13,16 @@ import (
 )
 
 type Dorm struct {
-	config  *viper.Viper
-	client  pb.DormClient
-	leaseId clientv3.LeaseID
+	config     *viper.Viper
+	client     pb.DormClient
+	leaseID    clientv3.LeaseID
+	etcdClient *clientv3.Client
 }
 
 func (d *Dorm) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	d.config = config
-	conn, err := grpc.Dial(d.config.GetString("etcd.target"), grpc.WithResolvers(EtcdResolver), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(d.config.GetString("etcd.target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		fmt.Println("here")
 		return nil, err
 	}
 	d.client = pb.NewDormClient(conn)
@@ -31,19 +31,24 @@ func (d *Dorm) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 
 func (d *Dorm) ServiceRegistry(config *viper.Viper) error {
 	d.config = config
-	// create a new lease
-	resp, err := EtcdClient.Grant(context.TODO(), d.config.GetInt64("etcd.ttl"))
+	var err error
+	d.etcdClient, err = initETCDClient()
 	if err != nil {
 		return err
 	}
-	d.leaseId = resp.ID
+	// create a new lease
+	resp, err := d.etcdClient.Grant(context.Background(), d.config.GetInt64("etcd.ttl"))
+	if err != nil {
+		return err
+	}
+	d.leaseID = resp.ID
 	// register
 	target := d.config.GetString("etcd.target")
 	addr := fmt.Sprintf("%s:%d", d.config.GetString("server.target"), d.config.GetInt("server.port"))
-	if _, err = EtcdClient.Put(context.TODO(), target, addr, clientv3.WithLease(d.leaseId)); err != nil {
+	if _, err = d.etcdClient.Put(context.Background(), target, addr, clientv3.WithLease(d.leaseID)); err != nil {
 		return err
 	}
-	chanKeepAlive, err := EtcdClient.KeepAlive(context.TODO(), d.leaseId)
+	chanKeepAlive, err := d.etcdClient.KeepAlive(context.Background(), d.leaseID)
 	if err != nil {
 		return err
 	}
@@ -64,8 +69,10 @@ func (d *Dorm) ServiceRegistry(config *viper.Viper) error {
 }
 
 func (d *Dorm) ServiceRevoke() error {
-	_, err := EtcdClient.Revoke(context.TODO(), d.leaseId)
-	return err
+	if _, err := d.etcdClient.Revoke(context.Background(), d.leaseID); err != nil {
+		return err
+	}
+	return d.etcdClient.Close()
 }
 
 func (d *Dorm) GetRemainCnt(req *pb.EmptyRequest) (*pb.MapReply, error) {

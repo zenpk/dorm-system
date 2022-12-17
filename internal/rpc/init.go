@@ -1,37 +1,10 @@
 package rpc
 
 import (
-	"fmt"
-	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/pkg/gmp"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
-	"go.etcd.io/etcd/client/v3"
-	resolverv3 "go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/resolver"
-	"time"
 )
-
-var EtcdClient *clientv3.Client
-var EtcdResolver resolver.Builder
-
-// InitETCD initialize ETCD for service registry and discovery
-func InitETCD() error {
-	endpoint := fmt.Sprintf("%s:%d", viper.GetString("etcd.host"), viper.GetInt("etcd.port"))
-	var err error
-	EtcdClient, err = clientv3.New(clientv3.Config{
-		Endpoints:   []string{endpoint},
-		DialTimeout: time.Duration(viper.GetInt("etcd.dial_timeout")) * time.Second,
-	})
-	if err != nil {
-		return err
-	}
-	EtcdResolver, err = resolverv3.NewBuilder(EtcdClient)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
 // InitClients initialize RPC clients and return all connections
 func InitClients(mode string) ([]*grpc.ClientConn, error) {

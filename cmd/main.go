@@ -48,14 +48,9 @@ func main() {
 		log.Fatalf("failed to warming Redis, error: %v", err)
 	}
 	// ETCD
-	if err := rpc.InitETCD(); err != nil {
+	if err := rpc.InitETCDResolver(); err != nil {
 		log.Fatalf("failed to initialize ETCD client, error: %v", err)
 	}
-	defer func() {
-		if err := rpc.EtcdClient.Close(); err != nil {
-			log.Fatalf("failed to close ETCD client, error: %v", err)
-		}
-	}()
 	// RPC connections
 	connList, err := rpc.InitClients(*mode)
 	if err != nil {
