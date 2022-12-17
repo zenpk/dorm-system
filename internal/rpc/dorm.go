@@ -6,39 +6,44 @@ import (
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/dorm"
 	"github.com/zenpk/dorm-system/internal/util"
+	"github.com/zenpk/dorm-system/pkg/zap"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Dorm struct {
-	config *viper.Viper
-	client pb.DormClient
+	config  *viper.Viper
+	client  pb.DormClient
+	leaseId clientv3.LeaseID
 }
 
 func (d *Dorm) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	d.config = config
-
-	conn, err := grpc.Dial(config.GetString("etcd.target"), grpc.WithResolvers(EtcdResolver))
+	conn, err := grpc.Dial(d.config.GetString("etcd.target"), grpc.WithResolvers(EtcdResolver), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
+		fmt.Println("here")
 		return nil, err
 	}
 	d.client = pb.NewDormClient(conn)
 	return conn, nil
 }
 
-func (d *Dorm) ServerRegistry() error {
+func (d *Dorm) ServiceRegistry(config *viper.Viper) error {
+	d.config = config
 	// create a new lease
 	resp, err := EtcdClient.Grant(context.TODO(), d.config.GetInt64("etcd.ttl"))
 	if err != nil {
 		return err
 	}
+	d.leaseId = resp.ID
 	// register
-	target := viper.GetString("etcd.target")
+	target := d.config.GetString("etcd.target")
 	addr := fmt.Sprintf("%s:%d", d.config.GetString("server.target"), d.config.GetInt("server.port"))
-	if _, err = EtcdClient.Put(context.TODO(), target, addr, clientv3.WithLease(resp.ID)); err != nil {
+	if _, err = EtcdClient.Put(context.TODO(), target, addr, clientv3.WithLease(d.leaseId)); err != nil {
 		return err
 	}
-	chanKeepAlive, err := EtcdClient.KeepAlive(context.TODO(), resp.ID)
+	chanKeepAlive, err := EtcdClient.KeepAlive(context.TODO(), d.leaseId)
 	if err != nil {
 		return err
 	}
@@ -47,7 +52,10 @@ func (d *Dorm) ServerRegistry() error {
 			select {
 			case _, ok := <-chanKeepAlive:
 				if !ok {
-					d.ServerRevoke()
+					if err := d.ServiceRevoke(); err != nil {
+						zap.Logger.Errorf("failed to revoke service from ETCD, error: %v", err)
+					}
+					return
 				}
 			}
 		}
@@ -55,8 +63,9 @@ func (d *Dorm) ServerRegistry() error {
 	return nil
 }
 
-func (d *Dorm) ServerRevoke() error {
-	return nil
+func (d *Dorm) ServiceRevoke() error {
+	_, err := EtcdClient.Revoke(context.TODO(), d.leaseId)
+	return err
 }
 
 func (d *Dorm) GetRemainCnt(req *pb.EmptyRequest) (*pb.MapReply, error) {

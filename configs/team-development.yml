@@ -2,5 +2,8 @@ server:
   host: "0.0.0.0"
   target: "127.0.0.1"
   port: 9082
+etcd:
+  target: "etcd://team"
+  ttl: 3
 timeout: 3 # second
 max_member_lim: 4 # max number of students in a team

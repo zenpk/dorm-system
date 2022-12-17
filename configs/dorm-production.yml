@@ -2,4 +2,7 @@ server:
   host: "0.0.0.0"
   target: "host.docker.internal"
   port: 9080
+etcd:
+  target: "etcd://dorm"
+  ttl: 3
 timeout: 3 # second

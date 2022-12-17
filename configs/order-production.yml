@@ -2,6 +2,9 @@ server:
   host: "0.0.0.0"
   target: "host.docker.internal"
   port: 9081
+etcd:
+  target: "etcd://order"
+  ttl: 3
 kafka:
   brokers:
     - "host.docker.internal:19092"

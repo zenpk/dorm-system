@@ -2,4 +2,7 @@ server:
   host: "0.0.0.0"
   target: "127.0.0.1"
   port: 9083
+etcd:
+  target: "etcd://token"
+  ttl: 3
 timeout: 3 # second

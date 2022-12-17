@@ -2,6 +2,7 @@ version: "3.9"
 services:
   etcd:
     image: "bitnami/etcd:latest"
+    container_name: etcd
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     ports:

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/zenpk/dorm-system/internal/cache"
 	"github.com/zenpk/dorm-system/internal/dal"
+	"github.com/zenpk/dorm-system/internal/rpc"
 	pb "github.com/zenpk/dorm-system/internal/service/dorm"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
@@ -49,7 +50,19 @@ func main() {
 	}
 	defer func() {
 		if err := cache.Redis.Close(); err != nil {
-			log.Fatalf("failed to close Redis connection: %v", err)
+			log.Fatalf("failed to close Redis connection, error: %v", err)
+		}
+	}()
+	// ETCD
+	if err := rpc.InitETCD(); err != nil {
+		log.Fatalf("failed to initialize ETCD, error: %v", err)
+	}
+	if err := rpc.Client.Dorm.ServiceRegistry(server.Config); err != nil {
+		log.Fatalf("failed to register service to ETCD, error: %v", err)
+	}
+	defer func() {
+		if err := rpc.Client.Dorm.ServiceRevoke(); err != nil {
+			log.Fatalf("failed to revoke service from ETCD, error: %v", err)
 		}
 	}()
 	// RPC

@@ -2,4 +2,7 @@ server:
   host: "0.0.0.0"
   target: "host.docker.internal"
   port: 9084
+etcd:
+  target: "etcd://user"
+  ttl: 3
 timeout: 3 # second
