@@ -10,4 +10,4 @@ RUN make -C cmd/order build
 
 EXPOSE 9081
 
-ENTRYPOINT ["bin/order", "-mode", "production"]
+ENTRYPOINT ["bin/order", "-mode", "prod"]

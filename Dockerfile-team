@@ -10,4 +10,4 @@ RUN make -C cmd/team build
 
 EXPOSE 9082
 
-ENTRYPOINT ["bin/team", "-mode", "production"]
+ENTRYPOINT ["bin/team", "-mode", "prod"]

@@ -17,4 +17,4 @@ RUN make -C cmd build
 EXPOSE 8080
 
 # Run the executable
-ENTRYPOINT ["bin/main", "-mode", "production"]
+ENTRYPOINT ["bin/main", "-mode", "prod"]

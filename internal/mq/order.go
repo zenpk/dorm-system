@@ -85,7 +85,7 @@ func (o *OrderConsumer) Init(c *viper.Viper, server *pb.Server) error {
 func (o *OrderConsumer) subscribe() error {
 	defer func() {
 		if err := o.consumer.Close(); err != nil {
-			log.Fatalf("failed to close consumer, error: %v", err)
+			log.Fatalf("failed to close consumer: %v", err)
 		}
 	}()
 	partitionList, err := o.consumer.Partitions(o.config.GetString("kafka.topic"))
@@ -107,7 +107,7 @@ func (o *OrderConsumer) subscribe() error {
 			defer func() {
 				defer wg.Done()
 				if err := pc.Close(); err != nil {
-					log.Fatalf("failed to close partitionConsumer, error: %v", err)
+					log.Fatalf("failed to close partitionConsumer: %v", err)
 				}
 			}()
 		ConsumerLoop:
@@ -123,15 +123,15 @@ func (o *OrderConsumer) subscribe() error {
 					ctx, cancel := util.ContextWithTimeout(timeout)
 					zap.Logger.Infof("consumed message offset %d\n", msg.Offset)
 					if _, err := o.server.Submit(ctx, &req); err != nil {
-						zap.Logger.Errorf("consume message failed, offset: %v, error: %v", msg.Offset, err)
+						zap.Logger.Errorf("consume message failed, offset: %v: %v", msg.Offset, err)
 						// wait random time to retry
 						waitTime := time.Duration(rand.Intn(timeout)+1) * time.Second
 						time.Sleep(waitTime)
 						if _, err := o.server.Submit(ctx, &req); err != nil {
-							zap.Logger.Errorf("consume message failed for the 2nd time, offset: %v, error: %v", msg.Offset, err)
+							zap.Logger.Errorf("consume message failed for the 2nd time, offset: %v: %v", msg.Offset, err)
 							// still failed, mark the order as failed in database
 							if err := o.server.Fail(ctx, &req, "retried too many times"); err != nil {
-								zap.Logger.Errorf("message completely failed! offset: %v, error: %v", msg.Offset, err)
+								zap.Logger.Errorf("message completely failed! offset: %v: %v", msg.Offset, err)
 							}
 						}
 					}

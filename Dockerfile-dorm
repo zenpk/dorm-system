@@ -10,4 +10,4 @@ RUN make -C cmd/dorm build
 
 EXPOSE 9080
 
-ENTRYPOINT ["bin/dorm", "-mode", "production"]
+ENTRYPOINT ["bin/dorm", "-mode", "prod"]

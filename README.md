@@ -100,7 +100,7 @@ The program read configuration files at runtime, modify them in `configs/`
 ### Run microservices
 
 ```shell
-sudo bin/[main|dorm|order|team|token|user] -mode=[development|production|testing]
+sudo bin/[main|dorm|order|team|token|user] -mode=[dev|prod|test]
 ```
 
 The mode decides which configuration file to read.

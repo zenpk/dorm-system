@@ -10,4 +10,4 @@ RUN make -C cmd/user build
 
 EXPOSE 9084
 
-ENTRYPOINT ["bin/user", "-mode", "production"]
+ENTRYPOINT ["bin/user", "-mode", "prod"]

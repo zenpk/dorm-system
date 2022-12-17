@@ -9,18 +9,18 @@ import (
 
 func initTestEnv() {
 	// Viper
-	if err := viperpkg.InitGlobalConfig("testing"); err != nil {
-		log.Fatalf("failed to initialize Viper, error: %v", err)
+	if err := viperpkg.InitGlobalConfig("test"); err != nil {
+		log.Fatalf("failed to initialize Viper: %v", err)
 	}
 	// zap
-	if err := zap.InitLogger("testing"); err != nil {
-		log.Fatalf("failed to initialize zap, error: %v", err)
+	if err := zap.InitLogger("test"); err != nil {
+		log.Fatalf("failed to initialize zap: %v", err)
 	}
 	defer zap.Logger.Sync()
 	// RPC connections
-	connList, err := rpc.InitClients("development")
+	connList, err := rpc.InitClients("dev")
 	if err != nil {
-		log.Fatalf("failed to initialize RPC clients, error: %v", err)
+		log.Fatalf("failed to initialize RPC clients: %v", err)
 	}
 	for _, conn := range connList {
 		defer conn.Close()

@@ -2,78 +2,63 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc/resolver"
 	"sync"
-	"time"
 )
 
-// initETCDClient initialize ETCD for service registry and discovery
-func initETCDClient() (*clientv3.Client, error) {
-	endpoint := fmt.Sprintf("%s:%d", viper.GetString("etcd.host"), viper.GetInt("etcd.port"))
-	var err error
-	etcdClient, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{endpoint},
-		DialTimeout: time.Duration(viper.GetInt("etcd.dial_timeout")) * time.Second,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return etcdClient, nil
-}
-
-var ETCDResolver etcdResolverBuilder
-
-type etcdResolverBuilder struct {
+type ResolverBuilder struct {
 	etcdClient *clientv3.Client
 }
 
-func InitETCDResolver() error {
-	var err error
-	ETCDResolver.etcdClient, err = initETCDClient()
-	resolver.Register(ETCDResolver)
-	return err
+func InitETCDResolverBuilder() (*ResolverBuilder, error) {
+	etcdClient, err := initETCDClient()
+	if err != nil {
+		return nil, err
+	}
+	rb := new(ResolverBuilder)
+	rb.etcdClient = etcdClient
+	return rb, nil
 }
 
-func (e etcdResolverBuilder) Close() error {
-	return e.etcdClient.Close()
+func (r ResolverBuilder) CloseClient() error {
+	return r.etcdClient.Close()
 }
 
-func (e etcdResolverBuilder) Scheme() string {
+func (r ResolverBuilder) Scheme() string {
 	return viper.GetString("etcd.scheme")
 }
 
-func (e etcdResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	res, err := e.etcdClient.Get(context.Background(), target.URL.Scheme)
+func (r ResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+	res, err := r.etcdClient.Get(context.Background(), target.URL.Scheme, clientv3.WithPrefix())
 	if err != nil {
 		return nil, err
 	}
 	ctx, cancelFunc := context.WithCancel(context.Background())
-	es := &etcdResolver{
+	er := &etcdResolver{
+		etcdClient: r.etcdClient,
 		cc:         cc,
-		etcdClient: e.etcdClient,
 		ctx:        ctx,
 		cancel:     cancelFunc,
 		scheme:     target.URL.Scheme,
 	}
 	for _, kv := range res.Kvs {
-		es.store(kv.Key, kv.Value)
+		er.store(kv.Key, kv.Value)
 	}
-	if err := es.updateState(); err != nil {
+	if err := er.updateState(); err != nil {
 		return nil, err
 	}
-	go es.watcher()
-	return es, nil
+	go er.watcher()
+	return er, nil
 }
 
 type etcdResolver struct {
+	etcdClient *clientv3.Client
+	cc         resolver.ClientConn
 	ctx        context.Context
 	cancel     context.CancelFunc
-	cc         resolver.ClientConn
-	etcdClient *clientv3.Client
 	scheme     string
 	ipPool     sync.Map
 }
@@ -87,7 +72,7 @@ func (e *etcdResolver) Close() {
 }
 
 func (e *etcdResolver) watcher() {
-	watchChan := e.etcdClient.Watch(context.Background(), e.scheme)
+	watchChan := e.etcdClient.Watch(e.ctx, e.scheme)
 	for {
 		select {
 		case val := <-watchChan:

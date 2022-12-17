@@ -10,4 +10,4 @@ RUN make -C cmd/token build
 
 EXPOSE 9083
 
-ENTRYPOINT ["bin/token", "-mode", "production"]
+ENTRYPOINT ["bin/token", "-mode", "prod"]

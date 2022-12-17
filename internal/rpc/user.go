@@ -1,22 +1,16 @@
 package rpc
 
 import (
-	"context"
-	"fmt"
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/user"
 	"github.com/zenpk/dorm-system/internal/util"
-	"github.com/zenpk/dorm-system/pkg/zap"
-	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type User struct {
-	config     *viper.Viper
-	client     pb.UserClient
-	leaseID    clientv3.LeaseID
-	etcdClient *clientv3.Client
+	config *viper.Viper
+	client pb.UserClient
 }
 
 func (u *User) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
@@ -27,52 +21,6 @@ func (u *User) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	}
 	u.client = pb.NewUserClient(conn)
 	return conn, nil
-}
-
-func (u *User) ServiceRegistry(config *viper.Viper) error {
-	u.config = config
-	var err error
-	u.etcdClient, err = initETCDClient()
-	if err != nil {
-		return err
-	}
-	// create a new lease
-	resp, err := u.etcdClient.Grant(context.Background(), u.config.GetInt64("etcd.ttl"))
-	if err != nil {
-		return err
-	}
-	u.leaseID = resp.ID
-	// register
-	target := u.config.GetString("etcd.target")
-	addr := fmt.Sprintf("%s:%d", u.config.GetString("server.target"), u.config.GetInt("server.port"))
-	if _, err = u.etcdClient.Put(context.Background(), target, addr, clientv3.WithLease(u.leaseID)); err != nil {
-		return err
-	}
-	chanKeepAlive, err := u.etcdClient.KeepAlive(context.Background(), u.leaseID)
-	if err != nil {
-		return err
-	}
-	go func() {
-		for {
-			select {
-			case _, ok := <-chanKeepAlive:
-				if !ok {
-					if err := u.ServiceRevoke(); err != nil {
-						zap.Logger.Errorf("failed to revoke service from ETCD, error: %v", err)
-					}
-					return
-				}
-			}
-		}
-	}()
-	return nil
-}
-
-func (u *User) ServiceRevoke() error {
-	if _, err := u.etcdClient.Revoke(context.Background(), u.leaseID); err != nil {
-		return err
-	}
-	return u.etcdClient.Close()
 }
 
 func (u *User) Register(req *pb.RegisterLoginRequest) (*pb.UserReply, error) {
