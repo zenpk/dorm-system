@@ -23,7 +23,7 @@ func InitETCDResolverBuilder() (*ResolverBuilder, error) {
 	return rb, nil
 }
 
-func (r ResolverBuilder) CloseClient() error {
+func (r ResolverBuilder) Close() error {
 	return r.etcdClient.Close()
 }
 
@@ -32,8 +32,8 @@ func (r ResolverBuilder) Scheme() string {
 }
 
 func (r ResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	url := target.URL.Scheme + "://" + target.URL.Host + target.URL.Path
-	res, err := r.etcdClient.Get(context.Background(), url)
+	prefix := target.URL.Scheme + "://" + target.URL.Host + target.URL.Path
+	res, err := r.etcdClient.Get(context.Background(), prefix, clientv3.WithPrefix())
 	if err != nil {
 		return nil, err
 	}

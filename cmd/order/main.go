@@ -6,6 +6,7 @@ import (
 	"github.com/zenpk/dorm-system/internal/cache"
 	"github.com/zenpk/dorm-system/internal/dal"
 	"github.com/zenpk/dorm-system/internal/mq"
+	"github.com/zenpk/dorm-system/internal/rpc"
 	pb "github.com/zenpk/dorm-system/internal/service/order"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
@@ -24,7 +25,9 @@ func main() {
 	if err := viperpkg.InitGlobalConfig("global-" + *mode); err != nil {
 		log.Fatalf("failed to initialize Viper: %v", err)
 	}
-	orderConfig, err := viperpkg.InitConfig("order-" + *mode)
+	server := new(pb.Server)
+	var err error
+	server.Config, err = viperpkg.InitConfig("order-" + *mode)
 	if err != nil {
 		log.Fatalf("failed to initialize specified config: %v", err)
 	}
@@ -50,8 +53,23 @@ func main() {
 			log.Fatalf("failed to close Redis connection: %v", err)
 		}
 	}()
+	// ETCD
+	etcdRegister, err := rpc.InitETCDRegister()
+	if err != nil {
+		log.Fatalf("failed to initialize ETCD: %v", err)
+	}
+	defer func() {
+		if err := etcdRegister.Close(); err != nil {
+			log.Fatalf("failed to close ETCD register: %v", err)
+		}
+	}()
+	etcdTarget := server.Config.GetString("etcd.Target")
+	etcdAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.target"), server.Config.GetInt("server.port"))
+	ttl := server.Config.GetInt64("etcd.ttl")
+	if err := etcdRegister.RegisterServer(etcdTarget, etcdAddr, ttl); err != nil {
+		log.Fatalf("failed to register ETCD: %v", err)
+	}
 	// RPC
-	server := &pb.Server{Config: orderConfig}
 	listenAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))
 	lis, err := net.Listen("tcp", listenAddr)
 	if err != nil {
@@ -67,7 +85,7 @@ func main() {
 	}()
 	// Kafka
 	zap.Logger.Infof("order consumer is subscribed")
-	if err := mq.Consumer.Order.Init(orderConfig, server); err != nil { // defer Close() is inside Init()
+	if err := mq.Consumer.Order.Init(server); err != nil { // defer Close() is inside Init()
 		log.Fatalf("failed to initialize consumer: %v", err)
 	}
 }

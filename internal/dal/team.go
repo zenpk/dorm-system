@@ -8,11 +8,11 @@ import (
 )
 
 type Team struct {
-	Id      uint64         `gorm:"primaryKey"`
-	Code    string         `gorm:"not null; unique; index"`
-	Gender  string         `gorm:"size:10; not null"`
-	OwnerId uint64         `gorm:"not null; unique; index"`
-	Deleted gorm.DeletedAt `gorm:"index"`
+	Id      uint64 `gorm:"primaryKey"`
+	Code    string `gorm:"not null; unique"`
+	Gender  string `gorm:"size:10; not null"`
+	OwnerId uint64 `gorm:"not null; unique"`
+	Deleted gorm.DeletedAt
 }
 
 func (t Team) FindByOwnerId(ctx context.Context, id uint64) (*Team, error) {

@@ -6,10 +6,10 @@ import (
 )
 
 type TeamUser struct {
-	Id      uint64         `gorm:"primaryKey"`
-	TeamId  uint64         `gorm:"not null; index"`
-	UserId  uint64         `gorm:"not null; index"`
-	Deleted gorm.DeletedAt `gorm:"index"`
+	Id      uint64 `gorm:"primaryKey"`
+	TeamId  uint64 `gorm:"not null"`
+	UserId  uint64 `gorm:"not null"`
+	Deleted gorm.DeletedAt
 }
 
 func (t TeamUser) FindByTeamIdAndUserId(ctx context.Context, teamId, userId uint64) (rel *TeamUser, err error) {

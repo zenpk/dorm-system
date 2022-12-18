@@ -58,6 +58,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to initialize ETCD: %v", err)
 	}
+	defer func() {
+		if err := etcdRegister.Close(); err != nil {
+			log.Fatalf("failed to close ETCD register: %v", err)
+		}
+	}()
 	etcdTarget := server.Config.GetString("etcd.Target")
 	etcdAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.target"), server.Config.GetInt("server.port"))
 	ttl := server.Config.GetInt64("etcd.ttl")

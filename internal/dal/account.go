@@ -6,11 +6,11 @@ import (
 )
 
 type Account struct {
-	Id       uint64         `gorm:"primaryKey"`
-	UserId   uint64         `gorm:"not null; index"`
-	Username string         `gorm:"not null; unique; index"`
-	Password string         `gorm:"not null"`
-	Deleted  gorm.DeletedAt `gorm:"index"`
+	Id       uint64 `gorm:"primaryKey"`
+	UserId   uint64 `gorm:"not null"`
+	Username string `gorm:"not null; unique"`
+	Password string `gorm:"not null"`
+	Deleted  gorm.DeletedAt
 }
 
 func (a Account) FindById(ctx context.Context, id uint64) (account *Account, err error) {

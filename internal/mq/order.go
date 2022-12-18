@@ -68,8 +68,8 @@ type OrderConsumer struct {
 }
 
 // Init consumer and subscribe
-func (o *OrderConsumer) Init(c *viper.Viper, server *pb.Server) error {
-	o.config = c
+func (o *OrderConsumer) Init(server *pb.Server) error {
+	o.config = server.Config
 	o.server = server
 	// init consumer
 	config := sarama.NewConfig()

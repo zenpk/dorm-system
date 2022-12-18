@@ -7,13 +7,13 @@ import (
 
 type Order struct {
 	Id         uint64 `gorm:"primaryKey"`
-	BuildingId uint64 `gorm:"not null; index"`
-	DormId     uint64 `gorm:"not null; default:0; index"`
-	TeamId     uint64 `gorm:"not null; index"`
-	Code       string `gorm:"not null; unique; index"`
+	BuildingId uint64 `gorm:"not null"`
+	DormId     uint64 `gorm:"not null; default:0"`
+	TeamId     uint64 `gorm:"not null"`
+	Code       string `gorm:"not null; unique"`
 	Info       string
-	Success    bool           `gorm:"not null; default:0"`
-	Deleted    gorm.DeletedAt `gorm:"index"`
+	Success    bool `gorm:"not null; default:0"`
+	Deleted    gorm.DeletedAt
 }
 
 func (o Order) FindById(ctx context.Context, id uint64) (order *Order, err error) {

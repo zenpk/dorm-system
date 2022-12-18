@@ -87,7 +87,7 @@ func (e *ETCDRegister) watcher(key string, resChan <-chan *clientv3.LeaseKeepAli
 			// keeping alive
 			if !ok {
 				zap.Logger.Error("can't keep service alive, revoking")
-				if err := e.Revoke(); err != nil {
+				if err := e.Close(); err != nil {
 					zap.Logger.Error(err)
 				}
 			}
@@ -97,7 +97,7 @@ func (e *ETCDRegister) watcher(key string, resChan <-chan *clientv3.LeaseKeepAli
 	}
 }
 
-func (e *ETCDRegister) Revoke() error {
+func (e *ETCDRegister) Close() error {
 	e.cancel()
 	if _, err := e.etcdClient.Revoke(e.ctx, e.leaseID); err != nil {
 		return err

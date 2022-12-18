@@ -10,12 +10,12 @@ import (
 )
 
 type Token struct {
-	Id           uint64         `gorm:"primaryKey" json:"-"`
-	RefreshToken string         `gorm:"not null; index" json:"refreshToken,omitempty"`
-	UserId       uint64         `gorm:"not null; index" json:"-"`
-	CreateTime   time.Time      `gorm:"not null" json:"createTime,omitempty"`
-	ExpTime      time.Time      `gorm:"not null" json:"expTime,omitempty"`
-	Deleted      gorm.DeletedAt `gorm:"index"`
+	Id           uint64    `gorm:"primaryKey" json:"-"`
+	RefreshToken string    `gorm:"not null" json:"refreshToken,omitempty"`
+	UserId       uint64    `gorm:"not null" json:"-"`
+	CreateTime   time.Time `gorm:"not null" json:"createTime,omitempty"`
+	ExpTime      time.Time `gorm:"not null" json:"expTime,omitempty"`
+	Deleted      gorm.DeletedAt
 }
 
 func (t Token) GenNew(ctx context.Context, id uint64) (refreshToken string, err error) {

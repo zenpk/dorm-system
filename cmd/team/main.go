@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/zenpk/dorm-system/internal/dal"
+	"github.com/zenpk/dorm-system/internal/rpc"
 	pb "github.com/zenpk/dorm-system/internal/service/team"
 	"github.com/zenpk/dorm-system/pkg/viperpkg"
 	"github.com/zenpk/dorm-system/pkg/zap"
@@ -41,6 +42,22 @@ func main() {
 	// GORM
 	if err := dal.InitDB(); err != nil {
 		log.Fatalf("failed to initialize database: %v", err)
+	}
+	// ETCD
+	etcdRegister, err := rpc.InitETCDRegister()
+	if err != nil {
+		log.Fatalf("failed to initialize ETCD: %v", err)
+	}
+	defer func() {
+		if err := etcdRegister.Close(); err != nil {
+			log.Fatalf("failed to close ETCD register: %v", err)
+		}
+	}()
+	etcdTarget := server.Config.GetString("etcd.Target")
+	etcdAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.target"), server.Config.GetInt("server.port"))
+	ttl := server.Config.GetInt64("etcd.ttl")
+	if err := etcdRegister.RegisterServer(etcdTarget, etcdAddr, ttl); err != nil {
+		log.Fatalf("failed to register ETCD: %v", err)
 	}
 	// RPC
 	listenAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))

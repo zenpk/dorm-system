@@ -54,6 +54,11 @@ func main() {
 		log.Fatalf("failed to initialize ETCD client: %v", err)
 	}
 	resolver.Register(rb)
+	defer func() {
+		if err := rb.Close(); err != nil {
+			log.Fatalf("failed to close ETCD resolver builder: %v", err)
+		}
+	}()
 	// RPC connections
 	connList, err := rpc.InitClients(*mode)
 	if err != nil {

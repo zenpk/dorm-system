@@ -6,7 +6,7 @@ scripts
 web
 .dockerignore
 Dockerfile-dorm
-Dockerfile-main
+Dockerfile
 Dockerfile-order
 Dockerfile-team
 Dockerfile-token

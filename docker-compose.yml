@@ -25,10 +25,3 @@ services:
       dockerfile: Dockerfile-user
     ports:
       - "9084:9084"
-  main:
-    build:
-      dockerfile: Dockerfile-main
-    ports:
-      - "8080:8080"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"

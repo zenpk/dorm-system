@@ -1,7 +1,6 @@
 package rpc
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 	pb "github.com/zenpk/dorm-system/internal/service/order"
 	"github.com/zenpk/dorm-system/internal/util"
@@ -16,8 +15,7 @@ type Order struct {
 
 func (o *Order) initClient(config *viper.Viper) (*grpc.ClientConn, error) {
 	o.config = config
-	addr := fmt.Sprintf("%s:%d", config.GetString("server.target"), config.GetInt("server.port"))
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(o.config.GetString("etcd.target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
