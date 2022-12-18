@@ -4,6 +4,21 @@
 
 [English](./README.md) | [中文](./README-cn.md)
 
+- [dorm-system](#dorm-system)
+  - [架构](#架构)
+  - [依赖](#依赖)
+    - [后端 (Go)](#后端-go)
+    - [前端 (TypeScript)](#前端-typescript)
+  - [文件结构](#文件结构)
+  - [使用 Docker 部署项目](#使用-docker-部署项目)
+    - [部署数据库](#部署数据库)
+    - [生成虚拟数据](#生成虚拟数据)
+    - [部署消息队列](#部署消息队列)
+    - [部署 etcd](#部署-etcd)
+    - [部署微服务](#部署微服务)
+    - [部署主服务](#部署主服务)
+    - [部署前端](#部署前端)
+
 ## 架构
 
 ![architecture](./assets/img/architecture.png)
@@ -30,6 +45,48 @@
 | Next.js   | React 框架 | <https://github.com/vercel/next.js> |
 | React     | React      | <https://github.com/facebook/react> |
 | Bootstrap | CSS        | <https://github.com/twbs/bootstrap> |
+
+## 文件结构
+
+本项目的文件结构主要参考了 [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
+
+```text
+dorm-system
+├─api => API 文档
+├─assets => 静态资源
+├─bin => 二进制可执行文件
+├─cmd => 运行/编译命令
+├─configs => 配置文件
+├─internal => 主程序代码
+│  ├─api => Protocol Buffers
+│  ├─cache => Redis
+│  ├─controller => Gin
+│  ├─cookie => Cookie 管理
+│  ├─dal => 数据持久层 (MySQL)
+│  ├─handler => Gin 处理器
+│  ├─middleware => JWT, CORS
+│  ├─mq => Kafka 消息队列
+│  ├─rpc => gRPC
+│  ├─service => 微服务
+│  └─util => 工具函数
+├─logs
+├─pkg => 外部代码
+│  ├─ep => error-packer
+│  ├─gmp => go mod path
+│  ├─jwt
+│  ├─viperpkg => Viper
+│  └─zap
+├─scripts
+│  ├─docker_db => MySQL 和 Redis 的 Docker Compose
+│  ├─docker_etcd => etcd 的 Docker Compose
+│  ├─docker_frontback => 前后端的 Docker build
+│  ├─docker_kafka => Kafka 的 Docker Compose
+│  ├─http => HTTP API 测试
+│  └─python => 创建虚拟数据
+├─test
+└─web
+    └─dorm-system-frontend => 前端 (Next.js)
+```
 
 ## 使用 Docker 部署项目
 

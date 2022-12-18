@@ -4,6 +4,23 @@ A dormitory selecting system in microservice architecture which supports high co
 
 [English](./README.md) | [中文](./README-cn.md)
 
+- [dorm-system](#dorm-system)
+  - [Architecture](#architecture)
+  - [Dependencies](#dependencies)
+    - [Backend (Go)](#backend-go)
+    - [Frontend (TypeScript)](#frontend-typescript)
+  - [File Layout](#file-layout)
+  - [Getting started](#getting-started)
+    - [Setup the databases](#setup-the-databases)
+    - [Create dummy data](#create-dummy-data)
+    - [Setup the message queue](#setup-the-message-queue)
+    - [Setup the etcd](#setup-the-etcd)
+    - [Build the microservices](#build-the-microservices)
+    - [Run microservices](#run-microservices)
+      - [Alternative method: use Docker](#alternative-method-use-docker)
+    - [Run frontend](#run-frontend)
+      - [Alternative method: use Docker](#alternative-method-use-docker-1)
+
 ## Architecture
 
 ![architecture](./assets/img/architecture.png)
@@ -30,6 +47,48 @@ A dormitory selecting system in microservice architecture which supports high co
 | Next.js   | React Framework | <https://github.com/vercel/next.js> |
 | React     | React           | <https://github.com/facebook/react> |
 | Bootstrap | CSS             | <https://github.com/twbs/bootstrap> |
+
+## File Layout
+
+The file layout in this project heavily referenced [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
+
+```text
+dorm-system
+├─api => API document
+├─assets => public resources
+├─bin => binary executables
+├─cmd => commands
+├─configs => configurations
+├─internal => main code
+│  ├─api => Protocol Buffers
+│  ├─cache => Redis
+│  ├─controller => Gin
+│  ├─cookie => Cookie management
+│  ├─dal => data access layer (MySQL)
+│  ├─handler => Gin handlers
+│  ├─middleware => JWT, CORS
+│  ├─mq => Kafka message queue
+│  ├─rpc => gRPC
+│  ├─service => microservices
+│  └─util => utilities
+├─logs
+├─pkg => external code
+│  ├─ep => error-packer
+│  ├─gmp => go mod path
+│  ├─jwt
+│  ├─viperpkg => Viper
+│  └─zap
+├─scripts
+│  ├─docker_db => Docker Compose for MySQL and Redis
+│  ├─docker_etcd => Docker Compose for etcd
+│  ├─docker_frontback => Docker build frontend and backend
+│  ├─docker_kafka => Docker Compose for Kafka
+│  ├─http => HTTP API testing
+│  └─python => create dummy data
+├─test
+└─web
+    └─dorm-system-frontend => frontend (Next.js)
+```
 
 ## Getting started
 
