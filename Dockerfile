@@ -1,4 +1,4 @@
-# This is only for the main service, for other services please checkout docker-compose.yml
+# This is only for the main service, for other services please check out docker-compose.yml
 FROM golang:1.19
 
 # Set the Current Working Directory inside the container

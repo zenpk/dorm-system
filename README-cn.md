@@ -185,3 +185,5 @@ sudo scripts/docker_frontback/build_frontend.sh
 ![containers](./assets/img/containers.png)
 
 现在可以通过端口 3000 访问整个系统
+
+如想了解更多信息，请参考 [projects/dorm-system](https://zengyh.com/projects/dorm-system)

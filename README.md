@@ -212,3 +212,5 @@ If you use Docker to setup all modules, then your container list should look lik
 ![containers](./assets/img/containers.png)
 
 Now you should be able to explore the whole system in your browser at `localhost:3000`, enjoy!
+
+For more information, please check out [projects/dorm-system](https://zengyh.com/projects/dorm-system)
