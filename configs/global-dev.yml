@@ -26,8 +26,8 @@ redis:
   password: "redis_pass"
   db: 0
 etcd:
-  host: "101.43.179.27"
-  port: 2379
+  endpoints:
+    - "101.43.179.27:2379"
   dial_timeout: 3 # seconds
   scheme: "etcd"
 jwt:

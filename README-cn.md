@@ -123,4 +123,8 @@ sudo scripts/docker_frontback/build_backend.sh
 sudo scripts/docker_frontback/build_frontend.sh
 ```
 
-完成上述全部步骤后即可通过端口 3000 访问整个系统
+完成上述全部步骤后，容器列表应当如下图所示
+
+![containers](./assets/img/containers.png)
+
+现在可以通过端口 3000 访问整个系统

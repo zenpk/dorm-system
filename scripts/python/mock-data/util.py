@@ -6,7 +6,7 @@ import mysql.connector
 def connect_db():
     cnx = mysql.connector.connect(user='dorm',
                                   password='dorm',
-                                  host='101.43.179.27',
+                                  host='127.0.0.1',
                                   port=3306,
                                   database='dorm',
                                   charset='utf8mb4')

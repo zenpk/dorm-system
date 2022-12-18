@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/pkg/zap"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -11,9 +10,8 @@ import (
 
 // initEtcdClient initialize etcd for service registry and discovery
 func initEtcdClient() (*clientv3.Client, error) {
-	endpoint := fmt.Sprintf("%s:%d", viper.GetString("etcd.host"), viper.GetInt("etcd.port"))
 	etcdClient, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{endpoint},
+		Endpoints:   viper.GetStringSlice("etcd.endpoints"),
 		DialTimeout: time.Duration(viper.GetInt("etcd.dial_timeout")) * time.Second,
 	})
 	if err != nil {
@@ -54,7 +52,7 @@ func (e *EtcdRegister) RegisterServer(serviceName, addr string, expire int64) er
 	if err != nil {
 		return err
 	}
-	go e.watcher(serviceName, keepAliveChan)
+	go e.watcher(keepAliveChan)
 	return nil
 }
 
@@ -80,7 +78,7 @@ func (e *EtcdRegister) keepAlive() (<-chan *clientv3.LeaseKeepAliveResponse, err
 	return resChan, nil
 }
 
-func (e *EtcdRegister) watcher(key string, resChan <-chan *clientv3.LeaseKeepAliveResponse) {
+func (e *EtcdRegister) watcher(resChan <-chan *clientv3.LeaseKeepAliveResponse) {
 	for {
 		select {
 		case _, ok := <-resChan:

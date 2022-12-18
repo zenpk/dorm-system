@@ -148,4 +148,8 @@ Run frontend in Docker container from one command:
 sudo scripts/docker_frontback/build_frontend.sh
 ```
 
+If you use Docker to setup all modules, then your container list should look like this:
+
+![containers](./assets/img/containers.png)
+
 Now you should be able to explore the whole system in your browser at `localhost:3000`, enjoy!
