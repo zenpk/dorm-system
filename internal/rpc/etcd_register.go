@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// initETCDClient initialize ETCD for service registry and discovery
-func initETCDClient() (*clientv3.Client, error) {
+// initEtcdClient initialize etcd for service registry and discovery
+func initEtcdClient() (*clientv3.Client, error) {
 	endpoint := fmt.Sprintf("%s:%d", viper.GetString("etcd.host"), viper.GetInt("etcd.port"))
 	etcdClient, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{endpoint},
@@ -22,20 +22,20 @@ func initETCDClient() (*clientv3.Client, error) {
 	return etcdClient, nil
 }
 
-type ETCDRegister struct {
+type EtcdRegister struct {
 	etcdClient *clientv3.Client
 	leaseID    clientv3.LeaseID
 	ctx        context.Context
 	cancel     context.CancelFunc
 }
 
-func InitETCDRegister() (*ETCDRegister, error) {
-	client, err := initETCDClient()
+func InitEtcdRegister() (*EtcdRegister, error) {
+	client, err := initEtcdClient()
 	if err != nil {
 		return nil, err
 	}
 	ctx, cancelFunc := context.WithCancel(context.Background())
-	er := &ETCDRegister{
+	er := &EtcdRegister{
 		etcdClient: client,
 		ctx:        ctx,
 		cancel:     cancelFunc,
@@ -43,7 +43,7 @@ func InitETCDRegister() (*ETCDRegister, error) {
 	return er, nil
 }
 
-func (e *ETCDRegister) RegisterServer(serviceName, addr string, expire int64) error {
+func (e *EtcdRegister) RegisterServer(serviceName, addr string, expire int64) error {
 	if err := e.createLease(expire); err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (e *ETCDRegister) RegisterServer(serviceName, addr string, expire int64) er
 	return nil
 }
 
-func (e *ETCDRegister) createLease(ttl int64) error {
+func (e *EtcdRegister) createLease(ttl int64) error {
 	res, err := e.etcdClient.Grant(e.ctx, ttl)
 	if err != nil {
 		return err
@@ -67,12 +67,12 @@ func (e *ETCDRegister) createLease(ttl int64) error {
 	return nil
 }
 
-func (e *ETCDRegister) bindLease(key string, value string) error {
+func (e *EtcdRegister) bindLease(key string, value string) error {
 	_, err := e.etcdClient.Put(e.ctx, key, value, clientv3.WithLease(e.leaseID))
 	return err
 }
 
-func (e *ETCDRegister) keepAlive() (<-chan *clientv3.LeaseKeepAliveResponse, error) {
+func (e *EtcdRegister) keepAlive() (<-chan *clientv3.LeaseKeepAliveResponse, error) {
 	resChan, err := e.etcdClient.KeepAlive(e.ctx, e.leaseID)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (e *ETCDRegister) keepAlive() (<-chan *clientv3.LeaseKeepAliveResponse, err
 	return resChan, nil
 }
 
-func (e *ETCDRegister) watcher(key string, resChan <-chan *clientv3.LeaseKeepAliveResponse) {
+func (e *EtcdRegister) watcher(key string, resChan <-chan *clientv3.LeaseKeepAliveResponse) {
 	for {
 		select {
 		case _, ok := <-resChan:
@@ -97,7 +97,7 @@ func (e *ETCDRegister) watcher(key string, resChan <-chan *clientv3.LeaseKeepAli
 	}
 }
 
-func (e *ETCDRegister) Close() error {
+func (e *EtcdRegister) Close() error {
 	e.cancel()
 	if _, err := e.etcdClient.Revoke(e.ctx, e.leaseID); err != nil {
 		return err

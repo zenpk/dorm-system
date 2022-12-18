@@ -12,15 +12,16 @@
 
 ### 后端 (Go)
 
-| Name   | Usage        | URL                          |
-| :----- | ------------ | ---------------------------- |
-| Gin    | HTTP 框架    | github.com/gin-gonic/gin     |
-| gRPC   | gRPC         | google.golang.org/grpc       |
-| sarama | Kafka 连接器 | github.com/Shopify/sarama    |
-| GORM   | MySQL 连接器 | gorm.io/gorm                 |
-| Viper  | 配置文件管理 | github.com/spf13/viper       |
-| zap    | 日志管理     | go.uber.org/zap              |
-| JWT    | JWT          | github.com/golang-jwt/jwt/v4 |
+| Name   | Usage           | URL                          |
+| :----- | --------------- | ---------------------------- |
+| Gin    | HTTP 框架       | github.com/gin-gonic/gin     |
+| gRPC   | gRPC            | google.golang.org/grpc       |
+| sarama | Kafka 连接器    | github.com/Shopify/sarama    |
+| etcd   | 服务注册 & 发现 | go.etcd.io/etcd/client/v3    |
+| GORM   | MySQL 连接器    | gorm.io/gorm                 |
+| Viper  | 配置文件管理    | github.com/spf13/viper       |
+| zap    | 日志管理        | go.uber.org/zap              |
+| JWT    | JWT             | github.com/golang-jwt/jwt/v4 |
 
 ### 前端 (TypeScript)
 
@@ -31,6 +32,8 @@
 | Bootstrap | CSS        | <https://github.com/twbs/bootstrap> |
 
 ## 使用 Docker 部署项目
+
+本项目为微服务架构，但按此步骤执行可以完成单节点部署，且无需修改配置文件
 
 ### 部署数据库
 
@@ -71,7 +74,7 @@ python3 main.py
 
 ### 部署消息队列
 
-通过 Docker 部署 Kafka 和 ZooKeeper
+通过 Docker Compose 部署 Kafka 和 ZooKeeper
 
 ```shell
 cd scripts/docker_kafka
@@ -85,24 +88,39 @@ sudo docker compose up -d
 | Kafka port              | 19092     |
 | Kafka security protocol | PLAINTEXT |
 
-### 部署微服务
+### 部署 etcd
 
-使用 Docker 部署微服务（共计 6 个：main, dorm, order, team, token, user）
+通过 Docker Compose 部署 etcd
 
 ```shell
-docker compose up -d
+cd scripts/docker_etcd
+sudo docker compose up -d
+```
+
+### 部署微服务
+
+使用 Docker Compose 部署微服务（共计 5 个：dorm, order, team, token, user）
+
+```shell
+sudo docker compose up -d
 ```
 
 此操作会以单节点形式部署全部服务，如需分布式部署请 build 单独的 `Dockerfile`
 
 请在 `configs/` 目录下修改配置文件
 
+### 部署主服务
+
+主服务需在其他微服务已经完成部署的前提下部署
+
+```shell
+sudo scripts/docker_frontback/build_backend.sh
+```
+
 ### 部署前端
 
 ```shell
-cd web/dorm-system-frontend
-docker build -t dorm-system-frontend .
-docker run -dp 3000:3000 --name dorm-system-frontend dorm-system-frontend
+sudo scripts/docker_frontback/build_frontend.sh
 ```
 
 完成上述全部步骤后即可通过端口 3000 访问整个系统

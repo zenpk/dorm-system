@@ -43,21 +43,21 @@ func main() {
 	if err := dal.InitDB(); err != nil {
 		log.Fatalf("failed to initialize database: %v", err)
 	}
-	// ETCD
-	etcdRegister, err := rpc.InitETCDRegister()
+	// etcd
+	etcdRegister, err := rpc.InitEtcdRegister()
 	if err != nil {
-		log.Fatalf("failed to initialize ETCD: %v", err)
+		log.Fatalf("failed to initialize etcd: %v", err)
 	}
 	defer func() {
 		if err := etcdRegister.Close(); err != nil {
-			log.Fatalf("failed to close ETCD register: %v", err)
+			log.Fatalf("failed to close etcd register: %v", err)
 		}
 	}()
 	etcdTarget := server.Config.GetString("etcd.Target")
 	etcdAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.target"), server.Config.GetInt("server.port"))
 	ttl := server.Config.GetInt64("etcd.ttl")
 	if err := etcdRegister.RegisterServer(etcdTarget, etcdAddr, ttl); err != nil {
-		log.Fatalf("failed to register ETCD: %v", err)
+		log.Fatalf("failed to register etcd: %v", err)
 	}
 	// RPC
 	listenAddr := fmt.Sprintf("%s:%d", server.Config.GetString("server.host"), server.Config.GetInt("server.port"))

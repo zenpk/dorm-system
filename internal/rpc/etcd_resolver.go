@@ -9,29 +9,29 @@ import (
 	"sync"
 )
 
-type ResolverBuilder struct {
+type EtcdResolverBuilder struct {
 	etcdClient *clientv3.Client
 }
 
-func InitETCDResolverBuilder() (*ResolverBuilder, error) {
-	etcdClient, err := initETCDClient()
+func InitEtcdResolverBuilder() (*EtcdResolverBuilder, error) {
+	etcdClient, err := initEtcdClient()
 	if err != nil {
 		return nil, err
 	}
-	rb := new(ResolverBuilder)
+	rb := new(EtcdResolverBuilder)
 	rb.etcdClient = etcdClient
 	return rb, nil
 }
 
-func (r ResolverBuilder) Close() error {
+func (r EtcdResolverBuilder) Close() error {
 	return r.etcdClient.Close()
 }
 
-func (r ResolverBuilder) Scheme() string {
+func (r EtcdResolverBuilder) Scheme() string {
 	return viper.GetString("etcd.scheme")
 }
 
-func (r ResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+func (r EtcdResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 	prefix := target.URL.Scheme + "://" + target.URL.Host + target.URL.Path
 	res, err := r.etcdClient.Get(context.Background(), prefix, clientv3.WithPrefix())
 	if err != nil {

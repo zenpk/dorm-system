@@ -12,15 +12,16 @@ A dormitory selecting system in microservice architecture which supports high co
 
 ### Backend (Go)
 
-| Name   | Usage           | URL                          |
-| :----- | --------------- | ---------------------------- |
-| Gin    | HTTP Framework  | github.com/gin-gonic/gin     |
-| gRPC   | gRPC            | google.golang.org/grpc       |
-| sarama | Kafka Connector | github.com/Shopify/sarama    |
-| GORM   | MySQL ORM       | gorm.io/gorm                 |
-| Viper  | Configuration   | github.com/spf13/viper       |
-| zap    | Logging         | go.uber.org/zap              |
-| JWT    | JWT             | github.com/golang-jwt/jwt/v4 |
+| Name   | Usage                        | URL                          |
+| :----- | ---------------------------- | ---------------------------- |
+| Gin    | HTTP Framework               | github.com/gin-gonic/gin     |
+| gRPC   | gRPC                         | google.golang.org/grpc       |
+| sarama | Kafka Connector              | github.com/Shopify/sarama    |
+| etcd   | Service registry & discovery | go.etcd.io/etcd/client/v3    |
+| GORM   | MySQL ORM                    | gorm.io/gorm                 |
+| Viper  | Configuration                | github.com/spf13/viper       |
+| zap    | Logging                      | go.uber.org/zap              |
+| JWT    | JWT                          | github.com/golang-jwt/jwt/v4 |
 
 ### Frontend (TypeScript)
 
@@ -34,7 +35,7 @@ A dormitory selecting system in microservice architecture which supports high co
 
 ### Setup the databases
 
-This project uses two databases: MySQL and Redis, Redis is for caching. By default they run in Docker containers, you can use a docker compose command to set them both up.
+This project uses two databases: MySQL and Redis, Redis is for caching. By default they run in Docker containers, you can use a Docker Compose command to set them both up.
 
 ```shell
 cd scripts/docker_db
@@ -85,6 +86,15 @@ Default configurations are as below, change them in `docker-compose.yml`
 | Kafka port              | 19092     |
 | Kafka security protocol | PLAINTEXT |
 
+### Setup the etcd
+
+Using Docker Compose
+
+```shell
+cd scripts/docker_etcd
+sudo docker compose up -d
+```
+
 ### Build the microservices
 
 Use Makefile to build all executable files in one command:
@@ -105,6 +115,22 @@ sudo bin/[main|dorm|order|team|token|user] -mode=[dev|prod|test]
 
 The mode decides which configuration file to read.
 
+Be aware that the main service should be run AFTER all other services.
+
+#### Alternative method: use Docker
+
+All microservices can run in Docker from one command using Docker Compose:
+
+```shell
+sudo docker compose up -d
+```
+
+After running all microservice containers, run main service using Dockerfile:
+
+```shell
+sudo scripts/docker_frontback/build_backend.sh
+```
+
 ### Run frontend
 
 ```shell
@@ -113,5 +139,13 @@ npm run start
 ```
 
 Change any configuration you need in `next.config.js`
+
+#### Alternative method: use Docker
+
+Run frontend in Docker container from one command:
+
+```shell
+sudo scripts/docker_frontback/build_frontend.sh
+```
 
 Now you should be able to explore the whole system in your browser at `localhost:3000`, enjoy!

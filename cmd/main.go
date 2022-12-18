@@ -48,15 +48,15 @@ func main() {
 	if err := cache.Warming(); err != nil {
 		log.Fatalf("failed to warming Redis: %v", err)
 	}
-	// ETCD
-	rb, err := rpc.InitETCDResolverBuilder()
+	// etcd
+	erb, err := rpc.InitEtcdResolverBuilder()
 	if err != nil {
-		log.Fatalf("failed to initialize ETCD client: %v", err)
+		log.Fatalf("failed to initialize etcd client: %v", err)
 	}
-	resolver.Register(rb)
+	resolver.Register(erb)
 	defer func() {
-		if err := rb.Close(); err != nil {
-			log.Fatalf("failed to close ETCD resolver builder: %v", err)
+		if err := erb.Close(); err != nil {
+			log.Fatalf("failed to close etcd resolver builder: %v", err)
 		}
 	}()
 	// RPC connections
