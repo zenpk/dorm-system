@@ -30,7 +30,7 @@ A dormitory selecting system in microservice architecture which supports high co
 ### Backend (Go)
 
 | Name   | Usage                        | URL                          |
-| :----- | ---------------------------- | ---------------------------- |
+|:-------|------------------------------|------------------------------|
 | Gin    | HTTP Framework               | github.com/gin-gonic/gin     |
 | gRPC   | gRPC                         | google.golang.org/grpc       |
 | sarama | Kafka Connector              | github.com/Shopify/sarama    |
@@ -42,15 +42,16 @@ A dormitory selecting system in microservice architecture which supports high co
 
 ### Frontend (TypeScript)
 
-| Name      | Usage           | URL                               |
-| --------- | --------------- | --------------------------------- |
+| Name      | Usage           | URL                                 |
+|-----------|-----------------|-------------------------------------|
 | Next.js   | React Framework | <https://github.com/vercel/next.js> |
 | React     | React           | <https://github.com/facebook/react> |
 | Bootstrap | CSS             | <https://github.com/twbs/bootstrap> |
 
 ## File Layout
 
-The file layout in this project heavily referenced [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
+The file layout in this project heavily
+referenced [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
 
 ```text
 dorm-system
@@ -94,17 +95,18 @@ dorm-system
 
 ### Set up the databases
 
-This project uses two databases: MySQL and Redis, Redis is for caching. By default they run in Docker containers, you can use a Docker Compose command to set them both up.
+This project uses two databases: MySQL and Redis, Redis is for caching. By default they run in Docker containers, you
+can use a Docker Compose command to set them both up.
 
 ```shell
 cd scripts/docker_db
 sudo docker compose up -d
 ```
 
- The default configurations are as below, change them in `docker-compose.yml` and `redis.conf`:
+The default configurations are as below, change them in `docker-compose.yml` and `redis.conf`:
 
 | Key                 | Value      |
-| ------------------- | ---------- |
+|---------------------|------------|
 | MySQL root password | root       |
 | MySQL port          | 3306       |
 | Redis auth password | redis_pass |
@@ -115,19 +117,19 @@ sudo docker compose up -d
 Use Python scripts to create dummy data, change the MySQL configuration in `util.py` and run:
 
 ```shell
-cd scripts/python
+cd scripts/python/mock-data
 python3 main.py
 ```
 
 This will create the data below:
 
-| Data      | Value                                                        |
-| --------- | ------------------------------------------------------------ |
-| buildings | 5 enabled, 1 not enabled                                     |
-| dorms     | 100 dorms with random gender and bed counts                  |
+| Data      | Value                                                                         |
+|-----------|-------------------------------------------------------------------------------|
+| buildings | 5 enabled, 1 not enabled                                                      |
+| dorms     | 100 dorms with random gender and bed counts                                   |
 | users     | ~1000 users with random gender and name, along with the correspondent account |
-| test user | username: temp; password: temp                               |
-| teams     | 1 team: test user + first four users (temp1 ~ temp4)         |
+| test user | username: temp; password: temp                                                |
+| teams     | 1 team: test user + first four users (temp1 ~ temp4)                          |
 
 ### Set up the message queue
 
@@ -141,7 +143,7 @@ sudo docker compose up -d
 Default configurations are as below, change them in `docker-compose.yml`
 
 | Key                     | Value     |
-| ----------------------- | --------- |
+|-------------------------|-----------|
 | Kafka port              | 19092     |
 | Kafka security protocol | PLAINTEXT |
 

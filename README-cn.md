@@ -27,24 +27,24 @@
 
 ### 后端 (Go)
 
-| Name   | Usage           | URL                          |
-| :----- | --------------- | ---------------------------- |
-| Gin    | HTTP 框架       | github.com/gin-gonic/gin     |
-| gRPC   | gRPC            | google.golang.org/grpc       |
-| sarama | Kafka 连接器    | github.com/Shopify/sarama    |
+| Name   | Usage     | URL                          |
+|:-------|-----------|------------------------------|
+| Gin    | HTTP 框架   | github.com/gin-gonic/gin     |
+| gRPC   | gRPC      | google.golang.org/grpc       |
+| sarama | Kafka 连接器 | github.com/Shopify/sarama    |
 | etcd   | 服务注册 & 发现 | go.etcd.io/etcd/client/v3    |
-| GORM   | MySQL 连接器    | gorm.io/gorm                 |
+| GORM   | MySQL 连接器 | gorm.io/gorm                 |
 | Viper  | 配置文件管理    | github.com/spf13/viper       |
-| zap    | 日志管理        | go.uber.org/zap              |
-| JWT    | JWT             | github.com/golang-jwt/jwt/v4 |
+| zap    | 日志管理      | go.uber.org/zap              |
+| JWT    | JWT       | github.com/golang-jwt/jwt/v4 |
 
 ### 前端 (TypeScript)
 
-| Name      | Usage      | URL                                 |
-| --------- | ---------- | ----------------------------------- |
+| Name      | Usage    | URL                                 |
+|-----------|----------|-------------------------------------|
 | Next.js   | React 框架 | <https://github.com/vercel/next.js> |
-| React     | React      | <https://github.com/facebook/react> |
-| Bootstrap | CSS        | <https://github.com/twbs/bootstrap> |
+| React     | React    | <https://github.com/facebook/react> |
+| Bootstrap | CSS      | <https://github.com/twbs/bootstrap> |
 
 ## 文件结构
 
@@ -104,7 +104,7 @@ sudo docker compose up -d
 默认参数如下：
 
 | Key                 | Value      |
-| ------------------- | ---------- |
+|---------------------|------------|
 | MySQL root password | root       |
 | MySQL port          | 3306       |
 | Redis auth password | redis_pass |
@@ -115,19 +115,19 @@ sudo docker compose up -d
 通过运行 Python 脚本生成虚拟数据，如需修改配置请在 `util.py` 中修改
 
 ```shell
-cd scripts/python
+cd scripts/python/mock-data
 python3 main.py
 ```
 
 生成数据
 
-| Data         | Value                                                        |
-| ------------ | ------------------------------------------------------------ |
-| 宿舍楼       | 5 个启用, 1 个未启用                                         |
-| 宿舍         | 100 个宿舍，随机性别和床位数                                 |
-| 用户（学生） | 约 1000 个性别和姓名都随机的用户，每个用户有对应的账户       |
-| 测试用户     | 用户名：temp；密码：temp                                     |
-| 队伍         | 1 个已经组好的队，包含测试用户和 4 个测试队友（temp1 ~ temp4） |
+| Data   | Value                                    |
+|--------|------------------------------------------|
+| 宿舍楼    | 5 个启用, 1 个未启用                            |
+| 宿舍     | 100 个宿舍，随机性别和床位数                         |
+| 用户（学生） | 约 1000 个性别和姓名都随机的用户，每个用户有对应的账户           |
+| 测试用户   | 用户名：temp；密码：temp                         |
+| 队伍     | 1 个已经组好的队，包含测试用户和 4 个测试队友（temp1 ~ temp4） |
 
 ### 部署消息队列
 
@@ -141,7 +141,7 @@ sudo docker compose up -d
 默认参数如下
 
 | Key                     | Value     |
-| ----------------------- | --------- |
+|-------------------------|-----------|
 | Kafka port              | 19092     |
 | Kafka security protocol | PLAINTEXT |
 
@@ -162,7 +162,16 @@ sudo docker compose up -d
 sudo docker compose up -d
 ```
 
-此操作会以单节点形式部署全部服务，如需分布式部署请 build 单独的 `Dockerfile`
+此操作会以单节点形式部署全部服务，如需分布式部署（或服务器配置不足以同时 build 全部镜像）请 build 单独的 `Dockerfile`
+
+```shell
+sudo docker build -t dorm-system-dorm -f Dockerfile-dorm .
+sudo docker build -t dorm-system-order -f Dockerfile-order .
+sudo docker build -t dorm-system-team -f Dockerfile-team .
+sudo docker build -t dorm-system-token -f Dockerfile-token .
+sudo docker build -t dorm-system-user -f Dockerfile-user .
+sudo docker compose up -d
+```
 
 请在 `configs/` 目录下修改配置文件
 
