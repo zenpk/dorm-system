@@ -11,10 +11,10 @@ A dormitory selecting system in microservice architecture which supports high co
     - [Frontend (TypeScript)](#frontend-typescript)
   - [File Layout](#file-layout)
   - [Getting started](#getting-started)
-    - [Setup the databases](#setup-the-databases)
+    - [Set up the databases](#set-up-the-databases)
     - [Create dummy data](#create-dummy-data)
-    - [Setup the message queue](#setup-the-message-queue)
-    - [Setup the etcd](#setup-the-etcd)
+    - [Set up the message queue](#set-up-the-message-queue)
+    - [Set up the etcd](#set-up-the-etcd)
     - [Build the microservices](#build-the-microservices)
     - [Run microservices](#run-microservices)
       - [Alternative method: use Docker](#alternative-method-use-docker)
@@ -34,7 +34,7 @@ A dormitory selecting system in microservice architecture which supports high co
 | Gin    | HTTP Framework               | github.com/gin-gonic/gin     |
 | gRPC   | gRPC                         | google.golang.org/grpc       |
 | sarama | Kafka Connector              | github.com/Shopify/sarama    |
-| etcd   | Service registry & discovery | go.etcd.io/etcd/client/v3    |
+| etcd   | Service Registry & Discovery | go.etcd.io/etcd/client/v3    |
 | GORM   | MySQL ORM                    | gorm.io/gorm                 |
 | Viper  | Configuration                | github.com/spf13/viper       |
 | zap    | Logging                      | go.uber.org/zap              |
@@ -92,7 +92,7 @@ dorm-system
 
 ## Getting started
 
-### Setup the databases
+### Set up the databases
 
 This project uses two databases: MySQL and Redis, Redis is for caching. By default they run in Docker containers, you can use a Docker Compose command to set them both up.
 
@@ -129,7 +129,7 @@ This will create the data below:
 | test user | username: temp; password: temp                               |
 | teams     | 1 team: test user + first four users (temp1 ~ temp4)         |
 
-### Setup the message queue
+### Set up the message queue
 
 Kafka and ZooKeeper also run in Docker containers:
 
@@ -145,7 +145,7 @@ Default configurations are as below, change them in `docker-compose.yml`
 | Kafka port              | 19092     |
 | Kafka security protocol | PLAINTEXT |
 
-### Setup the etcd
+### Set up the etcd
 
 Using Docker Compose
 
@@ -207,7 +207,7 @@ Run frontend in Docker container from one command:
 sudo scripts/docker_frontback/build_frontend.sh
 ```
 
-If you use Docker to setup all modules, then your container list should look like this:
+If you use Docker to set up all modules, then your container list should look like this:
 
 ![containers](./assets/img/containers.png)
 

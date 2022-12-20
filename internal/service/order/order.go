@@ -26,6 +26,11 @@ func (s Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitReply, e
 		// not enabled, fail this order
 		return nil, s.Fail(ctx, req, "building is not enabled")
 	}
+	// check if building has remaining beds
+	buildingRemain, err := cache.Redis.HGet(ctx, "remain", util.UintToString(building.Id)).Uint64()
+	if buildingRemain <= 0 {
+		return nil, s.Fail(ctx, req, "this building doesn't have remaining bed anymore")
+	}
 	order := &dal.Order{
 		BuildingId: building.Id,
 		DormId:     0,
@@ -55,22 +60,22 @@ func (s Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitReply, e
 	}
 	order.DormId = dorm.Id
 	// write in the order and decrease dorm's remain count
-	if err := dal.Table.Order.TransCreateAndDecreaseDormRemainCnt(ctx, order, dorm, memberCnt); err != nil {
-		_, _ = mutex.Unlock()
-		return nil, err
-	}
-	// decrease redis count
+	//if err := dal.Table.Order.TransCreateAndDecreaseDormRemainCnt(ctx, order, dorm, memberCnt); err != nil {
+	//	_, _ = mutex.Unlock()
+	//	return nil, err
+	//}
+	// decrease redis count, buildingRemain needs to be fetched again
 	// no need to rollback even if any error occurs
-	buildingRemain, err := cache.Redis.HGet(ctx, "remain", util.UintToString(building.Id)).Uint64()
+	buildingRemain, err = cache.Redis.HGet(ctx, "remain", util.UintToString(building.Id)).Uint64()
 	if err != nil {
 		_, _ = mutex.Unlock()
 		return nil, err
 	}
 	buildingRemain -= memberCnt
-	if err := cache.Redis.HSet(ctx, "remain", building.Id, buildingRemain).Err(); err != nil {
-		_, _ = mutex.Unlock()
-		return nil, err
-	}
+	//if err := cache.Redis.HSet(ctx, "remain", building.Id, buildingRemain).Err(); err != nil {
+	//	_, _ = mutex.Unlock()
+	//	return nil, err
+	//}
 	if _, err := mutex.Unlock(); err != nil {
 		return nil, err
 	}
