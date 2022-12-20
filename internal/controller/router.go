@@ -48,7 +48,7 @@ func InitRouter(router *gin.Engine) {
 			order.GET("", ginHandler.order.Get) // get one's team's order info
 			order.Use(middleware.CheckOrderTime())
 			{
-				order.POST("/create", ginHandler.order.Submit)
+				order.POST("/submit", ginHandler.order.Submit)
 				order.DELETE("/delete", ginHandler.order.Delete)
 			}
 		}

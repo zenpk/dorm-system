@@ -9,7 +9,7 @@ export default function Create() {
     async function submit(data: {
         buildingNum: string
     }) {
-        let resp = await fetchWrapper.post("/order/create", data);
+        let resp = await fetchWrapper.post("/order/submit", data);
         console.log(resp);
         await router.push("/order/info");
     }
