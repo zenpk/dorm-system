@@ -5,38 +5,38 @@ services:
       dockerfile: Dockerfile-dorm
     ports:
       - "9080:9080"
+    network_mode: bridge
     extra_hosts:
-      #- "host.docker.internal:host-gateway" # Windows and Mac
-      - "host.docker.internal:172.17.0.1" # Linux
+      - "host.docker.internal:host-gateway"
   order:
     build:
       dockerfile: Dockerfile-order
     ports:
       - "9081:9081"
+    network_mode: bridge
     extra_hosts:
-      #- "host.docker.internal:host-gateway" # Windows and Mac
-      - "host.docker.internal:172.17.0.1" # Linux
+      - "host.docker.internal:host-gateway"
   team:
     build:
       dockerfile: Dockerfile-team
     ports:
       - "9082:9082"
+    network_mode: bridge
     extra_hosts:
-      #- "host.docker.internal:host-gateway" # Windows and Mac
-      - "host.docker.internal:172.17.0.1" # Linux
+      - "host.docker.internal:host-gateway"
   token:
     build:
       dockerfile: Dockerfile-token
     ports:
       - "9083:9083"
+    network_mode: bridge
     extra_hosts:
-      #- "host.docker.internal:host-gateway" # Windows and Mac
-      - "host.docker.internal:172.17.0.1" # Linux
+      - "host.docker.internal:host-gateway"
   user:
     build:
       dockerfile: Dockerfile-user
     ports:
       - "9084:9084"
+    network_mode: bridge
     extra_hosts:
-      #- "host.docker.internal:host-gateway" # Windows and Mac
-      - "host.docker.internal:172.17.0.1" # Linux
+      - "host.docker.internal:host-gateway"
