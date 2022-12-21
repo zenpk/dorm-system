@@ -12,7 +12,7 @@ cors:
     - "127.0.0.1"
     - "."
 mysql:
-  host: "101.43.179.27"
+  host: "127.0.0.1"
   port: 3306
   username: "dorm"
   password: "dorm"
@@ -21,13 +21,13 @@ mysql:
   parse_time: "true"
   loc: "UTC"
 redis:
-  host: "101.43.179.27"
+  host: "127.0.0.1"
   port: 6379
   password: "redis_pass"
   db: 0
 etcd:
   endpoints:
-    - "101.43.179.27:2379"
+    - "127.0.0.1:2379"
   dial_timeout: 3 # seconds
   scheme: "etcd"
 jwt:

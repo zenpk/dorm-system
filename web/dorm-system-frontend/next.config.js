@@ -7,7 +7,7 @@ module.exports = {
     ...nextConfig,
     publicRuntimeConfig: {
         // url: "http://127.0.0.1:8080"
-        url: "http://172.17.0.1:8080" // Docker on Linux
+        url: "http://host.docker.internal:8080"
     },
     env: {
         errOK: 2000,
