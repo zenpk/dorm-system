@@ -4,7 +4,7 @@ server:
   port: 9081
 etcd:
   target: "etcd://order"
-  ttl: 3
+  ttl: 5
 kafka:
   brokers:
     - "127.0.0.1:9092"

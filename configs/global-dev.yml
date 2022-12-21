@@ -28,7 +28,7 @@ redis:
 etcd:
   endpoints:
     - "127.0.0.1:2379"
-  dial_timeout: 3 # seconds
+  dial_timeout: 5 # seconds
   scheme: "etcd"
 jwt:
   secret: "my_secret"

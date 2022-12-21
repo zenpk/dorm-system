@@ -4,5 +4,5 @@ server:
   port: 9083
 etcd:
   target: "etcd://token"
-  ttl: 3
-timeout: 3 # second
+  ttl: 5
+timeout: 5 # second

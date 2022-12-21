@@ -9,6 +9,7 @@ import (
 	"github.com/zenpk/dorm-system/internal/service/common"
 	"github.com/zenpk/dorm-system/internal/util"
 	"github.com/zenpk/dorm-system/pkg/ep"
+	"github.com/zenpk/dorm-system/pkg/zap"
 )
 
 type Server struct {
@@ -17,6 +18,7 @@ type Server struct {
 }
 
 func (s Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitReply, error) {
+	zap.Logger.Infof("handling order %v", req.Code)
 	building, err := s.prepareMessage(ctx, req)
 	if err != nil {
 		return nil, err

@@ -29,7 +29,7 @@ redis:
 etcd:
   endpoints:
     - "host.docker.internal:2379"
-  dial_timeout: 3 # seconds
+  dial_timeout: 5 # seconds
   scheme: "etcd"
 jwt:
   secret: "my_secret"
