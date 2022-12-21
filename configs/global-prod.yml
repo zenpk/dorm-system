@@ -11,6 +11,7 @@ cors:
     - "localhost"
     - "127.0.0.1"
     - "host.docker.internal"
+    - "." # comment this line to ensure security
 mysql:
   host: "host.docker.internal"
   port: 3306
