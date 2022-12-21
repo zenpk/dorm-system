@@ -7,7 +7,7 @@ etcd:
   ttl: 3
 kafka:
   brokers:
-    - "127.0.0.1:19092"
+    - "127.0.0.1:9092"
   topic: "order"
 timeout:
   rpc: 3
