@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/zenpk/dorm-system/pkg/jwt"
-	"net/http"
 	"strconv"
 )
 
@@ -15,14 +14,9 @@ func GetAccessToken(c *gin.Context) string {
 }
 
 func SetAccessToken(c *gin.Context, token string, urls ...string) {
-	var url string
-	if len(urls) <= 0 {
-		url = ""
-	} else {
-		url = viper.GetString("server.domain") + urls[0]
-	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("access_token", token, viper.GetInt("cookie.access_token_age"), "/", url, false, true)
+	url := getURL(urls...)
+	setSameSite(c)
+	c.SetCookie("access_token", token, viper.GetInt("cookie.access_token_age"), "/", url, viper.GetBool("cookie.secure"), true)
 }
 
 func GetRefreshToken(c *gin.Context) string {
@@ -31,14 +25,9 @@ func GetRefreshToken(c *gin.Context) string {
 }
 
 func SetRefreshToken(c *gin.Context, token string, urls ...string) {
-	var url string
-	if len(urls) <= 0 {
-		url = ""
-	} else {
-		url = viper.GetString("server.domain") + urls[0]
-	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("refresh_token", token, viper.GetInt("cookie.refresh_token_age"), "/", url, false, true)
+	url := getURL(urls...)
+	setSameSite(c)
+	c.SetCookie("refresh_token", token, viper.GetInt("cookie.refresh_token_age"), "/", url, viper.GetBool("cookie.secure"), true)
 }
 func GetUserId(c *gin.Context) string {
 	userId, _ := c.Cookie("_userId")
@@ -46,14 +35,9 @@ func GetUserId(c *gin.Context) string {
 }
 
 func SetUserId(c *gin.Context, userId string, urls ...string) {
-	var url string
-	if len(urls) <= 0 {
-		url = ""
-	} else {
-		url = viper.GetString("server.domain") + urls[0]
-	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("_userId", userId, 0, "/", url, false, true)
+	url := getURL(urls...)
+	setSameSite(c)
+	c.SetCookie("_userId", userId, 0, "/", url, viper.GetBool("cookie.secure"), true)
 }
 
 func GetUsername(c *gin.Context) string {
@@ -62,14 +46,9 @@ func GetUsername(c *gin.Context) string {
 }
 
 func SetUsername(c *gin.Context, username string, urls ...string) {
-	var url string
-	if len(urls) <= 0 {
-		url = ""
-	} else {
-		url = viper.GetString("server.domain") + urls[0]
-	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("_username", username, 0, "/", url, false, true)
+	url := getURL(urls...)
+	setSameSite(c)
+	c.SetCookie("_username", username, 0, "/", url, viper.GetBool("cookie.secure"), true)
 }
 
 func GetRole(c *gin.Context) string {
@@ -79,28 +58,18 @@ func GetRole(c *gin.Context) string {
 
 func SetRole(c *gin.Context, role string, urls ...string) {
 	var url string
-	if len(urls) <= 0 {
-		url = ""
-	} else {
-		url = viper.GetString("server.domain") + urls[0]
-	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("_role", role, 0, "/", url, false, true)
+
+	setSameSite(c)
+	c.SetCookie("_role", role, 0, "/", url, viper.GetBool("cookie.secure"), true)
 }
 
 func ClearAllUserInfos(c *gin.Context, urls ...string) {
-	var url string
-	if len(urls) <= 0 {
-		url = ""
-	} else {
-		url = viper.GetString("server.domain") + urls[0]
-	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("access_token", "", -1, "/", url, false, true)
-	c.SetCookie("refresh_token", "", -1, "/", url, false, true)
-	c.SetCookie("_userId", "", -1, "/", url, false, true)
-	c.SetCookie("_username", "", -1, "/", url, false, true)
-	c.SetCookie("_role", "", -1, "/", url, false, true)
+	url := getURL(urls...)
+	c.SetCookie("access_token", "", -1, "/", url, viper.GetBool("cookie.secure"), true)
+	c.SetCookie("refresh_token", "", -1, "/", url, viper.GetBool("cookie.secure"), true)
+	c.SetCookie("_userId", "", -1, "/", url, viper.GetBool("cookie.secure"), true)
+	c.SetCookie("_username", "", -1, "/", url, viper.GetBool("cookie.secure"), true)
+	c.SetCookie("_role", "", -1, "/", url, viper.GetBool("cookie.secure"), true)
 }
 
 func SetAllFromAccessToken(c *gin.Context, token string, urls ...string) error {
