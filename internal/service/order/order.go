@@ -62,10 +62,10 @@ func (s Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitReply, e
 	}
 	order.DormId = dorm.Id
 	// write in the order and decrease dorm's remain count
-	//if err := dal.Table.Order.TransCreateAndDecreaseDormRemainCnt(ctx, order, dorm, memberCnt); err != nil {
-	//	_, _ = mutex.Unlock()
-	//	return nil, err
-	//}
+	if err := dal.Table.Order.TransCreateAndDecreaseDormRemainCnt(ctx, order, dorm, memberCnt); err != nil {
+		_, _ = mutex.Unlock()
+		return nil, err
+	}
 	// decrease redis count, buildingRemain needs to be fetched again
 	// no need to rollback even if any error occurs
 	buildingRemain, err = cache.Redis.HGet(ctx, "remain", util.UintToString(building.Id)).Uint64()
@@ -74,10 +74,10 @@ func (s Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitReply, e
 		return nil, err
 	}
 	buildingRemain -= memberCnt
-	//if err := cache.Redis.HSet(ctx, "remain", building.Id, buildingRemain).Err(); err != nil {
-	//	_, _ = mutex.Unlock()
-	//	return nil, err
-	//}
+	if err := cache.Redis.HSet(ctx, "remain", building.Id, buildingRemain).Err(); err != nil {
+		_, _ = mutex.Unlock()
+		return nil, err
+	}
 	if _, err := mutex.Unlock(); err != nil {
 		return nil, err
 	}
