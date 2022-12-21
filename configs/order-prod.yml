@@ -7,7 +7,7 @@ etcd:
   ttl: 3
 kafka:
   brokers:
-    - "host.docker.internal:9092"
+    - "host.docker.internal:19092"
   topic: "order"
 timeout:
   rpc: 3
