@@ -1,13 +1,13 @@
 server:
   host: "0.0.0.0"
-  target: "127.0.0.1"
+  target: "host.docker.internal"
   port: 9081
 etcd:
   target: "etcd://order"
   ttl: 3
 kafka:
   brokers:
-    - "127.0.0.1:19092"
+    - "host.docker.internal:19092"
   topic: "order"
 timeout:
   rpc: 3

@@ -6,7 +6,8 @@ const nextConfig = {
 module.exports = {
     ...nextConfig,
     publicRuntimeConfig: {
-        url: "http://127.0.0.1:8080"
+        // url: "http://127.0.0.1:8080"
+        url: "http://host.docker.internal:8080"
     },
     env: {
         errOK: 2000,
