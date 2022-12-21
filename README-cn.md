@@ -180,13 +180,13 @@ sudo docker compose up -d
 主服务需在其他微服务已经完成部署的前提下部署
 
 ```shell
-sudo scripts/docker_frontback/build_backend.sh
+sudo sh scripts/docker_frontback/build_backend.sh
 ```
 
 ### 部署前端
 
 ```shell
-sudo scripts/docker_frontback/build_frontend.sh
+sudo sh scripts/docker_frontback/build_frontend.sh
 ```
 
 完成上述全部步骤后，容器列表应当如下图所示

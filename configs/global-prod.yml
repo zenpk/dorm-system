@@ -5,14 +5,14 @@ zap:
 server:
   host: "0.0.0.0"
   port: 8080
-  domain: "host.docker.internal"
+  domain: "172.17.0.1"
 cors:
   whitelist:
     - "localhost"
     - "127.0.0.1"
-    - "host.docker.internal"
+    - "172.17.0.1"
 mysql:
-  host: "host.docker.internal"
+  host: "172.17.0.1"
   port: 3306
   username: "dorm"
   password: "dorm"
@@ -21,7 +21,7 @@ mysql:
   parse_time: "true"
   loc: "UTC"
 redis:
-  host: "host.docker.internal"
+  host: "172.17.0.1"
   port: 6379
   password: "redis_pass"
   db: 0

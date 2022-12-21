@@ -189,7 +189,7 @@ sudo docker compose up -d
 After running all microservice containers, run main service using Dockerfile:
 
 ```shell
-sudo scripts/docker_frontback/build_backend.sh
+sudo sh scripts/docker_frontback/build_backend.sh
 ```
 
 ### Run frontend
@@ -206,7 +206,7 @@ Change any configuration you need in `next.config.js`
 Run frontend in Docker container from one command:
 
 ```shell
-sudo scripts/docker_frontback/build_frontend.sh
+sudo sh scripts/docker_frontback/build_frontend.sh
 ```
 
 If you use Docker to set up all modules, then your container list should look like this:

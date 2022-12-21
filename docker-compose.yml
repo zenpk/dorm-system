@@ -5,33 +5,23 @@ services:
       dockerfile: Dockerfile-dorm
     ports:
       - "9080:9080"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   order:
     build:
       dockerfile: Dockerfile-order
     ports:
       - "9081:9081"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   team:
     build:
       dockerfile: Dockerfile-team
     ports:
       - "9082:9082"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   token:
     build:
       dockerfile: Dockerfile-token
     ports:
       - "9083:9083"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   user:
     build:
       dockerfile: Dockerfile-user
     ports:
       - "9084:9084"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
