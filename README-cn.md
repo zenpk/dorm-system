@@ -185,6 +185,8 @@ sudo sh scripts/docker_frontback/build_backend.sh
 
 ### 部署前端
 
+修改 `next.config.js` 中的 IP 地址，使其与实际后端服务器地址一致
+
 ```shell
 sudo sh scripts/docker_frontback/build_frontend.sh
 ```

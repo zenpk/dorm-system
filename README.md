@@ -194,12 +194,12 @@ sudo sh scripts/docker_frontback/build_backend.sh
 
 ### Run frontend
 
+Change the IP address to your backend server's IP in `next.config.js`
+
 ```shell
 cd web/dorm-system-frontend
 npm run start
 ```
-
-Change any configuration you need in `next.config.js`
 
 #### Alternative method: use Docker
 

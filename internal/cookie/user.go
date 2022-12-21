@@ -22,7 +22,7 @@ func SetAccessToken(c *gin.Context, token string, urls ...string) {
 		url = viper.GetString("server.domain") + urls[0]
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("access_token", token, viper.GetInt("cookie.access_token_age"), "/", url, true, true)
+	c.SetCookie("access_token", token, viper.GetInt("cookie.access_token_age"), "/", url, false, true)
 }
 
 func GetRefreshToken(c *gin.Context) string {
@@ -38,7 +38,7 @@ func SetRefreshToken(c *gin.Context, token string, urls ...string) {
 		url = viper.GetString("server.domain") + urls[0]
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("refresh_token", token, viper.GetInt("cookie.refresh_token_age"), "/", url, true, true)
+	c.SetCookie("refresh_token", token, viper.GetInt("cookie.refresh_token_age"), "/", url, false, true)
 }
 func GetUserId(c *gin.Context) string {
 	userId, _ := c.Cookie("_userId")
@@ -53,7 +53,7 @@ func SetUserId(c *gin.Context, userId string, urls ...string) {
 		url = viper.GetString("server.domain") + urls[0]
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("_userId", userId, 0, "/", url, true, true)
+	c.SetCookie("_userId", userId, 0, "/", url, false, true)
 }
 
 func GetUsername(c *gin.Context) string {
@@ -69,7 +69,7 @@ func SetUsername(c *gin.Context, username string, urls ...string) {
 		url = viper.GetString("server.domain") + urls[0]
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("_username", username, 0, "/", url, true, true)
+	c.SetCookie("_username", username, 0, "/", url, false, true)
 }
 
 func GetRole(c *gin.Context) string {
@@ -85,7 +85,7 @@ func SetRole(c *gin.Context, role string, urls ...string) {
 		url = viper.GetString("server.domain") + urls[0]
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("_role", role, 0, "/", url, true, true)
+	c.SetCookie("_role", role, 0, "/", url, false, true)
 }
 
 func ClearAllUserInfos(c *gin.Context, urls ...string) {
@@ -96,11 +96,11 @@ func ClearAllUserInfos(c *gin.Context, urls ...string) {
 		url = viper.GetString("server.domain") + urls[0]
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("access_token", "", -1, "/", url, true, true)
-	c.SetCookie("refresh_token", "", -1, "/", url, true, true)
-	c.SetCookie("_userId", "", -1, "/", url, true, true)
-	c.SetCookie("_username", "", -1, "/", url, true, true)
-	c.SetCookie("_role", "", -1, "/", url, true, true)
+	c.SetCookie("access_token", "", -1, "/", url, false, true)
+	c.SetCookie("refresh_token", "", -1, "/", url, false, true)
+	c.SetCookie("_userId", "", -1, "/", url, false, true)
+	c.SetCookie("_username", "", -1, "/", url, false, true)
+	c.SetCookie("_role", "", -1, "/", url, false, true)
 }
 
 func SetAllFromAccessToken(c *gin.Context, token string, urls ...string) error {
