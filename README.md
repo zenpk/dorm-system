@@ -199,6 +199,7 @@ Change the IP address to your backend server's IP in `next.config.js`
 
 ```shell
 cd web/dorm-system-frontend
+npm i
 npm run start
 ```
 
