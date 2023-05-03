@@ -38,8 +38,8 @@ refresh_token:
 cookie:
   access_token_age: 86400 # 1 day
   refresh_token_age: 2592000 # 1 month
-  same_site: "default"
-  secure: 0
+  same_site: "none"
+  secure: 1
 datetime:
   format:
     date: "2006-01-02"

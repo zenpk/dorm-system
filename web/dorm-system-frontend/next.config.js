@@ -6,8 +6,7 @@ const nextConfig = {
 module.exports = {
     ...nextConfig,
     publicRuntimeConfig: {
-        // url: "http://127.0.0.1:8080" // change this to public IP
-        url: "http://116.204.71.32:8080"
+        url: "http://127.0.0.1:8080" // change this to public IP
     },
     env: {
         errOK: 2000,

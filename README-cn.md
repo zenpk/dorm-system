@@ -116,6 +116,7 @@ sudo docker compose up -d
 
 ```shell
 cd scripts/python/mock-data
+pip install faker mysql-connector-python
 python3 main.py
 ```
 

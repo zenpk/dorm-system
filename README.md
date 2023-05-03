@@ -118,6 +118,7 @@ Use Python scripts to create dummy data, change the MySQL configuration in `util
 
 ```shell
 cd scripts/python/mock-data
+pip install faker mysql-connector-python
 python3 main.py
 ```
 
